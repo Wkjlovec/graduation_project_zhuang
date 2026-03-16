@@ -81,8 +81,7 @@ public class AuthService {
         }
         UserAccount account = userAccountRepository.findById(userFromRefresh.userId())
                 .orElseThrow(() -> new BusinessException(4041, "user not found"));
-        authSessionService.deleteSession(userFromRefresh.sessionId());
-        return issueTokens(account);
+        return issueTokensBySession(account, userFromRefresh.sessionId());
     }
 
     public void logout(AuthenticatedUser user) {
@@ -109,6 +108,10 @@ public class AuthService {
     private AuthTokenResponse issueTokens(UserAccount account) {
         String sessionId = UUID.randomUUID().toString();
         authSessionService.saveSession(sessionId, account.getId(), jwtService.getRefreshExpireSeconds());
+        return issueTokensBySession(account, sessionId);
+    }
+
+    private AuthTokenResponse issueTokensBySession(UserAccount account, String sessionId) {
         String accessToken = jwtService.generateAccessToken(account.getId(), account.getUsername(), sessionId);
         String refreshToken = jwtService.generateRefreshToken(account.getId(), account.getUsername(), sessionId);
         return new AuthTokenResponse(

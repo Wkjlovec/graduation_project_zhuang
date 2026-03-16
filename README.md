@@ -11,6 +11,8 @@
 6. 移动端页面骨架（Vue3 + Vant）  
 7. 缓存优化与测试数据（Redis Cache + DemoData）
 
+范围约束文档：`docs/scope-baseline.md`
+
 ---
 
 ## 目录结构
@@ -139,6 +141,6 @@ npm run dev
 
 基础安全（毕设可交付版）：
 - Access Token + Refresh Token 双令牌
-- 刷新令牌轮转（refresh 后旧会话失效）
+- 刷新令牌续签（保持同一会话，降低前端接入复杂度）
 - 登出后会话立即失效（网关与鉴权服务都会校验 Redis 会话）
 - 登录失败次数锁定（按用户名+来源IP进行短时锁定）
