@@ -2,7 +2,7 @@
 
 本仓库用于实现课题：**“微服务架构的论坛系统实现（支持 PC 端 + 移动端）”**。
 
-当前已完成：**步骤 1（目录初始化）**、**步骤 2（基础设施 Docker 化）**。
+当前已完成：**步骤 1（目录初始化）**、**步骤 2（基础设施 Docker 化）**、**步骤 3（网关 + 注册发现）**。
 
 ---
 
@@ -150,3 +150,51 @@ docker compose down -v
 cd /workspace/deploy
 bash check-prerequisites.sh
 ```
+
+---
+
+## 6. 第 3 步：网关 + 注册发现（Nacos）
+
+后端已新增 3 个 Maven 模块：
+
+- `common-lib`：公共常量
+- `auth-user-service`：最小用户服务（用于注册发现联调）
+- `gateway-service`：Spring Cloud Gateway 网关
+
+### 6.1 启动顺序（先基础设施，再微服务）
+
+1) 启动基础设施（步骤 2）  
+2) 启动 `auth-user-service`  
+3) 启动 `gateway-service`
+
+### 6.2 在本地启动后端服务
+
+```bash
+cd /workspace/backend
+mvn -pl auth-user-service -am spring-boot:run
+```
+
+再开一个终端：
+
+```bash
+cd /workspace/backend
+mvn -pl gateway-service -am spring-boot:run
+```
+
+### 6.3 联调验证
+
+1) 查看 Nacos 控制台服务列表：  
+`http://localhost:8848/nacos`  
+应出现：
+- `auth-user-service`
+- `gateway-service`
+
+2) 通过网关访问用户服务探针接口：
+
+```bash
+curl -H "X-Request-Id: demo-001" http://localhost:8080/api/users/ping
+```
+
+返回中应包含：
+- `message=auth-user-service is reachable`
+- `service=auth-user-service`
