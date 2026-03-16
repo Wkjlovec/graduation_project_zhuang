@@ -22,6 +22,7 @@
         <module>common-lib</module>
         <module>gateway-service</module>
         <module>auth-user-service</module>
+        <module>forum-service</module>
     </modules>
 
     <properties>

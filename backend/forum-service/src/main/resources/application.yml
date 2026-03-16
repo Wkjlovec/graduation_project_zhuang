@@ -1,0 +1,29 @@
+server:
+  port: ${FORUM_PORT:8082}
+
+spring:
+  application:
+    name: forum-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_APP_DATABASE:forum_system}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: ${MYSQL_APP_USER:forum_user}
+    password: ${MYSQL_APP_PASSWORD:forum_pass_123}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

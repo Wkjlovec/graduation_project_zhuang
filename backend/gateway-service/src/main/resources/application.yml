@@ -26,6 +26,12 @@ spring:
             - Path=/api/users/**
           filters:
             - StripPrefix=1
+        - id: forum-route
+          uri: lb://forum-service
+          predicates:
+            - Path=/api/forum/**
+          filters:
+            - StripPrefix=1
 
 security:
   jwt:
