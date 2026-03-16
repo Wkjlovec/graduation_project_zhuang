@@ -6,15 +6,18 @@ import com.graduation.forum.dto.CreateCommentRequest;
 import com.graduation.forum.dto.CreatePostRequest;
 import com.graduation.forum.dto.PostDetailResponse;
 import com.graduation.forum.dto.PostSummaryResponse;
+import com.graduation.forum.dto.UpdatePostRequest;
 import com.graduation.forum.security.RequestUser;
 import com.graduation.forum.security.RequestUserResolver;
 import com.graduation.forum.service.ForumService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,6 +52,23 @@ public class ForumController {
         return ApiResponse.ok(forumService.createPost(request, user));
     }
 
+    @PutMapping("/{postId}")
+    public ApiResponse<PostSummaryResponse> update(
+            @PathVariable Long postId,
+            @Valid @RequestBody UpdatePostRequest request,
+            HttpServletRequest httpServletRequest
+    ) {
+        RequestUser user = requestUserResolver.resolve(httpServletRequest);
+        return ApiResponse.ok(forumService.updatePost(postId, request, user));
+    }
+
+    @DeleteMapping("/{postId}")
+    public ApiResponse<Void> deletePost(@PathVariable Long postId, HttpServletRequest httpServletRequest) {
+        RequestUser user = requestUserResolver.resolve(httpServletRequest);
+        forumService.deletePost(postId, user);
+        return ApiResponse.ok(null);
+    }
+
     @GetMapping("/{postId}")
     public ApiResponse<PostDetailResponse> detail(@PathVariable Long postId) {
         return ApiResponse.ok(forumService.getPostDetail(postId));
@@ -62,6 +82,17 @@ public class ForumController {
     ) {
         RequestUser user = requestUserResolver.resolve(httpServletRequest);
         return ApiResponse.ok(forumService.addComment(postId, request, user));
+    }
+
+    @DeleteMapping("/{postId}/comments/{commentId}")
+    public ApiResponse<Void> deleteComment(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            HttpServletRequest httpServletRequest
+    ) {
+        RequestUser user = requestUserResolver.resolve(httpServletRequest);
+        forumService.deleteComment(postId, commentId, user);
+        return ApiResponse.ok(null);
     }
 
     @PostMapping("/{postId}/like")

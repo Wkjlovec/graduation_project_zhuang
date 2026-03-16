@@ -122,10 +122,15 @@ npm run dev
 - 个人信息：`GET /api/users/me`
 - 帖子列表：`GET /api/forum/posts`
 - 发布帖子：`POST /api/forum/posts`
+- 编辑帖子：`PUT /api/forum/posts/{id}`
+- 删除帖子：`DELETE /api/forum/posts/{id}`
 - 帖子详情：`GET /api/forum/posts/{id}`
 - 发表评论：`POST /api/forum/posts/{id}/comments`
+- 删除评论：`DELETE /api/forum/posts/{id}/comments/{commentId}`
 - 点赞：`POST /api/forum/posts/{id}/like`
 
 鉴权规则：
 - 匿名可访问：登录/注册、帖子列表、帖子详情
-- 需要登录：个人信息、发帖、评论、点赞
+- 需要登录：个人信息、发帖、编辑/删除帖子、评论、删除评论、点赞
+- 权限规则：帖子仅作者可编辑/删除；评论支持评论作者或帖子作者删除
+- 点赞规则：同一用户对同一帖子仅可点赞一次
