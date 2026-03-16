@@ -24,7 +24,6 @@ deploy/
   check-prerequisites.sh
   scripts/start-infra.sh
   scripts/verify-infra.sh
-  mysql/init/01-init-databases.sql
   nginx/
 docs/
 ```
@@ -38,6 +37,7 @@ docs/
 - **Nacos**：微服务注册与配置中心
 - **MySQL 8.4**：业务数据库
 - **Redis 7.4**：缓存与会话
+- **数据持久化卷**：MySQL / Redis / Nacos 已持久化
 
 ### 服务端口（默认）
 
@@ -82,6 +82,11 @@ cp .env.example .env
 > 说明：`.env` 用来放本地参数（端口、密码）。  
 > 你可以先不改，直接用默认值跑起来。
 
+默认业务库参数（可在 `.env` 修改）：
+- `MYSQL_APP_DATABASE=forum_system`
+- `MYSQL_APP_USER=forum_user`
+- `MYSQL_APP_PASSWORD=forum_pass_123`
+
 ### 4.3 启动基础设施
 
 ```bash
@@ -107,9 +112,9 @@ docker compose ps
 2) MySQL 连接信息（给后端服务用）：
 - Host: `localhost`
 - Port: `3306`
-- User: `forum_user`
-- Password: `forum_pass_123`
-- Database: `forum_system`
+- User: `.env` 中的 `MYSQL_APP_USER`
+- Password: `.env` 中的 `MYSQL_APP_PASSWORD`
+- Database: `.env` 中的 `MYSQL_APP_DATABASE`
 
 3) Redis 连接信息（给后端服务用）：
 - Host: `localhost`
@@ -136,6 +141,8 @@ docker compose down
 ```bash
 docker compose down -v
 ```
+
+> 注意：如果你修改了 `.env` 里的 MySQL 数据库名/账号/密码，且容器已经初始化过一次，需要执行 `docker compose down -v` 后重启，新的参数才会生效。
 
 ### 启动前检查脚本（可选）
 
