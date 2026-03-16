@@ -44,17 +44,32 @@ docs/
 
 ---
 
-## 3. 零基础启动指南
+## 3. 前置条件（零基础必看）
+
+你需要先安装并启动 Docker（Windows/Mac 推荐 Docker Desktop，Linux 推荐 Docker Engine）。
+
+检查方式：
+
+```bash
+docker --version
+docker compose version
+```
+
+如果提示 `command not found`，说明 Docker 尚未安装完成，先安装再继续。
+
+---
+
+## 4. 零基础启动指南
 
 下面每一条都可以直接复制执行。
 
-### 3.1 进入部署目录
+### 4.1 进入部署目录
 
 ```bash
 cd /workspace/deploy
 ```
 
-### 3.2 准备环境变量文件
+### 4.2 准备环境变量文件
 
 ```bash
 cp .env.example .env
@@ -63,13 +78,13 @@ cp .env.example .env
 > 说明：`.env` 用来放本地参数（端口、密码）。  
 > 你可以先不改，直接用默认值跑起来。
 
-### 3.3 启动基础设施
+### 4.3 启动基础设施
 
 ```bash
 docker compose up -d
 ```
 
-### 3.4 查看容器状态
+### 4.4 查看容器状态
 
 ```bash
 docker compose ps
@@ -80,7 +95,7 @@ docker compose ps
 - `forum-redis` 状态为 `healthy`
 - `forum-nacos` 状态为 `running`
 
-### 3.5 验证是否可访问
+### 4.5 验证是否可访问
 
 1) 浏览器打开 Nacos 控制台：  
 `http://localhost:8848/nacos`
@@ -98,7 +113,7 @@ docker compose ps
 
 ---
 
-## 4. 常用命令
+## 5. 常用命令
 
 ### 停止服务
 
@@ -110,4 +125,11 @@ docker compose down
 
 ```bash
 docker compose down -v
+```
+
+### 启动前检查脚本（可选）
+
+```bash
+cd /workspace/deploy
+bash check-prerequisites.sh
 ```
