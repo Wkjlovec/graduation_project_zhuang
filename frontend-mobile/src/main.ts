@@ -1,0 +1,24 @@
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import { Button, Cell, CellGroup, Field, Form, NavBar, List, Tag, Divider, Empty, FloatingBubble, Toast } from "vant";
+import "vant/lib/index.css";
+import App from "./App.vue";
+import router from "./router";
+import "./styles.css";
+
+const app = createApp(App);
+app.use(createPinia());
+app.use(router);
+app.use(Button);
+app.use(Cell);
+app.use(CellGroup);
+app.use(Field);
+app.use(Form);
+app.use(NavBar);
+app.use(List);
+app.use(Tag);
+app.use(Divider);
+app.use(Empty);
+app.use(FloatingBubble);
+app.use(Toast);
+app.mount("#app");
