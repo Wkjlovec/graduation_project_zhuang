@@ -21,6 +21,9 @@ frontend-mobile/
 deploy/
   docker-compose.yml
   .env.example
+  check-prerequisites.sh
+  scripts/start-infra.sh
+  scripts/verify-infra.sh
   mysql/init/01-init-databases.sql
   nginx/
 docs/
@@ -47,6 +50,7 @@ docs/
 ## 3. 前置条件（零基础必看）
 
 你需要先安装并启动 Docker（Windows/Mac 推荐 Docker Desktop，Linux 推荐 Docker Engine）。
+如果你安装的是 **Docker Desktop**，通常已经包含 Docker Engine 与 Docker Compose，不需要额外单独安装 Engine。
 
 检查方式：
 
@@ -81,7 +85,7 @@ cp .env.example .env
 ### 4.3 启动基础设施
 
 ```bash
-docker compose up -d
+bash scripts/start-infra.sh
 ```
 
 ### 4.4 查看容器状态
@@ -110,6 +114,12 @@ docker compose ps
 3) Redis 连接信息（给后端服务用）：
 - Host: `localhost`
 - Port: `6379`
+
+你也可以执行自动化验收：
+
+```bash
+bash scripts/verify-infra.sh
+```
 
 ---
 
