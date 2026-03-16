@@ -4,10 +4,26 @@ server:
 spring:
   application:
     name: auth-user-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_APP_DATABASE:forum_system}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: ${MYSQL_APP_USER:forum_user}
+    password: ${MYSQL_APP_PASSWORD:forum_pass_123}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
   cloud:
     nacos:
       discovery:
         server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:REPLACE_WITH_AT_LEAST_32_CHAR_SECRET_KEY}
+    expire-seconds: ${JWT_EXPIRE_SECONDS:86400}
 
 management:
   endpoints:

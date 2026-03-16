@@ -1,0 +1,101 @@
+package com.graduation.gateway.filter;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.graduation.common.ApiResponse;
+import com.graduation.common.ServiceConstants;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+@Component
+public class JwtRelayFilter implements GlobalFilter, Ordered {
+
+    private final SecretKey secretKey;
+    private final ObjectMapper objectMapper;
+    private final List<String> permitPathPrefixes = List.of(
+            "/api/auth/",
+            "/api/users/ping",
+            "/actuator/"
+    );
+
+    public JwtRelayFilter(@Value("${security.jwt.secret}") String secret, ObjectMapper objectMapper) {
+        if (secret.length() < 32) {
+            throw new IllegalArgumentException("security.jwt.secret must be at least 32 characters");
+        }
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        String path = exchange.getRequest().getURI().getPath();
+        if (isPermitPath(path)) {
+            return chain.filter(exchange);
+        }
+        String authorization = exchange.getRequest().getHeaders().getFirst(ServiceConstants.HEADER_AUTHORIZATION);
+        if (authorization == null || !authorization.startsWith(ServiceConstants.TOKEN_PREFIX)) {
+            return writeUnauthorized(exchange.getResponse(), "missing or invalid Authorization header");
+        }
+        String token = authorization.substring(ServiceConstants.TOKEN_PREFIX.length());
+        try {
+            Claims claims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+            Long userId = claims.get("uid", Long.class);
+            String username = claims.getSubject();
+            ServerWebExchange mutated = exchange.mutate()
+                    .request(builder -> builder.headers(headers -> {
+                        headers.set(ServiceConstants.HEADER_USER_ID, userId == null ? "" : userId.toString());
+                        headers.set(ServiceConstants.HEADER_USERNAME, username == null ? "" : username);
+                    }))
+                    .build();
+            return chain.filter(mutated);
+        } catch (JwtException ex) {
+            return writeUnauthorized(exchange.getResponse(), "token verify failed");
+        }
+    }
+
+    @Override
+    public int getOrder() {
+        return -100;
+    }
+
+    private boolean isPermitPath(String path) {
+        for (String prefix : permitPathPrefixes) {
+            if (path.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Mono<Void> writeUnauthorized(ServerHttpResponse response, String message) {
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        byte[] body = toBytes(ApiResponse.fail(4010, message));
+        DataBuffer buffer = response.bufferFactory().wrap(body);
+        return response.writeWith(Mono.just(buffer));
+    }
+
+    private byte[] toBytes(ApiResponse<Void> response) {
+        try {
+            return objectMapper.writeValueAsBytes(response);
+        } catch (JsonProcessingException ex) {
+            throw new IllegalStateException("failed to serialize unauthorized response", ex);
+        }
+    }
+}

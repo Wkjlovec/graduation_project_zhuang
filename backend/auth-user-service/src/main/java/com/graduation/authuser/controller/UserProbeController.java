@@ -1,6 +1,7 @@
 package com.graduation.authuser.controller;
 
 import com.graduation.common.ServiceConstants;
+import com.graduation.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -17,13 +18,14 @@ public class UserProbeController {
     private String serviceName;
 
     @GetMapping("/ping")
-    public Map<String, String> ping(HttpServletRequest request) {
+    public ApiResponse<Map<String, String>> ping(HttpServletRequest request) {
         String requestId = request.getHeader(ServiceConstants.HEADER_REQUEST_ID);
-        return Map.of(
+        Map<String, String> payload = Map.of(
                 "message", "auth-user-service is reachable",
                 "service", serviceName,
                 "time", OffsetDateTime.now().toString(),
                 "requestId", requestId == null ? "" : requestId
         );
+        return ApiResponse.ok(payload);
     }
 }

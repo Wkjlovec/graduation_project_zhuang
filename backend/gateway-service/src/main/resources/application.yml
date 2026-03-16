@@ -14,12 +14,22 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
+        - id: auth-route
+          uri: lb://auth-user-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
         - id: auth-user-route
           uri: lb://auth-user-service
           predicates:
             - Path=/api/users/**
           filters:
             - StripPrefix=1
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:REPLACE_WITH_AT_LEAST_32_CHAR_SECRET_KEY}
 
 management:
   endpoints:
