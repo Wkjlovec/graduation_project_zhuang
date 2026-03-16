@@ -95,7 +95,10 @@ public class ForumService {
 
     @Transactional
     @CacheEvict(cacheNames = {CACHE_POST_DETAIL, CACHE_POST_LIST}, allEntries = true)
-    public PostSummaryResponse likePost(Long postId) {
+    public PostSummaryResponse likePost(Long postId, RequestUser user) {
+        if (user.userId() <= 0) {
+            throw new ForumBusinessException(4013, "invalid user id");
+        }
         ForumPost post = loadPost(postId);
         post.setLikeCount(post.getLikeCount() + 1);
         ForumPost saved = forumPostRepository.save(post);

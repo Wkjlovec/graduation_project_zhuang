@@ -64,6 +64,10 @@ bash scripts/verify-infra.sh
 - MySQL: `3306`
 - Redis: `6379`
 
+关键环境变量：
+- `JWT_SECRET`：网关与鉴权服务必须使用同一个值
+- `JWT_EXPIRE_SECONDS`：JWT 过期时间（秒）
+
 ---
 
 ## 启动后端微服务
@@ -121,3 +125,7 @@ npm run dev
 - 帖子详情：`GET /api/forum/posts/{id}`
 - 发表评论：`POST /api/forum/posts/{id}/comments`
 - 点赞：`POST /api/forum/posts/{id}/like`
+
+鉴权规则：
+- 匿名可访问：登录/注册、帖子列表、帖子详情
+- 需要登录：个人信息、发帖、评论、点赞

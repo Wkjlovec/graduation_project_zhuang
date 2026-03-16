@@ -16,8 +16,10 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -31,6 +33,7 @@ public class JwtRelayFilter implements GlobalFilter, Ordered {
     private final List<String> permitPathPrefixes = List.of(
             "/api/auth/",
             "/api/users/ping",
+            "/actuator",
             "/actuator/"
     );
 
@@ -44,11 +47,11 @@ public class JwtRelayFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String path = exchange.getRequest().getURI().getPath();
-        if (isPermitPath(path)) {
+        ServerHttpRequest request = exchange.getRequest();
+        if (isPermitRequest(request)) {
             return chain.filter(exchange);
         }
-        String authorization = exchange.getRequest().getHeaders().getFirst(ServiceConstants.HEADER_AUTHORIZATION);
+        String authorization = request.getHeaders().getFirst(ServiceConstants.HEADER_AUTHORIZATION);
         if (authorization == null || !authorization.startsWith(ServiceConstants.TOKEN_PREFIX)) {
             return writeUnauthorized(exchange.getResponse(), "missing or invalid Authorization header");
         }
@@ -74,13 +77,24 @@ public class JwtRelayFilter implements GlobalFilter, Ordered {
         return -100;
     }
 
-    private boolean isPermitPath(String path) {
+    private boolean isPermitRequest(ServerHttpRequest request) {
+        if (HttpMethod.OPTIONS.equals(request.getMethod())) {
+            return true;
+        }
+        String path = request.getURI().getPath();
+        if (HttpMethod.GET.equals(request.getMethod()) && isForumReadPath(path)) {
+            return true;
+        }
         for (String prefix : permitPathPrefixes) {
             if (path.startsWith(prefix)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isForumReadPath(String path) {
+        return "/api/forum/posts".equals(path) || path.startsWith("/api/forum/posts/");
     }
 
     private Mono<Void> writeUnauthorized(ServerHttpResponse response, String message) {

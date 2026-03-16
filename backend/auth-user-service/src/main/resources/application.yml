@@ -22,7 +22,7 @@ spring:
 
 security:
   jwt:
-    secret: ${JWT_SECRET:REPLACE_WITH_AT_LEAST_32_CHAR_SECRET_KEY}
+    secret: ${JWT_SECRET:dev_local_jwt_secret_key_at_least_32_chars_12345}
     expire-seconds: ${JWT_EXPIRE_SECONDS:86400}
 
 management:

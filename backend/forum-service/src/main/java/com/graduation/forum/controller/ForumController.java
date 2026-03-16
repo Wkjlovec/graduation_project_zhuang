@@ -65,7 +65,8 @@ public class ForumController {
     }
 
     @PostMapping("/{postId}/like")
-    public ApiResponse<PostSummaryResponse> like(@PathVariable Long postId) {
-        return ApiResponse.ok(forumService.likePost(postId));
+    public ApiResponse<PostSummaryResponse> like(@PathVariable Long postId, HttpServletRequest httpServletRequest) {
+        RequestUser user = requestUserResolver.resolve(httpServletRequest);
+        return ApiResponse.ok(forumService.likePost(postId, user));
     }
 }
