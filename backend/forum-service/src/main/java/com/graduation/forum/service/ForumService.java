@@ -12,6 +12,8 @@ import com.graduation.forum.repository.ForumPostRepository;
 import com.graduation.forum.repository.PostCommentRepository;
 import com.graduation.forum.security.RequestUser;
 import java.util.List;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ForumService {
 
     private static final int PREVIEW_MAX_LENGTH = 120;
+    public static final String CACHE_POST_LIST = "forum:post:list";
+    public static final String CACHE_POST_DETAIL = "forum:post:detail";
 
     private final ForumPostRepository forumPostRepository;
     private final PostCommentRepository postCommentRepository;
@@ -32,6 +36,7 @@ public class ForumService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = CACHE_POST_LIST, allEntries = true)
     public PostSummaryResponse createPost(CreatePostRequest request, RequestUser user) {
         ForumPost post = new ForumPost();
         post.setTitle(request.title());
@@ -43,12 +48,14 @@ public class ForumService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CACHE_POST_LIST, key = "#page + ':' + #size")
     public List<PostSummaryResponse> listPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         return forumPostRepository.findAll(pageable).stream().map(this::toSummary).toList();
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = CACHE_POST_DETAIL, key = "#postId")
     public PostDetailResponse getPostDetail(Long postId) {
         ForumPost post = loadPost(postId);
         List<CommentResponse> comments = postCommentRepository.findByPostIdOrderByCreatedAtAsc(postId)
@@ -74,6 +81,7 @@ public class ForumService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {CACHE_POST_DETAIL, CACHE_POST_LIST}, allEntries = true)
     public CommentResponse addComment(Long postId, CreateCommentRequest request, RequestUser user) {
         loadPost(postId);
         PostComment comment = new PostComment();
@@ -86,6 +94,7 @@ public class ForumService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {CACHE_POST_DETAIL, CACHE_POST_LIST}, allEntries = true)
     public PostSummaryResponse likePost(Long postId) {
         ForumPost post = loadPost(postId);
         post.setLikeCount(post.getLikeCount() + 1);
