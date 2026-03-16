@@ -5,6 +5,8 @@ public record AuthTokenResponse(
         String username,
         String nickname,
         String token,
-        String tokenType
+        String tokenType,
+        String refreshToken,
+        String refreshTokenType
 ) {
 }

@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -30,6 +31,7 @@ public class JwtRelayFilter implements GlobalFilter, Ordered {
 
     private final SecretKey secretKey;
     private final ObjectMapper objectMapper;
+    private final ReactiveStringRedisTemplate redisTemplate;
     private final List<String> permitPathPrefixes = List.of(
             "/api/auth/",
             "/api/users/ping",
@@ -37,12 +39,17 @@ public class JwtRelayFilter implements GlobalFilter, Ordered {
             "/actuator/"
     );
 
-    public JwtRelayFilter(@Value("${security.jwt.secret}") String secret, ObjectMapper objectMapper) {
+    public JwtRelayFilter(
+            @Value("${security.jwt.secret}") String secret,
+            ObjectMapper objectMapper,
+            ReactiveStringRedisTemplate redisTemplate
+    ) {
         if (secret.length() < 32) {
             throw new IllegalArgumentException("security.jwt.secret must be at least 32 characters");
         }
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.objectMapper = objectMapper;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -60,14 +67,27 @@ public class JwtRelayFilter implements GlobalFilter, Ordered {
             Claims claims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
             Long userId = claims.get("uid", Long.class);
             String username = claims.getSubject();
-            ServerWebExchange mutated = exchange.mutate()
-                    .request(builder -> builder.headers(headers -> {
-                        headers.set(ServiceConstants.HEADER_USER_ID, userId == null ? "" : userId.toString());
-                        headers.set(ServiceConstants.HEADER_USERNAME, username == null ? "" : username);
-                    }))
-                    .build();
-            return chain.filter(mutated);
-        } catch (JwtException ex) {
+            String sessionId = claims.get("sid", String.class);
+            String tokenType = claims.get("typ", String.class);
+            if (!isValidAccessClaims(userId, username, sessionId, tokenType)) {
+                return writeUnauthorized(exchange.getResponse(), "invalid token claims");
+            }
+            String sessionKey = ServiceConstants.REDIS_KEY_AUTH_SESSION_PREFIX + sessionId;
+            return redisTemplate.opsForValue().get(sessionKey)
+                    .flatMap(storedUserId -> {
+                        if (!storedUserId.equals(String.valueOf(userId))) {
+                            return writeUnauthorized(exchange.getResponse(), "session invalidated");
+                        }
+                        ServerWebExchange mutated = exchange.mutate()
+                                .request(builder -> builder.headers(headers -> {
+                                    headers.set(ServiceConstants.HEADER_USER_ID, userId.toString());
+                                    headers.set(ServiceConstants.HEADER_USERNAME, username);
+                                }))
+                                .build();
+                        return chain.filter(mutated);
+                    })
+                    .switchIfEmpty(writeUnauthorized(exchange.getResponse(), "session invalidated"));
+        } catch (JwtException | IllegalArgumentException ex) {
             return writeUnauthorized(exchange.getResponse(), "token verify failed");
         }
     }
@@ -95,6 +115,15 @@ public class JwtRelayFilter implements GlobalFilter, Ordered {
 
     private boolean isForumReadPath(String path) {
         return "/api/forum/posts".equals(path) || path.startsWith("/api/forum/posts/");
+    }
+
+    private boolean isValidAccessClaims(Long userId, String username, String sessionId, String tokenType) {
+        return userId != null
+                && username != null
+                && !username.isBlank()
+                && sessionId != null
+                && !sessionId.isBlank()
+                && ServiceConstants.JWT_TYPE_ACCESS.equals(tokenType);
     }
 
     private Mono<Void> writeUnauthorized(ServerHttpResponse response, String message) {

@@ -2,6 +2,7 @@ package com.graduation.authuser.security;
 
 import com.graduation.common.ApiResponse;
 import com.graduation.common.ServiceConstants;
+import com.graduation.authuser.service.AuthSessionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -22,16 +23,19 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final AuthSessionService authSessionService;
     private final ObjectMapper objectMapper;
     private final List<String> permitPathPrefixes = List.of(
             "/auth/register",
             "/auth/login",
+            "/auth/refresh",
             "/users/ping",
             "/actuator"
     );
 
-    public JwtAuthenticationFilter(JwtService jwtService, ObjectMapper objectMapper) {
+    public JwtAuthenticationFilter(JwtService jwtService, AuthSessionService authSessionService, ObjectMapper objectMapper) {
         this.jwtService = jwtService;
+        this.authSessionService = authSessionService;
         this.objectMapper = objectMapper;
     }
 
@@ -55,13 +59,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authorization.substring(ServiceConstants.TOKEN_PREFIX.length());
         try {
-            AuthenticatedUser user = jwtService.parse(token);
+            AuthenticatedUser user = jwtService.parseAccessToken(token);
+            if (!authSessionService.isSessionActive(user.sessionId(), user.userId())) {
+                writeUnauthorized(response, "session invalidated");
+                return;
+            }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     user, null, AuthorityUtils.NO_AUTHORITIES
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
-        } catch (JwtException ex) {
+        } catch (JwtException | IllegalArgumentException ex) {
             writeUnauthorized(response, "token verify failed");
         }
     }

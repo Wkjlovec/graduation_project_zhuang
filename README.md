@@ -119,6 +119,8 @@ npm run dev
 
 - 注册：`POST /api/auth/register`
 - 登录：`POST /api/auth/login`
+- 刷新令牌：`POST /api/auth/refresh`
+- 退出登录：`POST /api/auth/logout`
 - 个人信息：`GET /api/users/me`
 - 帖子列表：`GET /api/forum/posts`
 - 发布帖子：`POST /api/forum/posts`
@@ -134,3 +136,9 @@ npm run dev
 - 需要登录：个人信息、发帖、编辑/删除帖子、评论、删除评论、点赞
 - 权限规则：帖子仅作者可编辑/删除；评论支持评论作者或帖子作者删除
 - 点赞规则：同一用户对同一帖子仅可点赞一次
+
+基础安全（毕设可交付版）：
+- Access Token + Refresh Token 双令牌
+- 刷新令牌轮转（refresh 后旧会话失效）
+- 登出后会话立即失效（网关与鉴权服务都会校验 Redis 会话）
+- 登录失败次数锁定（按用户名+来源IP进行短时锁定）
