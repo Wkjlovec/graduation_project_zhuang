@@ -14,15 +14,15 @@
         <el-input v-model="form.nickname" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleLogin">登录</el-button>
-        <el-button @click="handleRegister">注册</el-button>
+        <el-button type="primary" :loading="loginLoading" @click="handleLogin">登录</el-button>
+        <el-button :loading="registerLoading" @click="handleRegister">注册</el-button>
       </el-form-item>
     </el-form>
   </el-card>
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { login, register } from "../api/auth";
@@ -36,18 +36,34 @@ const form = reactive({
   password: "",
   nickname: ""
 });
+const loginLoading = ref(false);
+const registerLoading = ref(false);
 
 async function handleLogin() {
-  const payload = await login(form.username, form.password);
-  authStore.setToken(payload.token);
-  ElMessage.success("登录成功");
-  router.push("/posts");
+  loginLoading.value = true;
+  try {
+    const payload = await login(form.username, form.password);
+    authStore.setToken(payload.token);
+    ElMessage.success("登录成功");
+    router.push("/posts");
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "登录失败");
+  } finally {
+    loginLoading.value = false;
+  }
 }
 
 async function handleRegister() {
-  const payload = await register(form.username, form.password, form.nickname);
-  authStore.setToken(payload.token);
-  ElMessage.success("注册成功并已登录");
-  router.push("/posts");
+  registerLoading.value = true;
+  try {
+    const payload = await register(form.username, form.password, form.nickname);
+    authStore.setToken(payload.token);
+    ElMessage.success("注册成功并已登录");
+    router.push("/posts");
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "注册失败");
+  } finally {
+    registerLoading.value = false;
+  }
 }
 </script>

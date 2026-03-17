@@ -40,9 +40,13 @@ export interface SectionItem {
   description: string;
 }
 
-export async function listPosts(sectionId?: number) {
+export async function listPosts(sectionId?: number, page = 0, size = 10) {
   const response = await http.get<ApiResponse<PostSummary[]>>("/api/forum/posts", {
-    params: sectionId ? { sectionId } : {}
+    params: {
+      page,
+      size,
+      ...(sectionId ? { sectionId } : {})
+    }
   });
   return response.data.data;
 }
@@ -93,10 +97,12 @@ export async function likePost(postId: string) {
   return response.data.data;
 }
 
-export async function searchPosts(keyword: string, sectionId?: number) {
+export async function searchPosts(keyword: string, sectionId?: number, page = 0, size = 10) {
   const response = await http.get<ApiResponse<PostSummary[]>>("/api/search/posts", {
     params: {
       keyword,
+      page,
+      size,
       ...(sectionId ? { sectionId } : {})
     }
   });

@@ -1,11 +1,22 @@
 <template>
-  <div class="page" v-if="detail">
-    <van-nav-bar :title="detail.title" left-arrow @click-left="goBack" />
+  <div class="page">
+    <van-nav-bar :title="detail?.title || '帖子详情'" left-arrow @click-left="goBack" />
+    <div v-if="detailLoading" class="loading-box">
+      <van-loading size="24px" type="spinner" /> 加载中...
+    </div>
+    <van-cell-group v-else-if="detailError" inset>
+      <van-cell title="加载失败" :label="detailError">
+        <template #right-icon>
+          <van-button size="mini" type="primary" plain @click="loadDetail">重试</van-button>
+        </template>
+      </van-cell>
+    </van-cell-group>
+    <template v-else-if="detail">
     <van-cell-group inset>
       <van-cell :title="detail.authorName + ' · ' + detail.sectionName" :label="detail.content + (detail.editedHint ? '\n' + detail.editedHint : '')" />
       <van-cell title="点赞数" :value="String(detail.likeCount)">
         <template #right-icon>
-          <van-button size="small" type="primary" @click="handleLike">点赞</van-button>
+          <van-button size="small" type="primary" :loading="actionLoading" @click="handleLike">点赞</van-button>
         </template>
       </van-cell>
     </van-cell-group>
@@ -17,7 +28,7 @@
     </div>
     <van-field v-model="comment" label="评论" placeholder="说点什么..." />
     <div style="padding: 8px 0 16px;">
-      <van-button block type="primary" @click="handleComment">发送评论</van-button>
+      <van-button block type="primary" :loading="actionLoading" @click="handleComment">发送评论</van-button>
     </div>
     <van-cell-group inset>
       <van-cell
@@ -31,6 +42,7 @@
         </template>
       </van-cell>
     </van-cell-group>
+    </template>
   </div>
 </template>
 
@@ -45,22 +57,47 @@ const router = useRouter();
 const detail = ref<PostDetail | null>(null);
 const comment = ref("");
 const replyToCommentId = ref<number | undefined>(undefined);
+const detailLoading = ref(false);
+const actionLoading = ref(false);
+const detailError = ref("");
 
 async function loadDetail() {
-  detail.value = await getPostDetail(String(route.params.id));
+  detailLoading.value = true;
+  detailError.value = "";
+  try {
+    detail.value = await getPostDetail(String(route.params.id));
+  } catch (error) {
+    detailError.value = error instanceof Error ? error.message : "加载失败";
+  } finally {
+    detailLoading.value = false;
+  }
 }
 
 async function handleLike() {
-  await likePost(String(route.params.id));
-  await loadDetail();
+  actionLoading.value = true;
+  try {
+    await likePost(String(route.params.id));
+    await loadDetail();
+  } catch (error) {
+    showToast(error instanceof Error ? error.message : "点赞失败");
+  } finally {
+    actionLoading.value = false;
+  }
 }
 
 async function handleComment() {
-  await addComment(String(route.params.id), comment.value, replyToCommentId.value);
-  comment.value = "";
-  replyToCommentId.value = undefined;
-  showToast("评论成功");
-  await loadDetail();
+  actionLoading.value = true;
+  try {
+    await addComment(String(route.params.id), comment.value, replyToCommentId.value);
+    comment.value = "";
+    replyToCommentId.value = undefined;
+    showToast("评论成功");
+    await loadDetail();
+  } catch (error) {
+    showToast(error instanceof Error ? error.message : "评论失败");
+  } finally {
+    actionLoading.value = false;
+  }
 }
 
 function goBack() {
@@ -77,3 +114,11 @@ function clearReply() {
 
 void loadDetail();
 </script>
+
+<style scoped>
+.loading-box {
+  padding: 16px;
+  text-align: center;
+  color: #666;
+}
+</style>

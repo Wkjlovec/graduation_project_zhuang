@@ -16,7 +16,7 @@
         <el-input v-model="form.content" type="textarea" :rows="10" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleCreate">发布</el-button>
+        <el-button type="primary" :loading="submitting" @click="handleCreate">发布</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -30,6 +30,7 @@ import { createPost, listSections, type SectionItem } from "../api/forum";
 
 const router = useRouter();
 const sections = ref<SectionItem[]>([]);
+const submitting = ref(false);
 const form = reactive({
   sectionId: 0,
   title: "",
@@ -37,15 +38,26 @@ const form = reactive({
 });
 
 async function handleCreate() {
-  const post = await createPost(form.title, form.content, form.sectionId);
-  ElMessage.success("发布成功");
-  router.push(`/posts/${post.postId}`);
+  submitting.value = true;
+  try {
+    const post = await createPost(form.title, form.content, form.sectionId);
+    ElMessage.success("发布成功");
+    router.push(`/posts/${post.postId}`);
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "发布失败");
+  } finally {
+    submitting.value = false;
+  }
 }
 
 onMounted(async () => {
-  sections.value = await listSections();
-  if (sections.value.length > 0) {
-    form.sectionId = sections.value[0].sectionId;
+  try {
+    sections.value = await listSections();
+    if (sections.value.length > 0) {
+      form.sectionId = sections.value[0].sectionId;
+    }
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "加载分区失败");
   }
 });
 </script>
