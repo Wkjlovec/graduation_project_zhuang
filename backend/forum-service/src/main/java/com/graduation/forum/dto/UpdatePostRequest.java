@@ -9,6 +9,7 @@ public record UpdatePostRequest(
         String title,
         @NotBlank
         @Size(min = 2, max = 5000)
-        String content
+        String content,
+        Long sectionId
 ) {
 }

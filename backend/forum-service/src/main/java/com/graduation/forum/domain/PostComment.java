@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 
@@ -29,12 +30,25 @@ public class PostComment {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column
+    private Long parentCommentId;
+
     @Column(nullable = false)
     private OffsetDateTime createdAt;
 
+    @Column(nullable = false)
+    private OffsetDateTime updatedAt;
+
     @PrePersist
     public void prePersist() {
-        this.createdAt = OffsetDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = OffsetDateTime.now();
     }
 
     public Long getId() {
@@ -75,5 +89,17 @@ public class PostComment {
 
     public OffsetDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Long getParentCommentId() {
+        return parentCommentId;
+    }
+
+    public void setParentCommentId(Long parentCommentId) {
+        this.parentCommentId = parentCommentId;
     }
 }

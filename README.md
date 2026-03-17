@@ -124,12 +124,14 @@ npm run dev
 - 刷新令牌：`POST /api/auth/refresh`
 - 退出登录：`POST /api/auth/logout`
 - 个人信息：`GET /api/users/me`
+- 分区列表：`GET /api/forum/sections`
 - 帖子列表：`GET /api/forum/posts`
 - 发布帖子：`POST /api/forum/posts`
 - 编辑帖子：`PUT /api/forum/posts/{id}`
 - 删除帖子：`DELETE /api/forum/posts/{id}`
 - 帖子详情：`GET /api/forum/posts/{id}`
 - 发表评论：`POST /api/forum/posts/{id}/comments`
+- 编辑评论：`PUT /api/forum/posts/{id}/comments/{commentId}`
 - 删除评论：`DELETE /api/forum/posts/{id}/comments/{commentId}`
 - 点赞：`POST /api/forum/posts/{id}/like`
 
@@ -138,6 +140,8 @@ npm run dev
 - 需要登录：个人信息、发帖、编辑/删除帖子、评论、删除评论、点赞
 - 权限规则：帖子仅作者可编辑/删除；评论支持评论作者或帖子作者删除
 - 点赞规则：同一用户对同一帖子仅可点赞一次
+- 分区规则：发帖必须选择分区；列表支持按 `sectionId` 过滤
+- 评论规则：支持二级评论（回复一级评论）；评论与帖子会返回简单编辑提示（如“该消息编辑于xx分钟前”）
 
 基础安全（毕设可交付版）：
 - Access Token + Refresh Token 双令牌

@@ -114,7 +114,9 @@ public class JwtRelayFilter implements GlobalFilter, Ordered {
     }
 
     private boolean isForumReadPath(String path) {
-        return "/api/forum/posts".equals(path) || path.startsWith("/api/forum/posts/");
+        return "/api/forum/posts".equals(path)
+                || path.startsWith("/api/forum/posts/")
+                || "/api/forum/sections".equals(path);
     }
 
     private boolean isValidAccessClaims(Long userId, String username, String sessionId, String tokenType) {

@@ -31,6 +31,12 @@ public class ForumPost {
     private String authorName;
 
     @Column(nullable = false)
+    private Long sectionId;
+
+    @Column(nullable = false, length = 64)
+    private String sectionName;
+
+    @Column(nullable = false)
     private Integer likeCount = 0;
 
     @Column(nullable = false)
@@ -97,5 +103,25 @@ public class ForumPost {
 
     public OffsetDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Long getSectionId() {
+        return sectionId;
+    }
+
+    public void setSectionId(Long sectionId) {
+        this.sectionId = sectionId;
+    }
+
+    public String getSectionName() {
+        return sectionName;
+    }
+
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
     }
 }

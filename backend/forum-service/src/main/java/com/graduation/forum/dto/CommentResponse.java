@@ -7,6 +7,8 @@ public record CommentResponse(
         Long userId,
         String username,
         String content,
-        OffsetDateTime createdAt
+        Long parentCommentId,
+        OffsetDateTime createdAt,
+        String editedHint
 ) {
 }

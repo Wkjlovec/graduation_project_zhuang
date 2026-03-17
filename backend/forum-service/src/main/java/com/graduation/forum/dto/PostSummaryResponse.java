@@ -6,9 +6,12 @@ public record PostSummaryResponse(
         Long postId,
         String title,
         String contentPreview,
+        Long sectionId,
+        String sectionName,
         Long authorId,
         String authorName,
         Integer likeCount,
-        OffsetDateTime createdAt
+        OffsetDateTime createdAt,
+        String editedHint
 ) {
 }

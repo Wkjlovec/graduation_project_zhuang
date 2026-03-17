@@ -6,6 +6,7 @@ import com.graduation.forum.dto.CreateCommentRequest;
 import com.graduation.forum.dto.CreatePostRequest;
 import com.graduation.forum.dto.PostDetailResponse;
 import com.graduation.forum.dto.PostSummaryResponse;
+import com.graduation.forum.dto.UpdateCommentRequest;
 import com.graduation.forum.dto.UpdatePostRequest;
 import com.graduation.forum.security.RequestUser;
 import com.graduation.forum.security.RequestUserResolver;
@@ -37,10 +38,11 @@ public class ForumController {
 
     @GetMapping
     public ApiResponse<List<PostSummaryResponse>> list(
+            @RequestParam(required = false) Long sectionId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return ApiResponse.ok(forumService.listPosts(page, size));
+        return ApiResponse.ok(forumService.listPostsBySection(sectionId, page, size));
     }
 
     @PostMapping
@@ -82,6 +84,17 @@ public class ForumController {
     ) {
         RequestUser user = requestUserResolver.resolve(httpServletRequest);
         return ApiResponse.ok(forumService.addComment(postId, request, user));
+    }
+
+    @PutMapping("/{postId}/comments/{commentId}")
+    public ApiResponse<CommentResponse> updateComment(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @Valid @RequestBody UpdateCommentRequest request,
+            HttpServletRequest httpServletRequest
+    ) {
+        RequestUser user = requestUserResolver.resolve(httpServletRequest);
+        return ApiResponse.ok(forumService.updateComment(postId, commentId, request, user));
     }
 
     @DeleteMapping("/{postId}/comments/{commentId}")

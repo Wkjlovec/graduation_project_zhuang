@@ -7,10 +7,13 @@ public record PostDetailResponse(
         Long postId,
         String title,
         String content,
+        Long sectionId,
+        String sectionName,
         Long authorId,
         String authorName,
         Integer likeCount,
         OffsetDateTime createdAt,
+        String editedHint,
         List<CommentResponse> comments
 ) {
 }

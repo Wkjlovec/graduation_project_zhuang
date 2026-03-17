@@ -11,8 +11,8 @@
       <van-cell
         v-for="item in posts"
         :key="item.postId"
-        :title="item.title"
-        :label="item.contentPreview"
+        :title="item.title + ' [' + item.sectionName + ']'"
+        :label="item.contentPreview + (item.editedHint ? ' · ' + item.editedHint : '')"
         is-link
         @click="goDetail(item.postId)"
       >
