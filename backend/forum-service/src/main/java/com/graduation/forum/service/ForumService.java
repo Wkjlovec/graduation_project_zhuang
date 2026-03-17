@@ -24,6 +24,7 @@ import java.util.List;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -216,7 +217,11 @@ public class ForumService {
         PostLike postLike = new PostLike();
         postLike.setPostId(postId);
         postLike.setUserId(user.userId());
-        postLikeRepository.save(postLike);
+        try {
+            postLikeRepository.save(postLike);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ForumBusinessException(4091, "you already liked this post");
+        }
         post.setLikeCount(post.getLikeCount() + 1);
         ForumPost saved = forumPostRepository.save(post);
         return toSummary(saved);

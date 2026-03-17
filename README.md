@@ -12,6 +12,7 @@
 7. 缓存优化与测试数据（Redis Cache + DemoData）
 
 范围约束文档：`docs/scope-baseline.md`
+联调回归文档：`docs/system-regression.md`
 
 ---
 
