@@ -1,19 +1,25 @@
 import { defineStore } from "pinia";
 
-const TOKEN_KEY = "forum_pc_token";
+export const ACCESS_TOKEN_KEY = "forum_pc_token";
+export const REFRESH_TOKEN_KEY = "forum_pc_refresh_token";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    token: localStorage.getItem(TOKEN_KEY) ?? ""
+    token: localStorage.getItem(ACCESS_TOKEN_KEY) ?? "",
+    refreshToken: localStorage.getItem(REFRESH_TOKEN_KEY) ?? ""
   }),
   actions: {
-    setToken(token: string) {
+    setSession(token: string, refreshToken: string) {
       this.token = token;
-      localStorage.setItem(TOKEN_KEY, token);
+      this.refreshToken = refreshToken;
+      localStorage.setItem(ACCESS_TOKEN_KEY, token);
+      localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
     },
-    clearToken() {
+    clearSession() {
       this.token = "";
-      localStorage.removeItem(TOKEN_KEY);
+      this.refreshToken = "";
+      localStorage.removeItem(ACCESS_TOKEN_KEY);
+      localStorage.removeItem(REFRESH_TOKEN_KEY);
     }
   }
 });

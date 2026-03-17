@@ -67,7 +67,8 @@ def assert_business_code(result: HttpResult, expected_code: int, action: str) ->
         )
 
 
-def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int) -> None:
+def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int, report_file: str | None = None) -> None:
+    checkpoints: list[str] = []
     suffix = str(int(time.time() * 1000) % 1000000)
     username_a = f"qa_user_a_{suffix}"
     username_b = f"qa_user_b_{suffix}"
@@ -77,6 +78,7 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int)
     sections = assert_ok(http_json(base_url, "GET", "/api/forum/sections"), "load sections")
     if not sections:
         raise RegressionError("section list is empty")
+    checkpoints.append("分区读取")
     section_id = sections[0]["sectionId"]
 
     print("[2/10] register and login two users")
@@ -101,6 +103,7 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int)
     token_a = register_a_data["token"]
     token_b = register_b_data["token"]
     refresh_token_b = register_b_data["refreshToken"]
+    checkpoints.append("双用户注册登录")
 
     print("[3/10] full path regression: post -> comment -> search")
     post_data = assert_ok(
@@ -136,10 +139,12 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int)
     )
     if not search_data:
         raise RegressionError("search returned empty list")
+    checkpoints.append("发帖评论搜索全链路")
 
     print("[4/10] home modules regression: notification + media")
     assert_ok(http_json(base_url, "GET", "/api/notifications/home"), "notification home")
     assert_ok(http_json(base_url, "GET", "/api/media/home"), "media home")
+    checkpoints.append("通知与推荐模块")
 
     print("[5/10] unauthorized scene: create post without token")
     unauthorized = http_json(
@@ -149,10 +154,12 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int)
         {"title": "unauthorized", "content": "should fail", "sectionId": section_id},
     )
     assert_business_code(unauthorized, 4010, "unauthorized create post")
+    checkpoints.append("无token写操作拦截")
 
     print("[6/10] no-permission scene: user B delete user A post")
     forbidden = http_json(base_url, "DELETE", f"/api/forum/posts/{post_id}", token=token_b)
     assert_business_code(forbidden, 4031, "forbidden delete post")
+    checkpoints.append("无权限操作拦截")
 
     print("[7/10] concurrency scene: duplicate like")
     like_results: list[HttpResult | None] = [None, None]
@@ -169,11 +176,13 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int)
     codes = sorted([result.body.get("code") for result in like_results if result is not None])
     if codes != [0, 4091]:
         raise RegressionError(f"concurrency like expected [0, 4091], got {codes}")
+    checkpoints.append("并发重复点赞稳定性")
 
     print("[8/10] logout invalidation scene")
     assert_ok(http_json(base_url, "POST", "/api/auth/logout", token=token_a), "logout user A")
     after_logout = http_json(base_url, "GET", "/api/users/me", token=token_a)
     assert_business_code(after_logout, 4010, "access with invalidated token")
+    checkpoints.append("登出后会话失效")
 
     print("[9/10] refresh flow scene")
     refresh_data = assert_ok(
@@ -182,6 +191,7 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int)
     )
     refreshed_token = refresh_data["token"]
     assert_ok(http_json(base_url, "GET", "/api/users/me", token=refreshed_token), "me with refreshed token")
+    checkpoints.append("refresh流程")
 
     print("[10/10] token expiry scene")
     if verify_expiry:
@@ -191,10 +201,31 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int)
         time.sleep(expiry_wait_seconds)
         expired_access = http_json(base_url, "GET", "/api/users/me", token=refreshed_token)
         assert_business_code(expired_access, 4010, "expired token access")
+        checkpoints.append("token过期拦截")
     else:
         print("skip expiry verification (enable with --verify-expiry)")
+        checkpoints.append("token过期拦截(跳过)")
 
     print("system regression passed")
+    if report_file:
+        write_report(report_file, True, checkpoints, "")
+
+
+def write_report(report_file: str, success: bool, checkpoints: list[str], error_message: str) -> None:
+    lines = [
+        "# 系统回归结果",
+        "",
+        f"- 时间: {time.strftime('%Y-%m-%d %H:%M:%S')}",
+        f"- 结果: {'通过' if success else '失败'}",
+        "",
+        "## 覆盖项",
+    ]
+    for item in checkpoints:
+        lines.append(f"- {item}")
+    if not success:
+        lines.extend(["", "## 失败信息", f"- {error_message}"])
+    with open(report_file, "w", encoding="utf-8") as file:
+        file.write("\n".join(lines) + "\n")
 
 
 def main() -> int:
@@ -207,12 +238,20 @@ def main() -> int:
         default=int(os.getenv("JWT_EXPIRE_SECONDS", "0")) + 2,
         help="seconds to wait before checking expired token",
     )
+    parser.add_argument("--report-file", default="", help="optional markdown output path")
     args = parser.parse_args()
 
     try:
-        run_regression(args.base_url, args.verify_expiry, args.expiry_wait_seconds)
+        run_regression(
+            args.base_url,
+            args.verify_expiry,
+            args.expiry_wait_seconds,
+            args.report_file.strip() or None,
+        )
     except RegressionError as error:
         print(f"regression failed: {error}")
+        if args.report_file.strip():
+            write_report(args.report_file.strip(), False, [], str(error))
         return 1
     return 0
 

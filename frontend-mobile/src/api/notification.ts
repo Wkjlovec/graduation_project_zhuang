@@ -23,3 +23,12 @@ export async function getNotificationHome() {
   const response = await http.get<ApiResponse<NotificationHomePayload>>("/api/notifications/home");
   return response.data.data;
 }
+
+export async function getMyNotifications() {
+  const response = await http.get<ApiResponse<NotificationItem[]>>("/api/notifications/my");
+  return response.data.data;
+}
+
+export async function markNotificationRead(notificationId: number) {
+  await http.post<ApiResponse<null>>(`/api/notifications/${notificationId}/read`);
+}

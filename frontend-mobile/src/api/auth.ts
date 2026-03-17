@@ -12,6 +12,8 @@ export interface AuthTokenPayload {
   nickname: string;
   token: string;
   tokenType: string;
+  refreshToken: string;
+  refreshTokenType: string;
 }
 
 export interface ProfilePayload {
@@ -33,6 +35,15 @@ export async function register(username: string, password: string, nickname: str
     nickname
   });
   return response.data.data;
+}
+
+export async function refreshToken(refreshToken: string) {
+  const response = await http.post<ApiResponse<AuthTokenPayload>>("/api/auth/refresh", { refreshToken });
+  return response.data.data;
+}
+
+export async function logout() {
+  await http.post<ApiResponse<null>>("/api/auth/logout");
 }
 
 export async function getProfile() {

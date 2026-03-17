@@ -34,7 +34,7 @@ async function handleLogin() {
   loginLoading.value = true;
   try {
     const data = await login(form.username, form.password);
-    authStore.setToken(data.token);
+    authStore.setSession(data.token, data.refreshToken);
     showToast("登录成功");
     router.push("/posts");
   } catch (error) {
@@ -48,7 +48,7 @@ async function handleRegister() {
   registerLoading.value = true;
   try {
     const data = await register(form.username, form.password, form.nickname);
-    authStore.setToken(data.token);
+    authStore.setSession(data.token, data.refreshToken);
     showToast("注册成功");
     router.push("/posts");
   } catch (error) {

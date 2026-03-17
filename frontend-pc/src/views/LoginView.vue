@@ -43,7 +43,7 @@ async function handleLogin() {
   loginLoading.value = true;
   try {
     const payload = await login(form.username, form.password);
-    authStore.setToken(payload.token);
+    authStore.setSession(payload.token, payload.refreshToken);
     ElMessage.success("登录成功");
     router.push("/posts");
   } catch (error) {
@@ -57,7 +57,7 @@ async function handleRegister() {
   registerLoading.value = true;
   try {
     const payload = await register(form.username, form.password, form.nickname);
-    authStore.setToken(payload.token);
+    authStore.setSession(payload.token, payload.refreshToken);
     ElMessage.success("注册成功并已登录");
     router.push("/posts");
   } catch (error) {
