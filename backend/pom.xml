@@ -23,6 +23,9 @@
         <module>gateway-service</module>
         <module>auth-user-service</module>
         <module>forum-service</module>
+        <module>notification-service</module>
+        <module>search-service</module>
+        <module>media-service</module>
     </modules>
 
     <properties>

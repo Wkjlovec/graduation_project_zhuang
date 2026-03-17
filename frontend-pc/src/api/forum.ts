@@ -92,3 +92,13 @@ export async function likePost(postId: string) {
   const response = await http.post<ApiResponse<PostSummary>>(`/api/forum/posts/${postId}/like`);
   return response.data.data;
 }
+
+export async function searchPosts(keyword: string, sectionId?: number) {
+  const response = await http.get<ApiResponse<PostSummary[]>>("/api/search/posts", {
+    params: {
+      keyword,
+      ...(sectionId ? { sectionId } : {})
+    }
+  });
+  return response.data.data;
+}

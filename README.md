@@ -24,6 +24,9 @@ backend/
   gateway-service/
   auth-user-service/
   forum-service/
+  notification-service/
+  media-service/
+  search-service/
 frontend-pc/
 frontend-mobile/
 deploy/
@@ -63,6 +66,9 @@ bash scripts/verify-infra.sh
 - Gateway: `8080`
 - Auth Service: `8081`
 - Forum Service: `8082`
+- Notification Service: `8083`
+- Media Service: `8084`
+- Search Service: `8085`
 - MySQL: `3306`
 - Redis: `6379`
 
@@ -88,7 +94,28 @@ cd backend
 mvn -pl forum-service -am spring-boot:run
 ```
 
-再开一个终端启动 `gateway-service`：
+再开一个终端启动 `notification-service`：
+
+```bash
+cd backend
+mvn -pl notification-service -am spring-boot:run
+```
+
+再开一个终端启动 `media-service`：
+
+```bash
+cd backend
+mvn -pl media-service -am spring-boot:run
+```
+
+再开一个终端启动 `search-service`：
+
+```bash
+cd backend
+mvn -pl search-service -am spring-boot:run
+```
+
+最后启动 `gateway-service`：
 
 ```bash
 cd backend
@@ -124,6 +151,12 @@ npm run dev
 - 刷新令牌：`POST /api/auth/refresh`
 - 退出登录：`POST /api/auth/logout`
 - 个人信息：`GET /api/users/me`
+- 首页通知：`GET /api/notifications/home`
+- 我的通知：`GET /api/notifications/my`
+- 通知已读：`POST /api/notifications/{id}/read`
+- 媒体首页推荐：`GET /api/media/home`
+- 媒体推荐列表：`GET /api/media/recommendations?type=music|book|all`
+- 帖子搜索：`GET /api/search/posts?keyword=xxx`
 - 分区列表：`GET /api/forum/sections`
 - 帖子列表：`GET /api/forum/posts`
 - 发布帖子：`POST /api/forum/posts`
@@ -142,6 +175,7 @@ npm run dev
 - 点赞规则：同一用户对同一帖子仅可点赞一次
 - 分区规则：发帖必须选择分区；列表支持按 `sectionId` 过滤
 - 评论规则：支持二级评论（回复一级评论）；评论与帖子会返回简单编辑提示（如“该消息编辑于xx分钟前”）
+- 首页常驻：PC/移动首页常驻通知、搜索、音乐推荐、书籍推荐板块
 
 基础安全（毕设可交付版）：
 - Access Token + Refresh Token 双令牌
