@@ -20,6 +20,17 @@ python3 deploy/scripts/run_system_regression.py --verify-expiry --expiry-wait-se
 - `docs/evidence-regression.md`
 - `docs/evidence-regression-expiry.md`
 
+执行命令（缓存前后响应时间对比）：
+
+```bash
+python3 deploy/scripts/benchmark_forum_cache.py --report-file docs/evidence-cache-benchmark.md
+```
+
+产出物：
+- `docs/evidence-cache-benchmark.md`
+
+> 说明：该脚本会对同一帖子列表接口先做 1 次“冷请求”，再做 N 次“热请求”（默认 20 次），自动输出均值、P95 与相对提升百分比，可直接用于论文与答辩表格。
+
 ## 2. 手工联调证据（截图建议）
 
 建议至少保留以下截图（PC+移动端）：
@@ -46,8 +57,8 @@ python3 deploy/scripts/run_system_regression.py --verify-expiry --expiry-wait-se
 
 | 指标 | 数据 | 备注 |
 |---|---:|---|
-| 帖子列表平均响应（无缓存） | 待填 | 本地压测 |
-| 帖子列表平均响应（有缓存） | 待填 | 本地压测 |
+| 帖子列表首次请求（冷） | 见 `docs/evidence-cache-benchmark.md` | `benchmark_forum_cache.py` |
+| 帖子列表后续请求均值（热） | 见 `docs/evidence-cache-benchmark.md` | `benchmark_forum_cache.py` |
 | 回归脚本通过率 | 待填 | 近3次执行 |
 | 异常场景通过率 | 待填 | 无权限/并发/过期 |
 
