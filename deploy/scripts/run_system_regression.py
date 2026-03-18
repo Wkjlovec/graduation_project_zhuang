@@ -146,7 +146,20 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int,
     assert_ok(http_json(base_url, "GET", "/api/media/home"), "media home")
     checkpoints.append("通知与推荐模块")
 
-    print("[5/10] unauthorized scene: create post without token")
+    print("[5/11] my-notification scene: list + mark read")
+    my_notifications = assert_ok(http_json(base_url, "GET", "/api/notifications/my", token=token_b), "my notifications")
+    unread_items = [item for item in my_notifications if isinstance(item, dict) and not item.get("read", False)]
+    if unread_items:
+        notification_id = unread_items[0].get("notificationId")
+        if notification_id is None:
+            raise RegressionError("notification id is missing when trying mark-read")
+        assert_ok(
+            http_json(base_url, "POST", f"/api/notifications/{notification_id}/read", token=token_b),
+            "mark notification read",
+        )
+    checkpoints.append("我的通知与已读")
+
+    print("[6/11] unauthorized scene: create post without token")
     unauthorized = http_json(
         base_url,
         "POST",
@@ -156,12 +169,12 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int,
     assert_business_code(unauthorized, 4010, "unauthorized create post")
     checkpoints.append("无token写操作拦截")
 
-    print("[6/10] no-permission scene: user B delete user A post")
+    print("[7/11] no-permission scene: user B delete user A post")
     forbidden = http_json(base_url, "DELETE", f"/api/forum/posts/{post_id}", token=token_b)
     assert_business_code(forbidden, 4031, "forbidden delete post")
     checkpoints.append("无权限操作拦截")
 
-    print("[7/10] concurrency scene: duplicate like")
+    print("[8/11] concurrency scene: duplicate like")
     like_results: list[HttpResult | None] = [None, None]
 
     def like_once(index: int) -> None:
@@ -178,13 +191,13 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int,
         raise RegressionError(f"concurrency like expected [0, 4091], got {codes}")
     checkpoints.append("并发重复点赞稳定性")
 
-    print("[8/10] logout invalidation scene")
+    print("[9/11] logout invalidation scene")
     assert_ok(http_json(base_url, "POST", "/api/auth/logout", token=token_a), "logout user A")
     after_logout = http_json(base_url, "GET", "/api/users/me", token=token_a)
     assert_business_code(after_logout, 4010, "access with invalidated token")
     checkpoints.append("登出后会话失效")
 
-    print("[9/10] refresh flow scene")
+    print("[10/11] refresh flow scene")
     refresh_data = assert_ok(
         http_json(base_url, "POST", "/api/auth/refresh", {"refreshToken": refresh_token_b}),
         "refresh token",
@@ -193,7 +206,7 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int,
     assert_ok(http_json(base_url, "GET", "/api/users/me", token=refreshed_token), "me with refreshed token")
     checkpoints.append("refresh流程")
 
-    print("[10/10] token expiry scene")
+    print("[11/11] token expiry scene")
     if verify_expiry:
         if expiry_wait_seconds <= 0:
             raise RegressionError("expiry wait seconds must be greater than 0")

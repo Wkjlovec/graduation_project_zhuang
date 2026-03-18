@@ -58,6 +58,7 @@
         <template #header>
           <strong>通知中心</strong>
           <span class="unread">未读 {{ notificationHome?.unreadCount ?? 0 }}</span>
+          <el-button text type="primary" class="notify-link" @click="goNotifications">我的通知</el-button>
         </template>
         <el-alert v-if="sideError" :title="sideError" type="error" show-icon :closable="false">
           <template #default>
@@ -188,6 +189,10 @@ function goCreate() {
   router.push("/create");
 }
 
+function goNotifications() {
+  router.push("/notifications");
+}
+
 function goDetail(postId: number) {
   router.push(`/posts/${postId}`);
 }
@@ -236,5 +241,10 @@ function goDetail(postId: number) {
   float: right;
   color: #f56c6c;
   font-size: 12px;
+}
+
+.notify-link {
+  float: right;
+  margin-right: 8px;
 }
 </style>

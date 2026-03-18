@@ -41,7 +41,11 @@
     </van-cell-group>
 
     <van-cell-group inset style="margin-bottom: 8px;">
-      <van-cell title="通知中心" :value="'未读 ' + (notificationHome?.unreadCount ?? 0)" />
+      <van-cell title="通知中心" :value="'未读 ' + (notificationHome?.unreadCount ?? 0)">
+        <template #right-icon>
+          <van-button size="mini" plain type="primary" @click="goNotifications">我的通知</van-button>
+        </template>
+      </van-cell>
       <van-cell
         v-for="item in notificationHome?.announcements ?? []"
         :key="item.notificationId"
@@ -195,6 +199,9 @@ function goCreate() {
 }
 function goProfile() {
   router.push("/profile");
+}
+function goNotifications() {
+  router.push("/notifications");
 }
 function goDetail(id: number) {
   router.push(`/posts/${id}`);

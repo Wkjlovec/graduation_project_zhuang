@@ -41,12 +41,13 @@ python3 deploy/scripts/run_system_regression.py --verify-expiry --expiry-wait-se
 3. 发帖与评论  
 4. 搜索命中  
 5. 首页通知与媒体推荐接口  
-6. 未带 token 的写操作应失败  
-7. 无权限删除他人帖子应失败  
-8. 并发重复点赞（期望 1 次成功 + 1 次重复失败）  
-9. 登出后旧 token 立即失效  
-10. refresh 获取新 access token 并可访问受保护接口  
-11. （可选）token 过期后访问受保护接口失败
+6. 我的通知读取与已读标记（有未读则校验标记接口）  
+7. 未带 token 的写操作应失败  
+8. 无权限删除他人帖子应失败  
+9. 并发重复点赞（期望 1 次成功 + 1 次重复失败）  
+10. 登出后旧 token 立即失效  
+11. refresh 获取新 access token 并可访问受保护接口  
+12. （可选）token 过期后访问受保护接口失败
 
 ## 4. 失败处理
 

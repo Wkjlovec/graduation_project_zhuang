@@ -20,11 +20,13 @@ let pendingQueue: Array<(token: string | null) => void> = [];
 function setSessionToStorage(accessToken: string, refreshToken: string) {
   localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
   localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  window.dispatchEvent(new Event("auth-session-changed"));
 }
 
 function clearSessionFromStorage() {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
+  window.dispatchEvent(new Event("auth-session-changed"));
 }
 
 function redirectToLogin() {
@@ -44,7 +46,8 @@ function isAuthApi(url?: string) {
   }
   return url.includes("/api/auth/login")
     || url.includes("/api/auth/register")
-    || url.includes("/api/auth/refresh");
+    || url.includes("/api/auth/refresh")
+    || url.includes("/api/auth/logout");
 }
 
 function toError(error: unknown, fallback: string) {

@@ -20,6 +20,10 @@ export const useAuthStore = defineStore("auth", {
       this.refreshToken = "";
       localStorage.removeItem(ACCESS_TOKEN_KEY);
       localStorage.removeItem(REFRESH_TOKEN_KEY);
+    },
+    syncFromStorage() {
+      this.token = localStorage.getItem(ACCESS_TOKEN_KEY) ?? "";
+      this.refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY) ?? "";
     }
   }
 });

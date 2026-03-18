@@ -30,8 +30,9 @@ python3 deploy/scripts/run_system_regression.py --verify-expiry --expiry-wait-se
 4. 搜索命中结果  
 5. 首页通知模块  
 6. 首页音乐/书籍推荐模块  
-7. 无权限操作错误提示  
-8. 登出后访问受保护接口失败提示
+7. 我的通知页（含“标记已读”）  
+8. 无权限操作错误提示  
+9. 登出后访问受保护接口失败提示
 
 ## 3. 答辩演示顺序（建议）
 
