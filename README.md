@@ -14,6 +14,7 @@
 范围约束文档：`docs/scope-baseline.md`
 联调回归文档：`docs/system-regression.md`
 测试与答辩证据：`docs/test-defense-evidence.md`
+后端交付清单（启动顺序/排障/配置校验）：`docs/backend-delivery-checklist.md`
 
 ---
 
@@ -82,6 +83,9 @@ bash scripts/verify-infra.sh
 
 ## 启动后端微服务
 
+建议顺序：`auth -> forum -> notification -> media -> search -> gateway`  
+（网关最后启动，减少服务未注册阶段的转发报错）
+
 先启动 `auth-user-service`：
 
 ```bash
@@ -123,6 +127,27 @@ mvn -pl search-service -am spring-boot:run
 cd backend
 mvn -pl gateway-service -am spring-boot:run
 ```
+
+启动后可快速验活：
+
+```bash
+curl -fsS http://127.0.0.1:8081/actuator/health
+curl -fsS http://127.0.0.1:8082/actuator/health
+curl -fsS http://127.0.0.1:8083/actuator/health
+curl -fsS http://127.0.0.1:8084/actuator/health
+curl -fsS http://127.0.0.1:8085/actuator/health
+curl -fsS http://127.0.0.1:8080/actuator/health
+curl -fsS http://127.0.0.1:8080/api/forum/sections
+```
+
+常见报错快速定位：
+- `mvn: command not found`：先确保 `mvn -v` 可用
+- 401（登录后仍失败）：优先检查 `JWT_SECRET` 是否在 gateway/auth 完全一致
+- Nacos 无注册：检查 `NACOS_SERVER_ADDR` 与 Nacos 可达性
+- 数据库连接失败：检查 MySQL healthy 与 `.env` 数据库账号配置
+- 网关 404：确认通过 `/api/**` 网关路径访问
+
+更完整排障与本地校验清单见：`docs/backend-delivery-checklist.md`
 
 ---
 
