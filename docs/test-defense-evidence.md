@@ -31,6 +31,10 @@ python3 deploy/scripts/benchmark_forum_cache.py --report-file docs/evidence-cach
 
 > 说明：该脚本会对同一帖子列表接口先做 1 次“冷请求”，再做 N 次“热请求”（默认 20 次），自动输出均值、P95 与相对提升百分比，可直接用于论文与答辩表格。
 
+本轮云端检查结果（用于排障留档）：
+- `docs/evidence-regression-cloud.md`（当前云端 8080 未启动，连接被拒绝）
+- `docs/evidence-cache-benchmark-cloud.md`（当前云端 8080 未启动，连接被拒绝）
+
 ## 2. 手工联调证据（截图建议）
 
 建议至少保留以下截图（PC+移动端）：
