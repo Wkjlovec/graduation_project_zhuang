@@ -12,10 +12,20 @@
 
 ## 2. 执行命令
 
+一键生成回归与缓存报告（推荐）：
+
+```bash
+bash deploy/scripts/generate-test-reports.sh
+```
+
+可选参数：
+- `BASE_URL`（默认 `http://127.0.0.1:8080`）
+- `EXPIRY_WAIT_SECONDS`（默认 `12`）
+
 默认回归（不等待 token 过期）：
 
 ```bash
-python3 deploy/scripts/run_system_regression.py --report-file docs/evidence-regression.md
+python3 deploy/scripts/run_system_regression.py --report-file docs/regression-report.md
 ```
 
 指定网关地址：
@@ -27,7 +37,7 @@ python3 deploy/scripts/run_system_regression.py --base-url "http://127.0.0.1:808
 启用 token 过期验证：
 
 ```bash
-python3 deploy/scripts/run_system_regression.py --verify-expiry --expiry-wait-seconds 12 --report-file docs/evidence-regression-expiry.md
+python3 deploy/scripts/run_system_regression.py --verify-expiry --expiry-wait-seconds 12 --report-file docs/regression-report-expiry.md
 ```
 
 > 说明：启用过期验证时，请确保当前系统 access token 过期时间小于等于等待时间。
@@ -57,4 +67,4 @@ python3 deploy/scripts/run_system_regression.py --verify-expiry --expiry-wait-se
 
 当前云端环境未启动网关/微服务时，已保留一次真实失败报告用于排障：
 
-- `docs/evidence-regression-cloud.md`
+- `docs/regression-report-cloud.md`
