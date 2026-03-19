@@ -1,5 +1,10 @@
 package com.graduation.forum.config;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.graduation.forum.service.ForumService;
 import java.time.Duration;
 import java.util.Map;
@@ -19,12 +24,24 @@ public class RedisCacheConfig {
     private static final Duration POST_LIST_TTL = Duration.ofMinutes(2);
     private static final Duration POST_DETAIL_TTL = Duration.ofMinutes(5);
 
+    private GenericJackson2JsonRedisSerializer jsonSerializer() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.activateDefaultTyping(
+                LaissezFaireSubTypeValidator.instance,
+                ObjectMapper.DefaultTyping.NON_FINAL,
+                JsonTypeInfo.As.PROPERTY
+        );
+        return new GenericJackson2JsonRedisSerializer(mapper);
+    }
+
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
         RedisSerializationContext.SerializationPair<String> keySerialization =
                 RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer());
         RedisSerializationContext.SerializationPair<Object> valueSerialization =
-                RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer());
+                RedisSerializationContext.SerializationPair.fromSerializer(jsonSerializer());
         RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(keySerialization)
                 .serializeValuesWith(valueSerialization)
