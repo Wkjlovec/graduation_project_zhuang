@@ -20,7 +20,13 @@ bash deploy/scripts/generate-test-reports.sh
 
 可选参数：
 - `BASE_URL`（默认 `http://127.0.0.1:8080`）
+- `FORUM_BASE_URL`（默认 `http://127.0.0.1:8082`）
 - `EXPIRY_WAIT_SECONDS`（默认 `12`）
+- `RUN_MODE`（`auto/full/direct`）
+
+说明：
+- `full`：生成回归+过期+缓存报告（需要 gateway）
+- `direct`：仅生成缓存报告（forum 直连）
 
 默认回归（不等待 token 过期）：
 

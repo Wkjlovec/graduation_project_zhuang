@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RUNTIME_DIR="${ROOT_DIR}/.runtime"
 PID_DIR="${RUNTIME_DIR}/pids"
+MODE_FILE="${RUNTIME_DIR}/backend-mode"
 
 stop_service() {
   local service_name="$1"
@@ -46,6 +47,7 @@ main() {
   stop_service "notification-service"
   stop_service "forum-service"
   stop_service "auth-user-service"
+  rm -f "${MODE_FILE}"
   echo "[SUCCESS] 后端服务停止流程完成。"
 }
 

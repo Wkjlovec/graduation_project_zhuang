@@ -32,7 +32,7 @@ public class NotificationMessage {
     @Column(nullable = false, length = 1000)
     private String content;
 
-    @Column(nullable = false)
+    @Column(name = "is_read", nullable = false)
     private Boolean read = false;
 
     @Column(nullable = false)

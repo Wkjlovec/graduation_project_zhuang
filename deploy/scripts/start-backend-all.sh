@@ -8,6 +8,13 @@ RUNTIME_DIR="${ROOT_DIR}/.runtime"
 PID_DIR="${RUNTIME_DIR}/pids"
 LOG_DIR="${RUNTIME_DIR}/logs"
 BUILD_LOG="${LOG_DIR}/common-lib-build.log"
+MODE_FILE="${RUNTIME_DIR}/backend-mode"
+RUN_MODE="${RUN_MODE:-auto}"
+
+# 模式说明：
+# - full: 依赖 Nacos，启动 auth/forum/notification/media/search/gateway 全链路
+# - direct: 无 Nacos 场景，启动 auth/forum/notification/media/search（不启动 gateway）
+# - auto: 运行时自动探测 Nacos 可达性并选择模式
 
 load_env() {
   if [ ! -f "${ENV_FILE}" ]; then
@@ -39,6 +46,35 @@ prepare_runtime() {
   mkdir -p "${PID_DIR}" "${LOG_DIR}"
 }
 
+detect_mode() {
+  local nacos_url="http://127.0.0.1:${NACOS_PORT:-8848}/nacos"
+  if [ "${RUN_MODE}" = "full" ]; then
+    if ! curl -fsS "${nacos_url}" >/dev/null 2>&1; then
+      echo "[ERROR] RUN_MODE=full 但 Nacos 不可访问：${nacos_url}"
+      echo "[ERROR] 请先启动基础设施：bash deploy/scripts/start-infra.sh"
+      exit 1
+    fi
+    echo "full" > "${MODE_FILE}"
+    return
+  fi
+  if [ "${RUN_MODE}" = "direct" ]; then
+    echo "direct" > "${MODE_FILE}"
+    return
+  fi
+  if [ "${RUN_MODE}" != "auto" ]; then
+    echo "[ERROR] RUN_MODE 仅支持 auto/full/direct，当前值：${RUN_MODE}"
+    exit 1
+  fi
+
+  if curl -fsS "${nacos_url}" >/dev/null 2>&1; then
+    echo "[INFO] 检测到 Nacos 可用，使用 full 模式。"
+    echo "full" > "${MODE_FILE}"
+  else
+    echo "[WARN] 未检测到 Nacos，使用 direct 模式（不启动 gateway）。"
+    echo "direct" > "${MODE_FILE}"
+  fi
+}
+
 build_common_lib() {
   echo "[INFO] 预构建 common-lib（确保多模块依赖可用）..."
   (
@@ -46,6 +82,16 @@ build_common_lib() {
     mvn -pl common-lib -am -DskipTests install >"${BUILD_LOG}" 2>&1
   )
   echo "[OK] common-lib 构建完成。日志：${BUILD_LOG}"
+}
+
+normalize_host() {
+  local current="$1"
+  local fallback="$2"
+  if [ -z "${current}" ] || [[ "${current}" == *"REDACTED"* ]]; then
+    echo "${fallback}"
+    return
+  fi
+  echo "${current}"
 }
 
 wait_health() {
@@ -108,35 +154,55 @@ main() {
   load_env
   check_prerequisites
   prepare_runtime
+  detect_mode
   build_common_lib
 
-  export MYSQL_HOST="${MYSQL_HOST:-127.0.0.1}"
-  export REDIS_HOST="${REDIS_HOST:-127.0.0.1}"
-  export NACOS_SERVER_ADDR="${NACOS_SERVER_ADDR:-127.0.0.1:${NACOS_PORT:-8848}}"
+  local mode
+  mode="$(cat "${MODE_FILE}")"
 
-  local nacos_url="http://127.0.0.1:${NACOS_PORT:-8848}/nacos"
-  if ! curl -fsS "${nacos_url}" >/dev/null 2>&1; then
-    echo "[ERROR] Nacos 不可访问：${nacos_url}"
-    echo "[ERROR] 请先执行基础设施启动脚本：bash deploy/scripts/start-infra.sh"
-    exit 1
+  if [ "${mode}" = "direct" ]; then
+    export MYSQL_HOST="127.0.0.1"
+    export REDIS_HOST="127.0.0.1"
+    export SPRING_CLOUD_NACOS_DISCOVERY_ENABLED=false
+    export SPRING_CLOUD_NACOS_DISCOVERY_REGISTER_ENABLED=false
+    export FORUM_SERVICE_URL="http://127.0.0.1:${FORUM_PORT:-8082}"
+    echo "[INFO] direct 模式：禁用 Nacos 注册发现，search 直连 forum。"
+  else
+    export MYSQL_HOST
+    MYSQL_HOST="$(normalize_host "${MYSQL_HOST:-}" "127.0.0.1")"
+    export REDIS_HOST
+    REDIS_HOST="$(normalize_host "${REDIS_HOST:-}" "127.0.0.1")"
   fi
+  export NACOS_SERVER_ADDR="${NACOS_SERVER_ADDR:-127.0.0.1:${NACOS_PORT:-8848}}"
+  export SPRING_DATA_REDIS_HOST="${REDIS_HOST}"
+  export SPRING_DATA_REDIS_PORT="${REDIS_PORT:-6379}"
 
   start_service "auth-user-service" "${AUTH_USER_PORT:-8081}"
   start_service "forum-service" "${FORUM_PORT:-8082}"
   start_service "notification-service" "${NOTIFICATION_PORT:-8083}"
   start_service "media-service" "${MEDIA_PORT:-8084}"
   start_service "search-service" "${SEARCH_PORT:-8085}"
-  start_service "gateway-service" "${GATEWAY_PORT:-8080}"
 
-  if curl -fsS "http://127.0.0.1:${GATEWAY_PORT:-8080}/api/forum/sections" >/dev/null 2>&1; then
-    echo "[OK] 网关业务路由可用：/api/forum/sections"
+  if [ "${mode}" = "full" ]; then
+    start_service "gateway-service" "${GATEWAY_PORT:-8080}"
+    if curl -fsS "http://127.0.0.1:${GATEWAY_PORT:-8080}/api/forum/sections" >/dev/null 2>&1; then
+      echo "[OK] 网关业务路由可用：/api/forum/sections"
+    else
+      echo "[ERROR] 网关已启动，但业务路由检查失败：/api/forum/sections"
+      exit 1
+    fi
+    echo "[SUCCESS] 后端全服务启动完成（full 模式）。"
   else
-    echo "[ERROR] 网关已启动，但业务路由检查失败：/api/forum/sections"
-    exit 1
+    if curl -fsS "http://127.0.0.1:${FORUM_PORT:-8082}/sections" >/dev/null 2>&1; then
+      echo "[OK] forum 业务接口可用：/sections"
+    else
+      echo "[ERROR] forum 业务接口检查失败：/sections"
+      exit 1
+    fi
+    echo "[SUCCESS] 后端服务启动完成（direct 模式，无 gateway）。"
   fi
-
-  echo "[SUCCESS] 后端全服务启动完成。"
   echo "[INFO] 日志目录：${LOG_DIR}"
+  echo "[INFO] 当前模式：${mode}"
 }
 
 main "$@"

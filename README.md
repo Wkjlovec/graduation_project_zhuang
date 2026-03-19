@@ -38,9 +38,12 @@ deploy/
   check-prerequisites.sh
   scripts/start-infra.sh
   scripts/verify-infra.sh
+  scripts/start-infra-auto.sh
+  scripts/verify-infra-auto.sh
   scripts/start-backend-all.sh
   scripts/verify-backend-all.sh
   scripts/stop-backend-all.sh
+  scripts/generate-test-reports.sh
 docs/
 ```
 
@@ -62,10 +65,13 @@ docs/
 ```bash
 cd deploy
 cp .env.example .env
-bash check-prerequisites.sh
-bash scripts/start-infra.sh
-bash scripts/verify-infra.sh
+bash scripts/start-infra-auto.sh
+bash scripts/verify-infra-auto.sh
 ```
+
+说明：
+- 有 Docker 时：自动走 `start-infra.sh`（容器模式）
+- 无 Docker 时：自动走本机服务模式（MariaDB/Redis），并提示 Nacos 状态
 
 默认端口：
 - Nacos: `8848`
@@ -104,6 +110,11 @@ bash scripts/stop-backend-all.sh
 脚本内置启动顺序：`auth -> forum -> notification -> media -> search -> gateway`  
 （网关最后启动，减少服务未注册阶段的转发报错）
 
+模式说明：
+- `RUN_MODE=full`：要求 Nacos 可用，启动全部服务（含 gateway）
+- `RUN_MODE=direct`：无 Nacos 场景，启动 auth/forum/notification/media/search（不启动 gateway）
+- `RUN_MODE=auto`（默认）：自动根据 Nacos 可达性选择 full/direct
+
 启动后可快速验活（与脚本一致）：
 
 ```bash
@@ -128,6 +139,20 @@ curl -fsS http://127.0.0.1:8080/api/forum/sections
 CI 说明（毕设取舍）：
 - CI（持续集成）是代码提交后自动执行构建/测试的流水线机制。
 - 本项目在本科毕设交付阶段不强制引入 CI 平台流水线，优先保证本地可复现脚本验收闭环（启动脚本 + 回归脚本 + 报告产物）。
+
+---
+
+## 测试准备（一键生成报告）
+
+```bash
+cd deploy
+bash scripts/generate-test-reports.sh
+```
+
+模式说明：
+- `RUN_MODE=full`：通过网关生成回归+过期+缓存三类报告
+- `RUN_MODE=direct`：仅生成缓存报告（用于无 Nacos/gateway 环境）
+- `RUN_MODE=auto`（默认）：自动选择可用模式
 
 ---
 

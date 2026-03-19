@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "forum-service")
+@FeignClient(name = "forum-service", url = "${FORUM_SERVICE_URL:}")
 public interface ForumClient {
 
     @GetMapping("/posts")

@@ -15,14 +15,17 @@
 ```bash
 cd deploy
 cp .env.example .env
-bash check-prerequisites.sh
-bash scripts/start-infra.sh
-bash scripts/verify-infra.sh
+bash scripts/start-infra-auto.sh
+bash scripts/verify-infra-auto.sh
 ```
 
 通过标准：
 - `docker compose ps` 中 `mysql`、`redis` 为 healthy
 - `http://127.0.0.1:8848/nacos` 可打开
+
+说明：
+- 有 Docker：自动使用容器模式
+- 无 Docker：自动使用本机服务模式（MariaDB/Redis），Nacos 状态会单独提示
 
 ### 1.2 启动后端微服务（一键）
 
@@ -40,6 +43,11 @@ bash scripts/start-backend-all.sh
 - `gateway-service`（最后启动）
 
 脚本会在每个服务启动后自动执行 `/actuator/health` 检查。
+
+模式说明：
+- `RUN_MODE=full`：要求 Nacos 可用，启动全部服务（含 gateway）
+- `RUN_MODE=direct`：无 Nacos 场景启动（不启动 gateway）
+- `RUN_MODE=auto`：自动识别环境（默认）
 
 ### 1.3 一键验活与停止
 
@@ -220,3 +228,17 @@ CI（持续集成）指代码提交后自动执行构建、测试、质量检查
   - 后端全服务一键脚本
   - 回归与缓存基准脚本
   - 报告产物落盘
+
+## 6. 测试准备（动态模式）
+
+执行：
+
+```bash
+cd deploy
+bash scripts/generate-test-reports.sh
+```
+
+模式：
+- `RUN_MODE=full`：网关可达时生成回归+过期+缓存报告
+- `RUN_MODE=direct`：无网关/Nacos时生成缓存报告（forum 直连）
+- `RUN_MODE=auto`：自动判断（默认）
