@@ -36,10 +36,13 @@ python3 deploy/scripts/run_system_regression.py --verify-expiry --expiry-wait-se
 
 ```bash
 python3 deploy/scripts/benchmark_forum_cache.py --report-file docs/cache-benchmark-report.md
+# 如需兼容旧命名产物（答辩材料引用）：
+python3 deploy/scripts/benchmark_forum_cache.py --report-file docs/evidence-cache-benchmark.md
 ```
 
 产出物：
 - `docs/cache-benchmark-report.md`
+- `docs/evidence-cache-benchmark.md`（兼容旧命名）
 
 > 说明：该脚本会对同一帖子列表接口先做 1 次“冷请求”，再做 N 次“热请求”（默认 20 次），自动输出均值、P95 与相对提升百分比，可直接用于论文与答辩表格。
 
