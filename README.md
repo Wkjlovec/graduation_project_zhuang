@@ -38,6 +38,9 @@ deploy/
   check-prerequisites.sh
   scripts/start-infra.sh
   scripts/verify-infra.sh
+  scripts/start-backend-all.sh
+  scripts/verify-backend-all.sh
+  scripts/stop-backend-all.sh
 docs/
 ```
 
@@ -81,54 +84,27 @@ bash scripts/verify-infra.sh
 
 ---
 
-## 启动后端微服务
+## 后端全服务一键启动（脚本级）
 
-建议顺序：`auth -> forum -> notification -> media -> search -> gateway`  
+在基础设施启动完成后，直接执行：
+
+```bash
+cd deploy
+bash scripts/start-backend-all.sh
+bash scripts/verify-backend-all.sh
+```
+
+停止后端全服务：
+
+```bash
+cd deploy
+bash scripts/stop-backend-all.sh
+```
+
+脚本内置启动顺序：`auth -> forum -> notification -> media -> search -> gateway`  
 （网关最后启动，减少服务未注册阶段的转发报错）
 
-先启动 `auth-user-service`：
-
-```bash
-cd backend
-mvn -pl auth-user-service -am spring-boot:run
-```
-
-再开一个终端启动 `forum-service`：
-
-```bash
-cd backend
-mvn -pl forum-service -am spring-boot:run
-```
-
-再开一个终端启动 `notification-service`：
-
-```bash
-cd backend
-mvn -pl notification-service -am spring-boot:run
-```
-
-再开一个终端启动 `media-service`：
-
-```bash
-cd backend
-mvn -pl media-service -am spring-boot:run
-```
-
-再开一个终端启动 `search-service`：
-
-```bash
-cd backend
-mvn -pl search-service -am spring-boot:run
-```
-
-最后启动 `gateway-service`：
-
-```bash
-cd backend
-mvn -pl gateway-service -am spring-boot:run
-```
-
-启动后可快速验活：
+启动后可快速验活（与脚本一致）：
 
 ```bash
 curl -fsS http://127.0.0.1:8081/actuator/health
@@ -148,6 +124,10 @@ curl -fsS http://127.0.0.1:8080/api/forum/sections
 - 网关 404：确认通过 `/api/**` 网关路径访问
 
 更完整排障与本地校验清单见：`docs/backend-delivery-checklist.md`
+
+CI 说明（毕设取舍）：
+- CI（持续集成）是代码提交后自动执行构建/测试的流水线机制。
+- 本项目在本科毕设交付阶段不强制引入 CI 平台流水线，优先保证本地可复现脚本验收闭环（启动脚本 + 回归脚本 + 报告产物）。
 
 ---
 

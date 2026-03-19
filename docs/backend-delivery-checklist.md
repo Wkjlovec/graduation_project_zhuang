@@ -8,7 +8,7 @@
 
 ---
 
-## 1. 启动顺序（建议严格按顺序）
+## 1. 启动顺序（脚本级一键）
 
 ### 1.1 启动基础设施（一步）
 
@@ -24,53 +24,40 @@ bash scripts/verify-infra.sh
 - `docker compose ps` 中 `mysql`、`redis` 为 healthy
 - `http://127.0.0.1:8848/nacos` 可打开
 
-### 1.2 启动后端微服务（六个终端）
-
-> 原则：先启动业务服务，最后启动网关；避免网关先起导致初期路由 503/未注册问题。
-
-终端 1（auth）：
+### 1.2 启动后端微服务（一键）
 
 ```bash
-cd backend
-mvn -pl auth-user-service -am spring-boot:run
+cd deploy
+bash scripts/start-backend-all.sh
 ```
 
-终端 2（forum）：
+脚本启动顺序固定为：
+- `auth-user-service`
+- `forum-service`
+- `notification-service`
+- `media-service`
+- `search-service`
+- `gateway-service`（最后启动）
+
+脚本会在每个服务启动后自动执行 `/actuator/health` 检查。
+
+### 1.3 一键验活与停止
+
+验活：
 
 ```bash
-cd backend
-mvn -pl forum-service -am spring-boot:run
+cd deploy
+bash scripts/verify-backend-all.sh
 ```
 
-终端 3（notification）：
+停止：
 
 ```bash
-cd backend
-mvn -pl notification-service -am spring-boot:run
+cd deploy
+bash scripts/stop-backend-all.sh
 ```
 
-终端 4（media）：
-
-```bash
-cd backend
-mvn -pl media-service -am spring-boot:run
-```
-
-终端 5（search）：
-
-```bash
-cd backend
-mvn -pl search-service -am spring-boot:run
-```
-
-终端 6（gateway，最后启动）：
-
-```bash
-cd backend
-mvn -pl gateway-service -am spring-boot:run
-```
-
-### 1.3 启动后快速验活（建议逐条执行）
+### 1.4 启动后快速验活（手工备选）
 
 ```bash
 curl -fsS http://127.0.0.1:8081/actuator/health
@@ -219,3 +206,17 @@ PY
 
 本轮云端执行产物：
 - `docs/config-validation-report-cloud.md`
+
+---
+
+## 5. CI 取舍说明（本科毕设）
+
+CI（持续集成）指代码提交后自动执行构建、测试、质量检查的流水线。
+
+本项目当前阶段的取舍：
+- 不强制引入 CI 平台流水线（非本科毕设硬性要求）
+- 以“本地可复现脚本验收闭环”替代：
+  - 基础设施一键脚本
+  - 后端全服务一键脚本
+  - 回归与缓存基准脚本
+  - 报告产物落盘
