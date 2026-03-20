@@ -38,7 +38,16 @@ run_full() {
     --report-file docs/regression-report-expiry.md
 
   echo "[INFO] 生成缓存对比报告..."
-  python3 deploy/scripts/benchmark_forum_cache.py --base-url "${BASE_URL}" --report-file docs/cache-benchmark-report.md
+  python3 deploy/scripts/benchmark_forum_cache.py \
+    --base-url "${BASE_URL}" \
+    --path /api/forum/posts/1 \
+    --warm-runs 30 \
+    --report-file docs/cache-benchmark-report.md
+  python3 deploy/scripts/benchmark_forum_cache.py \
+    --base-url "${BASE_URL}" \
+    --path /api/forum/posts/1 \
+    --warm-runs 30 \
+    --report-file docs/evidence-cache-benchmark.md
 }
 
 run_direct() {
@@ -97,6 +106,7 @@ main() {
     echo "  - docs/regression-report.md"
     echo "  - docs/regression-report-expiry.md"
     echo "  - docs/cache-benchmark-report.md"
+    echo "  - docs/evidence-cache-benchmark.md"
   else
     echo "  - docs/cache-benchmark-report.md"
     echo "  - docs/evidence-cache-benchmark.md"

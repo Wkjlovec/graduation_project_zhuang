@@ -112,7 +112,7 @@ bash scripts/stop-backend-all.sh
 
 模式说明：
 - `RUN_MODE=full`：要求 Nacos 可用，启动全部服务（含 gateway）
-- `RUN_MODE=direct`：无 Nacos 场景，启动 auth/forum/notification/media/search（不启动 gateway）
+- `RUN_MODE=direct`：无 Nacos 场景，启动 auth/forum/notification/media/search/gateway（gateway 使用静态路由）
 - `RUN_MODE=auto`（默认）：自动根据 Nacos 可达性选择 full/direct
 
 启动后可快速验活（与脚本一致）：

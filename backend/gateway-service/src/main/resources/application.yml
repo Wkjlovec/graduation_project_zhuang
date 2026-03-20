@@ -34,41 +34,41 @@ spring:
             maxAge: 3600
       discovery:
         locator:
-          enabled: true
+          enabled: ${GATEWAY_DISCOVERY_LOCATOR_ENABLED:true}
           lower-case-service-id: true
       routes:
         - id: auth-route
-          uri: lb://auth-user-service
+          uri: ${AUTH_ROUTE_URI:lb://auth-user-service}
           predicates:
             - Path=/api/auth/**
           filters:
             - StripPrefix=1
         - id: auth-user-route
-          uri: lb://auth-user-service
+          uri: ${AUTH_USER_ROUTE_URI:lb://auth-user-service}
           predicates:
             - Path=/api/users/**
           filters:
             - StripPrefix=1
         - id: forum-route
-          uri: lb://forum-service
+          uri: ${FORUM_ROUTE_URI:lb://forum-service}
           predicates:
             - Path=/api/forum/**
           filters:
             - StripPrefix=2
         - id: notification-route
-          uri: lb://notification-service
+          uri: ${NOTIFICATION_ROUTE_URI:lb://notification-service}
           predicates:
             - Path=/api/notifications/**
           filters:
             - StripPrefix=1
         - id: media-route
-          uri: lb://media-service
+          uri: ${MEDIA_ROUTE_URI:lb://media-service}
           predicates:
             - Path=/api/media/**
           filters:
             - StripPrefix=1
         - id: search-route
-          uri: lb://search-service
+          uri: ${SEARCH_ROUTE_URI:lb://search-service}
           predicates:
             - Path=/api/search/**
           filters:

@@ -165,8 +165,15 @@ main() {
     export REDIS_HOST="127.0.0.1"
     export SPRING_CLOUD_NACOS_DISCOVERY_ENABLED=false
     export SPRING_CLOUD_NACOS_DISCOVERY_REGISTER_ENABLED=false
+    export GATEWAY_DISCOVERY_LOCATOR_ENABLED=false
+    export AUTH_ROUTE_URI="http://127.0.0.1:${AUTH_USER_PORT:-8081}"
+    export AUTH_USER_ROUTE_URI="http://127.0.0.1:${AUTH_USER_PORT:-8081}"
+    export FORUM_ROUTE_URI="http://127.0.0.1:${FORUM_PORT:-8082}"
+    export NOTIFICATION_ROUTE_URI="http://127.0.0.1:${NOTIFICATION_PORT:-8083}"
+    export MEDIA_ROUTE_URI="http://127.0.0.1:${MEDIA_PORT:-8084}"
+    export SEARCH_ROUTE_URI="http://127.0.0.1:${SEARCH_PORT:-8085}"
     export FORUM_SERVICE_URL="http://127.0.0.1:${FORUM_PORT:-8082}"
-    echo "[INFO] direct 模式：禁用 Nacos 注册发现，search 直连 forum。"
+    echo "[INFO] direct 模式：禁用 Nacos 注册发现，search 直连 forum，gateway 走静态路由。"
   else
     export MYSQL_HOST
     MYSQL_HOST="$(normalize_host "${MYSQL_HOST:-}" "127.0.0.1")"
@@ -182,9 +189,9 @@ main() {
   start_service "notification-service" "${NOTIFICATION_PORT:-8083}"
   start_service "media-service" "${MEDIA_PORT:-8084}"
   start_service "search-service" "${SEARCH_PORT:-8085}"
+  start_service "gateway-service" "${GATEWAY_PORT:-8080}"
 
   if [ "${mode}" = "full" ]; then
-    start_service "gateway-service" "${GATEWAY_PORT:-8080}"
     if curl -fsS "http://127.0.0.1:${GATEWAY_PORT:-8080}/api/forum/sections" >/dev/null 2>&1; then
       echo "[OK] 网关业务路由可用：/api/forum/sections"
     else
@@ -193,13 +200,13 @@ main() {
     fi
     echo "[SUCCESS] 后端全服务启动完成（full 模式）。"
   else
-    if curl -fsS "http://127.0.0.1:${FORUM_PORT:-8082}/sections" >/dev/null 2>&1; then
-      echo "[OK] forum 业务接口可用：/sections"
+    if curl -fsS "http://127.0.0.1:${GATEWAY_PORT:-8080}/api/forum/sections" >/dev/null 2>&1; then
+      echo "[OK] direct 模式下网关静态路由可用：/api/forum/sections"
     else
-      echo "[ERROR] forum 业务接口检查失败：/sections"
+      echo "[ERROR] direct 模式下网关静态路由检查失败：/api/forum/sections"
       exit 1
     fi
-    echo "[SUCCESS] 后端服务启动完成（direct 模式，无 gateway）。"
+    echo "[SUCCESS] 后端服务启动完成（direct 模式，含 gateway 静态路由）。"
   fi
   echo "[INFO] 日志目录：${LOG_DIR}"
   echo "[INFO] 当前模式：${mode}"

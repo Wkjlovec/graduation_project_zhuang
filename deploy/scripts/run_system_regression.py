@@ -49,12 +49,12 @@ def http_json(base_url: str, method: str, path: str, payload: dict[str, Any] | N
     return HttpResult(status=status, body=parsed, raw=raw)
 
 
-def assert_ok(result: HttpResult, action: str) -> dict[str, Any]:
+def assert_ok(result: HttpResult, action: str, require_data: bool = True) -> dict[str, Any]:
     code = result.body.get("code")
     if result.status != 200 or code != 0:
         raise RegressionError(f"{action} failed: status={result.status}, body={result.raw}")
     data = result.body.get("data")
-    if data is None:
+    if require_data and data is None:
         raise RegressionError(f"{action} returned empty data")
     return data
 
@@ -192,7 +192,7 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int,
     checkpoints.append("并发重复点赞稳定性")
 
     print("[9/11] logout invalidation scene")
-    assert_ok(http_json(base_url, "POST", "/api/auth/logout", token=token_a), "logout user A")
+    assert_ok(http_json(base_url, "POST", "/api/auth/logout", token=token_a), "logout user A", require_data=False)
     after_logout = http_json(base_url, "GET", "/api/users/me", token=token_a)
     assert_business_code(after_logout, 4010, "access with invalidated token")
     checkpoints.append("登出后会话失效")

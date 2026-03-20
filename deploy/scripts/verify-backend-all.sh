@@ -67,21 +67,16 @@ main() {
   check_health "notification-service" "${NOTIFICATION_PORT:-8083}" || failed=1
   check_health "media-service" "${MEDIA_PORT:-8084}" || failed=1
   check_health "search-service" "${SEARCH_PORT:-8085}" || failed=1
-  if [ "${mode}" = "full" ]; then
-    check_health "gateway-service" "${GATEWAY_PORT:-8080}" || failed=1
-    if curl -fsS "http://127.0.0.1:${GATEWAY_PORT:-8080}/api/forum/sections" >/dev/null 2>&1; then
+  check_health "gateway-service" "${GATEWAY_PORT:-8080}" || failed=1
+  if curl -fsS "http://127.0.0.1:${GATEWAY_PORT:-8080}/api/forum/sections" >/dev/null 2>&1; then
+    if [ "${mode}" = "full" ]; then
       echo "[OK] 网关业务路由可用：/api/forum/sections"
     else
-      echo "[ERROR] 网关业务路由失败：/api/forum/sections"
-      failed=1
+      echo "[OK] direct 模式网关静态路由可用：/api/forum/sections"
     fi
   else
-    if curl -fsS "http://127.0.0.1:${FORUM_PORT:-8082}/sections" >/dev/null 2>&1; then
-      echo "[OK] forum 业务接口可用：/sections"
-    else
-      echo "[ERROR] forum 业务接口失败：/sections"
-      failed=1
-    fi
+    echo "[ERROR] 网关业务路由失败：/api/forum/sections"
+    failed=1
   fi
 
   show_pid "auth-user-service"
@@ -89,9 +84,7 @@ main() {
   show_pid "notification-service"
   show_pid "media-service"
   show_pid "search-service"
-  if [ "${mode}" = "full" ]; then
-    show_pid "gateway-service"
-  fi
+  show_pid "gateway-service"
 
   if [ "${failed}" -ne 0 ]; then
     echo "[FAILED] 后端服务验活失败。"

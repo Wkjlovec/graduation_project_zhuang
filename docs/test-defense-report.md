@@ -78,14 +78,14 @@ python3 deploy/scripts/benchmark_forum_cache.py --report-file docs/evidence-cach
 
 | 指标 | 数据 | 备注 |
 |---|---:|---|
-| 帖子列表首次请求（冷） | 见 `docs/cache-benchmark-report.md` | `benchmark_forum_cache.py` |
-| 帖子列表后续请求均值（热） | 见 `docs/cache-benchmark-report.md` | `benchmark_forum_cache.py` |
-| 回归脚本通过率 | 0%（0/2） | 样本：`regression-report.md`、`regression-report-expiry.md` |
-| 异常场景通过率 | 0%（0/6） | 当前样本中未进入异常场景校验（网关不可达） |
+| 帖子详情接口首次请求（冷） | 见 `docs/cache-benchmark-report.md` | `benchmark_forum_cache.py` |
+| 帖子详情接口后续请求均值（热） | 见 `docs/cache-benchmark-report.md` | `benchmark_forum_cache.py` |
+| 回归脚本通过率 | 100%（2/2） | 样本：`regression-report.md`、`regression-report-expiry.md` |
+| 异常场景通过率 | 100%（6/6） | 无 token、无权限、并发点赞、登出失效、refresh、token 过期 |
 
-统计口径说明（2026-03-19）：
-- 回归脚本通过率：以“是否整份报告通过”为单位，当前两份报告均失败（连接拒绝）。
-- 异常场景通过率：口径为 6 项（无 token、无权限、并发点赞、登出失效、refresh、token 过期），当前样本未进入这些步骤，按 0/6 计。
+统计口径说明（2026-03-20）：
+- 回归脚本通过率：以“是否整份报告通过”为单位，当前两份报告均通过。
+- 异常场景通过率：口径为 6 项（无 token、无权限、并发点赞、登出失效、refresh、token 过期），当前样本全部通过。
 
 ## 5. 判定标准
 

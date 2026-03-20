@@ -46,7 +46,7 @@ bash scripts/start-backend-all.sh
 
 模式说明：
 - `RUN_MODE=full`：要求 Nacos 可用，启动全部服务（含 gateway）
-- `RUN_MODE=direct`：无 Nacos 场景启动（不启动 gateway）
+- `RUN_MODE=direct`：无 Nacos 场景启动（gateway 使用静态路由）
 - `RUN_MODE=auto`：自动识别环境（默认）
 
 ### 1.3 一键验活与停止
