@@ -13,7 +13,7 @@ RUN_MODE="${RUN_MODE:-auto}"
 
 # 模式说明：
 # - full: 依赖 Nacos，启动 auth/forum/notification/media/search/gateway 全链路
-# - direct: 无 Nacos 场景，启动 auth/forum/notification/media/search（不启动 gateway）
+# - direct: 无 Nacos 场景，启动 auth/forum/notification/media/search/gateway（gateway 静态路由）
 # - auto: 运行时自动探测 Nacos 可达性并选择模式
 
 load_env() {
@@ -70,7 +70,7 @@ detect_mode() {
     echo "[INFO] 检测到 Nacos 可用，使用 full 模式。"
     echo "full" > "${MODE_FILE}"
   else
-    echo "[WARN] 未检测到 Nacos，使用 direct 模式（不启动 gateway）。"
+    echo "[WARN] 未检测到 Nacos，使用 direct 模式（gateway 静态路由）。"
     echo "direct" > "${MODE_FILE}"
   fi
 }
@@ -92,6 +92,20 @@ normalize_host() {
     return
   fi
   echo "${current}"
+}
+
+pid_matches_service() {
+  local pid="$1"
+  local service_name="$2"
+  if ! kill -0 "${pid}" >/dev/null 2>&1; then
+    return 1
+  fi
+  if [ ! -r "/proc/${pid}/cmdline" ]; then
+    return 1
+  fi
+  local cmdline
+  cmdline="$(tr '\0' ' ' < "/proc/${pid}/cmdline")"
+  [[ "${cmdline}" == *"${service_name}"* ]]
 }
 
 wait_health() {
@@ -133,10 +147,11 @@ start_service() {
 
   if [ -f "${pid_file}" ]; then
     old_pid="$(cat "${pid_file}")"
-    if kill -0 "${old_pid}" >/dev/null 2>&1; then
+    if pid_matches_service "${old_pid}" "${service_name}"; then
       echo "[WARN] ${service_name} 进程已存在（PID=${old_pid}），跳过启动。"
       return 0
     fi
+    echo "[WARN] ${service_name} PID 文件已过期（PID=${old_pid}），将重新启动。"
     rm -f "${pid_file}"
   fi
 

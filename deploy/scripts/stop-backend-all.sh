@@ -23,10 +23,30 @@ stop_service() {
     return 0
   fi
 
+  local child_pids
+  child_pids="$(pgrep -P "${pid}" || true)"
+
   echo "[INFO] 停止 ${service_name}（PID=${pid}）..."
+  if [ -n "${child_pids}" ]; then
+    # spring-boot:run 会派生实际 Java 子进程，需一并停止
+    kill ${child_pids} >/dev/null 2>&1 || true
+  fi
   kill "${pid}" >/dev/null 2>&1 || true
   for _ in {1..20}; do
-    if ! kill -0 "${pid}" >/dev/null 2>&1; then
+    local parent_alive=0
+    local child_alive=0
+    if kill -0 "${pid}" >/dev/null 2>&1; then
+      parent_alive=1
+    fi
+    if [ -n "${child_pids}" ]; then
+      for child_pid in ${child_pids}; do
+        if kill -0 "${child_pid}" >/dev/null 2>&1; then
+          child_alive=1
+          break
+        fi
+      done
+    fi
+    if [ "${parent_alive}" -eq 0 ] && [ "${child_alive}" -eq 0 ]; then
       rm -f "${pid_file}"
       echo "[OK] ${service_name} 已停止。"
       return 0
@@ -35,6 +55,9 @@ stop_service() {
   done
 
   echo "[WARN] ${service_name} 未在预期时间内退出，执行强制停止。"
+  if [ -n "${child_pids}" ]; then
+    kill -9 ${child_pids} >/dev/null 2>&1 || true
+  fi
   kill -9 "${pid}" >/dev/null 2>&1 || true
   rm -f "${pid_file}"
 }

@@ -20,6 +20,7 @@ import com.graduation.forum.repository.ForumSectionRepository;
 import com.graduation.forum.security.RequestUser;
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.cache.annotation.CacheEvict;
@@ -118,13 +119,17 @@ public class ForumService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = CACHE_POST_LIST, key = "T(java.lang.String).valueOf(#sectionId) + ':' + #page + ':' + #size")
+    @Cacheable(cacheNames = CACHE_POST_LIST, key = "(#sectionId == null ? 'all' : #sectionId) + ':' + #page + ':' + #size")
     public List<PostSummaryResponse> listPostsBySection(Long sectionId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         if (sectionId == null) {
-            return forumPostRepository.findAll(pageable).stream().map(this::toSummary).toList();
+            return forumPostRepository.findAll(pageable).stream()
+                    .map(this::toSummary)
+                    .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         }
-        return forumPostRepository.findBySectionId(sectionId, pageable).stream().map(this::toSummary).toList();
+        return forumPostRepository.findBySectionId(sectionId, pageable).stream()
+                .map(this::toSummary)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     @Transactional(readOnly = true)

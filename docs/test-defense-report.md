@@ -78,8 +78,8 @@ python3 deploy/scripts/benchmark_forum_cache.py --report-file docs/evidence-cach
 
 | 指标 | 数据 | 备注 |
 |---|---:|---|
-| 帖子详情接口首次请求（冷） | 见 `docs/cache-benchmark-report.md` | `benchmark_forum_cache.py` |
-| 帖子详情接口后续请求均值（热） | 见 `docs/cache-benchmark-report.md` | `benchmark_forum_cache.py` |
+| 帖子列表首次请求（冷） | 见 `docs/cache-benchmark-report.md` | `benchmark_forum_cache.py` |
+| 帖子列表后续请求均值（热） | 见 `docs/cache-benchmark-report.md` | `benchmark_forum_cache.py` |
 | 回归脚本通过率 | 100%（2/2） | 样本：`regression-report.md`、`regression-report-expiry.md` |
 | 异常场景通过率 | 100%（6/6） | 无 token、无权限、并发点赞、登出失效、refresh、token 过期 |
 
