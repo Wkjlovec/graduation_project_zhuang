@@ -7,8 +7,8 @@
     "jsx": "preserve",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "lib": ["ES2020", "DOM"],
-    "types": ["node"]
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": ["node", "vite/client", "vue/jsx"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
