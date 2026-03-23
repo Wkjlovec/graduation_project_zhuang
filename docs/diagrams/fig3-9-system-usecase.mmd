@@ -1,0 +1,16 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 45, 'nodeSpacing': 30}}}%%
+graph LR
+    Guest((游客)) --- A1([浏览帖子列表])
+    Guest --- A2([查看帖子详情])
+    Guest --- A3([关键词搜索])
+    Guest --- A4([查看通知摘要])
+    Guest --- A5([浏览媒体推荐])
+    Guest --- A6([注册])
+    User((注册用户)) --- B1([登录])
+    User --- B2([发布帖子])
+    User --- B3([发表/回复评论])
+    User --- B4([点赞])
+    User --- B5([查看个人通知])
+    User --- B6([编辑/删除自己的内容])
+    User --- B7([令牌刷新])
+    User --- B8([登出])
