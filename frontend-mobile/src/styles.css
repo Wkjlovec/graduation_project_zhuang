@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+  background: #f7f8fa;
+  font-family: Arial, sans-serif;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.page {
+  padding: 12px;
+}

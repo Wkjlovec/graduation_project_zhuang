@@ -1,0 +1,78 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: forum-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123456}
+      MYSQL_DATABASE: ${MYSQL_APP_DATABASE:-forum_system}
+      MYSQL_USER: ${MYSQL_APP_USER:-forum_user}
+      MYSQL_PASSWORD: ${MYSQL_APP_PASSWORD:-forum_pass_123}
+      TZ: ${TZ:-Asia/Shanghai}
+    command:
+      [
+        "mysqld",
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci"
+      ]
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    networks:
+      - forum-net
+
+  redis:
+    image: redis:7.4
+    container_name: forum-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    networks:
+      - forum-net
+
+  nacos:
+    image: nacos/nacos-server:v2.3.2
+    container_name: forum-nacos
+    restart: unless-stopped
+    environment:
+      MODE: standalone
+      NACOS_AUTH_ENABLE: "false"
+      PREFER_HOST_MODE: hostname
+      TZ: ${TZ:-Asia/Shanghai}
+    ports:
+      - "${NACOS_PORT:-8848}:8848"
+      - "9848:9848"
+      - "9849:9849"
+    volumes:
+      - nacos_data:/home/nacos/data
+      - nacos_logs:/home/nacos/logs
+    networks:
+      - forum-net
+
+networks:
+  forum-net:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  redis_data:
+  nacos_data:
+  nacos_logs:

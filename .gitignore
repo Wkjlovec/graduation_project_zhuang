@@ -1,0 +1,6 @@
+deploy/.env
+deploy/.runtime/
+**/target/
+**/node_modules/
+**/dist/
+**/__pycache__/
