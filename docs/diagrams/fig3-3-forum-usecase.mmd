@@ -1,0 +1,33 @@
+%%{init: {'theme': 'neutral'}}%%
+graph LR
+    Guest((游客))
+    User((注册用户))
+
+    subgraph 论坛核心业务模块
+        LIST[浏览帖子列表]
+        SECTION[按分区筛选]
+        DETAIL[查看帖子详情]
+        POST[发布帖子]
+        EDIT[编辑帖子]
+        DEL[删除帖子]
+        COMMENT[发表评论]
+        REPLY[回复评论]
+        EDITC[编辑评论]
+        DELC[删除评论]
+        LIKE[点赞]
+    end
+
+    Guest --> LIST
+    Guest --> SECTION
+    Guest --> DETAIL
+    User --> LIST
+    User --> SECTION
+    User --> DETAIL
+    User --> POST
+    User --> COMMENT
+    User --> REPLY
+    User --> LIKE
+    POST -.->|作者可| EDIT
+    POST -.->|作者可| DEL
+    COMMENT -.->|作者可| EDITC
+    COMMENT -.->|作者可| DELC

@@ -1,0 +1,30 @@
+%%{init: {'theme': 'neutral'}}%%
+graph LR
+    Guest((游客))
+    User((注册用户))
+
+    subgraph 通知服务
+        NHOME[通知首页摘要]
+        NLIST[个人通知列表]
+        NREAD[标记已读]
+    end
+
+    subgraph 搜索服务
+        SEARCH[关键词搜索帖子]
+    end
+
+    subgraph 媒体服务
+        MHOME[媒体首页展示]
+        MREC[音乐/书籍推荐]
+    end
+
+    Guest --> NHOME
+    Guest --> SEARCH
+    Guest --> MHOME
+    Guest --> MREC
+    User --> NHOME
+    User --> NLIST
+    User --> NREAD
+    User --> SEARCH
+    User --> MHOME
+    User --> MREC
