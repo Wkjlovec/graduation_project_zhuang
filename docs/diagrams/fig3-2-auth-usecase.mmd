@@ -1,19 +1,24 @@
-%%{init: {'theme': 'neutral'}}%%
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 35, 'nodeSpacing': 25}}}%%
 graph LR
     Guest((游客))
     User((注册用户))
 
     subgraph 用户认证模块
-        REG[注册]
-        LOGIN[登录]
-        REFRESH[令牌刷新]
-        LOGOUT[登出]
-        LOCK[失败计数与锁定]
+        direction TB
+        UC1([注册])
+        UC2([登录])
+        UC3([令牌刷新])
+        UC4([登出])
+        UC5([凭据校验])
+        UC6([失败计数\n与账户锁定])
+        UC7([删除Redis\n会话记录])
     end
 
-    Guest --> REG
-    Guest --> LOGIN
-    User --> LOGIN
-    User --> REFRESH
-    User --> LOGOUT
-    LOGIN -.->|触发| LOCK
+    Guest --- UC1
+    Guest --- UC2
+    User --- UC2
+    User --- UC3
+    User --- UC4
+    UC2 -..->|"≪include≫"| UC5
+    UC5 -..->|"≪extend≫"| UC6
+    UC4 -..->|"≪include≫"| UC7

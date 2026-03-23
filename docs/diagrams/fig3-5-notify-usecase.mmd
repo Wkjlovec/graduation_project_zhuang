@@ -1,0 +1,18 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 35, 'nodeSpacing': 25}}}%%
+graph LR
+    Guest((游客))
+    User((注册用户))
+
+    subgraph 通知服务模块
+        direction TB
+        UC1([通知首页摘要])
+        UC2([查看个人\n通知列表])
+        UC3([身份认证])
+        UC4([标记已读])
+    end
+
+    Guest --- UC1
+    User --- UC1
+    User --- UC2
+    UC2 -..->|"≪include≫"| UC3
+    UC2 -..->|"≪extend≫"| UC4
