@@ -1,0 +1,18 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 35, 'nodeSpacing': 25}}}%%
+graph LR
+    Guest((游客))
+    User((注册用户))
+
+    subgraph 搜索服务模块
+        direction TB
+        UC1([关键词搜索])
+        UC2([服务间调用\n获取帖子数据])
+        UC3([按分区筛选])
+        UC4([分页浏览])
+    end
+
+    Guest --- UC1
+    User --- UC1
+    UC1 -..->|"≪include≫"| UC2
+    UC1 -..->|"≪extend≫"| UC3
+    UC1 -..->|"≪extend≫"| UC4

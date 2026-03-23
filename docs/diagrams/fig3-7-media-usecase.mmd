@@ -1,0 +1,17 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 35, 'nodeSpacing': 25}}}%%
+graph LR
+    Guest((游客))
+    User((注册用户))
+
+    subgraph 媒体推荐服务模块
+        direction TB
+        UC1([媒体首页摘要])
+        UC2([查看推荐列表])
+        UC3([按类别筛选])
+    end
+
+    Guest --- UC1
+    Guest --- UC2
+    User --- UC1
+    User --- UC2
+    UC2 -..->|"≪extend≫"| UC3
