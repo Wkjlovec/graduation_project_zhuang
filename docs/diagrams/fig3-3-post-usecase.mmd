@@ -1,27 +1,12 @@
-%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 35, 'nodeSpacing': 25}}}%%
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 50, 'nodeSpacing': 35}}}%%
 graph LR
-    Guest((游客))
-    User((注册用户))
-
-    subgraph 帖子管理模块
-        direction TB
-        UC1([浏览帖子列表])
-        UC2([分页查询])
-        UC3([按分区筛选])
-        UC4([查看帖子详情])
-        UC5([发布帖子])
-        UC6([身份认证])
-        UC7([编辑帖子])
-        UC8([删除帖子])
-    end
-
-    Guest --- UC1
-    Guest --- UC4
-    User --- UC1
-    User --- UC4
-    User --- UC5
-    UC1 -..->|"≪include≫"| UC2
-    UC3 -..->|"≪extend≫"| UC1
-    UC5 -..->|"≪include≫"| UC6
-    UC7 -..->|"≪extend≫"| UC5
-    UC8 -..->|"≪extend≫"| UC5
+    Guest((游客)) --- UC1([浏览帖子列表])
+    Guest --- UC3([查看帖子详情])
+    User((注册用户)) --- UC1
+    User --- UC3
+    User --- UC4([发布帖子])
+    UC1 -..->|"‹‹include››"| UC2([分页查询])
+    UC6([按分区筛选]) -..->|"‹‹extend››"| UC1
+    UC4 -..->|"‹‹include››"| UC5([身份认证])
+    UC7([编辑帖子]) -..->|"‹‹extend››"| UC4
+    UC8([删除帖子]) -..->|"‹‹extend››"| UC4
