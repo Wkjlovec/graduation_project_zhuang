@@ -1,43 +1,28 @@
-flowchart TB
-    Start([用户打开论坛首页]) --> LoadHome[系统加载帖子列表\n通知摘要\n媒体推荐]
-    LoadHome --> Browse{浏览公开内容}
-    Browse -->|浏览帖子列表| ViewList[按分区筛选 / 分页浏览]
-    Browse -->|查看帖子详情| ViewDetail[查看正文 / 评论 / 点赞数]
-    Browse -->|搜索帖子| Search[输入关键词检索]
-    Browse -->|查看通知摘要| ViewNotice[查看最新公告]
-    Browse -->|浏览媒体推荐| ViewMedia[音乐 / 书籍推荐]
+flowchart TD
+    Start([用户打开论坛首页]) --> LoadHome[加载帖子列表 / 通知摘要 / 媒体推荐]
+    LoadHome --> BrowsePublic[浏览公开内容\n帖子列表 · 详情 · 搜索\n通知摘要 · 媒体推荐]
+    BrowsePublic --> IsWrite{尝试写操作?}
+    IsWrite -->|否| BrowsePublic
 
-    ViewList --> WriteOp{尝试写操作?}
-    ViewDetail --> WriteOp
-    Search --> WriteOp
-    ViewNotice --> WriteOp
-    ViewMedia --> WriteOp
+    IsWrite -->|是| HasToken{携带有效令牌?}
 
-    WriteOp -->|否, 继续浏览| Browse
-    WriteOp -->|是| CheckToken{请求头携带\n有效令牌?}
+    HasToken -->|有令牌| Verify{JWT 签名 +\nRedis 会话校验}
+    Verify -->|通过| OwnerChk{需要作者权限?}
+    OwnerChk -->|不需要 或 是作者| Exec[执行写操作\n发帖 / 评论 / 点赞 / 标记已读]
+    OwnerChk -->|非作者| Deny403[返回 403 权限异常]
+    Exec --> Done([操作完成])
 
-    CheckToken -->|无令牌| Reject401[网关返回 401\n前端引导登录]
-    Reject401 --> LoginPage[跳转登录页面]
-    LoginPage --> InputCred[输入用户名和密码]
-    InputCred --> ValidateCred{凭据校验}
-    ValidateCred -->|成功| IssueToken[签发访问令牌\n和刷新令牌]
-    ValidateCred -->|失败| FailCount{连续失败\n达到 5 次?}
-    FailCount -->|否| InputCred
-    FailCount -->|是| Locked[账户锁定 10 分钟\n页面提示剩余时间]
-    Locked --> InputCred
+    Verify -->|失败 / 过期| CanRefresh{刷新令牌有效?}
+    CanRefresh -->|是| Silent[静默刷新\n用户无感知]
+    Silent --> OwnerChk
 
-    IssueToken --> ExecWrite[执行写操作\n发帖/评论/点赞/通知标记]
+    HasToken -->|无令牌| Guide401[网关返回 401\n前端引导登录]
+    Guide401 --> Login[跳转登录页面\n输入用户名和密码]
+    CanRefresh -->|否| Login
 
-    CheckToken -->|有令牌| VerifyJWT{JWT 签名\n+ Redis 会话校验}
-    VerifyJWT -->|校验通过| CheckOwner{操作需要\n作者权限?}
-    VerifyJWT -->|校验失败\n令牌过期| RefreshCheck{刷新令牌\n是否有效?}
-    RefreshCheck -->|有效| SilentRefresh[静默刷新令牌\n用户无感知]
-    SilentRefresh --> CheckOwner
-    RefreshCheck -->|无效| LoginPage
-
-    CheckOwner -->|不需要| ExecWrite
-    CheckOwner -->|需要, 是作者| ExecWrite
-    CheckOwner -->|需要, 非作者| Reject403[返回 403\n权限异常提示]
-    Reject403 --> Browse
-
-    ExecWrite --> Done([操作完成\n返回结果页])
+    Login --> AuthOK{凭据校验通过?}
+    AuthOK -->|是| Issue[签发令牌对]
+    Issue --> Exec
+    AuthOK -->|否| Fail5{连续失败 5 次?}
+    Fail5 -->|否| Login
+    Fail5 -->|是| Lock[锁定 10 分钟\n提示剩余时间]
