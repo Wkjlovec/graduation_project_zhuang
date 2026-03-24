@@ -1,61 +1,68 @@
+---
+config:
+  er:
+    layoutDirection: TB
+---
 erDiagram
+    user_account ||--o{ forum_post : "author_id"
+    forum_section ||--o{ forum_post : "section_id"
+    forum_post ||--o{ post_comment : "post_id"
+    forum_post ||--o{ post_like : "post_id"
+
     user_account {
         BIGINT id PK
-        VARCHAR_64 username UK
-        VARCHAR_255 password
-        VARCHAR_64 nickname
+        VARCHAR username UK
+        VARCHAR password
+        VARCHAR nickname
         DATETIME created_at
         DATETIME updated_at
     }
+
     forum_section {
         BIGINT id PK
-        VARCHAR_64 name UK
-        VARCHAR_256 description
+        VARCHAR name UK
+        VARCHAR description
         INT sort_order
         BOOLEAN enabled
     }
+
     forum_post {
         BIGINT id PK
-        VARCHAR_128 title
+        VARCHAR title
         TEXT content
         BIGINT author_id FK
-        VARCHAR_64 author_name
+        VARCHAR author_name
         BIGINT section_id FK
-        VARCHAR_64 section_name
+        VARCHAR section_name
         INT like_count
         DATETIME created_at
         DATETIME updated_at
     }
+
     post_comment {
         BIGINT id PK
         BIGINT post_id FK
         BIGINT user_id FK
-        VARCHAR_64 username
+        VARCHAR username
         TEXT content
         BIGINT parent_comment_id
         DATETIME created_at
         DATETIME updated_at
     }
+
     post_like {
         BIGINT id PK
         BIGINT post_id FK
         BIGINT user_id FK
         DATETIME created_at
     }
+
     notification_message {
         BIGINT id PK
-        VARCHAR_32 type
+        VARCHAR type
         BIGINT user_id
-        VARCHAR_128 title
-        VARCHAR_1000 content
+        VARCHAR title
+        VARCHAR content
         BOOLEAN is_read
         DATETIME created_at
     }
-    user_account ||--o{ forum_post : "author_id"
-    user_account ||--o{ post_comment : "user_id"
-    user_account ||--o{ post_like : "user_id"
-    user_account ||--o{ notification_message : "user_id"
-    forum_section ||--o{ forum_post : "section_id"
-    forum_post ||--o{ post_comment : "post_id"
-    forum_post ||--o{ post_like : "post_id"
-    post_comment ||--o{ post_comment : "parent_comment_id"
