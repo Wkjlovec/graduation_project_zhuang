@@ -1,14 +1,14 @@
 %%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 40, 'nodeSpacing': 25}}}%%
 graph LR
     A["提交评论\n请求"] --> B{"身份\n有效?"}
-    B -->|否| C["401"]
-    B -->|是| D{"帖子\n存在?"}
-    D -->|否| E["404"]
-    D -->|是| F{"parent\nCommentId\n为空?"}
-    F -->|是| G["一级评论"]
-    F -->|否| H{"父评论\n存在?"}
-    H -->|否| I["404"]
-    H -->|是| J["二级回复"]
+    B -->|No| C["401"]
+    B -->|Yes| D{"帖子\n存在?"}
+    D -->|No| E["404"]
+    D -->|Yes| F{"parent\nCommentId\n为空?"}
+    F -->|Yes| G["一级评论"]
+    F -->|No| H{"父评论\n存在?"}
+    H -->|No| I["404"]
+    H -->|Yes| J["二级回复"]
     G --> K["持久化\n淘汰缓存"]
     J --> K
     K --> L["返回评论"]

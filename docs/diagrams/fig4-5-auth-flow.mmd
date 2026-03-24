@@ -1,12 +1,12 @@
 %%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 40, 'nodeSpacing': 25}}}%%
 graph LR
     A["用户提交\n用户名+密码"] --> B{"账户\n已锁定?"}
-    B -->|是| C["返回错误"]
-    B -->|否| D{"校验用户名\n和密码"}
+    B -->|Yes| C["返回错误"]
+    B -->|No| D{"校验用户名\n和密码"}
     D -->|失败| E["Redis\n失败计数+1"]
     E --> F{"达到\n阈值5次?"}
-    F -->|是| G["锁定600秒"]
-    F -->|否| H["返回错误"]
+    F -->|Yes| G["锁定600秒"]
+    F -->|No| H["返回错误"]
     D -->|成功| I["清除失败计数"]
     I --> J["生成sessionId"]
     J --> K["签发双令牌"]

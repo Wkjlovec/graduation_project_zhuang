@@ -1,17 +1,17 @@
 %%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 35, 'nodeSpacing': 20}}}%%
 graph LR
     A["接收请求"] --> B{"OPTIONS?"}
-    B -->|是| C["放行"]
-    B -->|否| D{"GET且\n在白名单?"}
-    D -->|是| C
-    D -->|否| E{"匹配permit\nPrefixes?"}
-    E -->|是| C
-    E -->|否| F{"Bearer\n令牌存在?"}
-    F -->|否| G["401"]
-    F -->|是| H{"JWT签名\n通过?"}
-    H -->|否| G
-    H -->|是| I{"声明字段\n有效?"}
-    I -->|否| G
-    I -->|是| J{"Redis会话\n有效?"}
-    J -->|否| G
-    J -->|是| K["透传身份\n转发请求"]
+    B -->|Yes| C["放行"]
+    B -->|No| D{"GET且\n在白名单?"}
+    D -->|Yes| C
+    D -->|No| E{"匹配permit\nPrefixes?"}
+    E -->|Yes| C
+    E -->|No| F{"Bearer\n令牌存在?"}
+    F -->|No| G["401"]
+    F -->|Yes| H{"JWT签名\n通过?"}
+    H -->|No| G
+    H -->|Yes| I{"声明字段\n有效?"}
+    I -->|No| G
+    I -->|Yes| J{"Redis会话\n有效?"}
+    J -->|No| G
+    J -->|Yes| K["透传身份\n转发请求"]
