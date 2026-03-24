@@ -1,6 +1,9 @@
 <template>
   <div class="page" v-if="profile">
     <van-nav-bar title="个人中心" left-arrow @click-left="goBack" />
+    <div class="avatar-wrap">
+      <div class="avatar-fallback">{{ avatarText }}</div>
+    </div>
     <van-cell-group inset>
       <van-cell title="用户ID" :value="String(profile.userId)" />
       <van-cell title="用户名" :value="profile.username" />
@@ -15,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { showToast } from "vant";
 import { getProfile, type ProfilePayload } from "../api/auth";
@@ -26,6 +29,14 @@ const router = useRouter();
 const authStore = useAuthStore();
 const profile = ref<ProfilePayload | null>(null);
 const logoutLoading = ref(false);
+const avatarText = computed(() => {
+  const nickname = profile.value?.nickname?.trim();
+  if (nickname) {
+    return nickname.slice(0, 1).toUpperCase();
+  }
+  const username = profile.value?.username?.trim();
+  return username ? username.slice(0, 1).toUpperCase() : "U";
+});
 
 onMounted(async () => {
   profile.value = await getProfile();
@@ -53,3 +64,24 @@ function goNotifications() {
   router.push("/notifications");
 }
 </script>
+
+<style scoped>
+.avatar-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0 8px;
+}
+
+.avatar-fallback {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #2d8cf0;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+}
+</style>

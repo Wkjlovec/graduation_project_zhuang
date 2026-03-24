@@ -64,6 +64,19 @@
       <van-cell v-for="(item, idx) in mediaHome?.books ?? []" :key="'b' + idx" :title="item.title" :label="item.author + ' · ' + item.reason" />
     </van-cell-group>
 
+    <van-cell-group inset style="margin-bottom: 8px;">
+      <van-cell title="热门排行 TOP5" />
+      <van-cell
+        v-for="(item, idx) in hotPosts"
+        :key="'hot-' + item.postId"
+        :title="String(idx + 1) + '. ' + item.title"
+        :label="'点赞 ' + item.likeCount"
+        is-link
+        @click="goDetail(item.postId)"
+      />
+      <van-empty v-if="hotPosts.length === 0" description="暂无热门数据" />
+    </van-cell-group>
+
     <div v-if="loadingPosts" class="loading-box">
       <van-loading size="24px" type="spinner" /> 加载中...
     </div>
@@ -104,7 +117,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { listPosts, listSections, searchPosts, type PostSummary, type SectionItem } from "../api/forum";
+import { listHotPosts, listPosts, listSections, searchPosts, type PostSummary, type SectionItem } from "../api/forum";
 import { getNotificationHome, type NotificationHomePayload } from "../api/notification";
 import { getMediaHome, type MediaHomePayload } from "../api/media";
 
@@ -114,6 +127,7 @@ const sections = ref<SectionItem[]>([]);
 const keyword = ref("");
 const notificationHome = ref<NotificationHomePayload | null>(null);
 const mediaHome = ref<MediaHomePayload | null>(null);
+const hotPosts = ref<PostSummary[]>([]);
 const selectedSectionId = ref<number | undefined>(undefined);
 const loadingPosts = ref(false);
 const listError = ref("");
@@ -188,8 +202,10 @@ onMounted(async () => {
   try {
     notificationHome.value = await getNotificationHome();
     mediaHome.value = await getMediaHome();
+    hotPosts.value = await listHotPosts();
   } catch {
     // 首页推荐/通知失败时不阻塞主列表。
+    hotPosts.value = [];
   }
   await loadPosts();
 });

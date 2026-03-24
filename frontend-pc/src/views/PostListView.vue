@@ -86,6 +86,14 @@
           {{ item.title }} - {{ item.author }}
         </p>
       </el-card>
+
+      <el-card class="side-card" shadow="hover">
+        <template #header><strong>热门排行 TOP5</strong></template>
+        <el-empty v-if="hotPosts.length === 0" description="暂无热门数据" />
+        <p v-for="(item, idx) in hotPosts" :key="'hot-' + item.postId" class="side-item hot-item" @click="goDetail(item.postId)">
+          {{ idx + 1 }}. {{ item.title }}（👍 {{ item.likeCount }}）
+        </p>
+      </el-card>
     </el-col>
   </el-row>
 </template>
@@ -93,7 +101,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { listPosts, listSections, searchPosts, type PostSummary, type SectionItem } from "../api/forum";
+import { listHotPosts, listPosts, listSections, searchPosts, type PostSummary, type SectionItem } from "../api/forum";
 import { getNotificationHome, type NotificationHomePayload } from "../api/notification";
 import { getMediaHome, type MediaHomePayload } from "../api/media";
 
@@ -104,6 +112,7 @@ const sections = ref<SectionItem[]>([]);
 const selectedSectionId = ref<number | undefined>(undefined);
 const notificationHome = ref<NotificationHomePayload | null>(null);
 const mediaHome = ref<MediaHomePayload | null>(null);
+const hotPosts = ref<PostSummary[]>([]);
 const loadingList = ref(false);
 const loadingSide = ref(false);
 const listError = ref("");
@@ -136,10 +145,17 @@ async function loadSideModules() {
   loadingSide.value = true;
   sideError.value = "";
   try {
-    notificationHome.value = await getNotificationHome();
-    mediaHome.value = await getMediaHome();
+    const [notificationResult, mediaResult, hotPostResult] = await Promise.all([
+      getNotificationHome(),
+      getMediaHome(),
+      listHotPosts()
+    ]);
+    notificationHome.value = notificationResult;
+    mediaHome.value = mediaResult;
+    hotPosts.value = hotPostResult;
   } catch (error) {
     sideError.value = error instanceof Error ? error.message : "加载首页模块失败";
+    hotPosts.value = [];
   } finally {
     loadingSide.value = false;
   }
@@ -235,6 +251,14 @@ function goDetail(postId: number) {
   font-size: 13px;
   color: #555;
   line-height: 1.6;
+}
+
+.hot-item {
+  cursor: pointer;
+}
+
+.hot-item:hover {
+  color: #1f4b99;
 }
 
 .unread {

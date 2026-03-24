@@ -108,3 +108,15 @@ export async function searchPosts(keyword: string, sectionId?: number, page = 0,
   });
   return response.data.data;
 }
+
+export async function listHotPosts(limit = 5, sampleSize = 50) {
+  const posts = await listPosts(undefined, 0, sampleSize);
+  return [...posts]
+    .sort((a, b) => {
+      if (b.likeCount !== a.likeCount) {
+        return b.likeCount - a.likeCount;
+      }
+      return String(b.createdAt).localeCompare(String(a.createdAt));
+    })
+    .slice(0, limit);
+}
