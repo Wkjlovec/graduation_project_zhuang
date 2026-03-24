@@ -1,11 +1,10 @@
-%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 38, 'nodeSpacing': 22}}}%%
-graph TD
-    A["用户输入关键词"] --> B["前端发送GET\n/api/search/posts"]
-    B --> C["网关转发至\n搜索服务:8085"]
-    C --> D["SearchService\n调用ForumClient"]
-    D --> E["OpenFeign请求\n论坛服务GET /posts"]
-    E --> F["论坛服务返回\n帖子列表"]
-    F --> G{"keyword为空?"}
-    G -->|是| H["直接返回全部结果"]
-    G -->|否| I["内存过滤：匹配\n标题/摘要/作者/分区"]
-    I --> J["返回匹配结果"]
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 40, 'nodeSpacing': 25}}}%%
+graph LR
+    A["输入\n关键词"] --> B["GET\n/api/search/posts"]
+    B --> C["网关转发\n搜索服务"]
+    C --> D["OpenFeign\n调用论坛服务"]
+    D --> E["返回\n帖子列表"]
+    E --> F{"keyword\n为空?"}
+    F -->|是| G["返回全部"]
+    F -->|否| H["内存过滤\n标题/摘要\n作者/分区"]
+    H --> I["返回匹配结果"]

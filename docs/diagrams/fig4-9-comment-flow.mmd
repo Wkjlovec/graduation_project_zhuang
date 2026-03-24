@@ -1,15 +1,14 @@
-%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 38, 'nodeSpacing': 22}}}%%
-graph TD
-    A["用户提交评论请求"] --> B{"用户身份有效?"}
-    B -->|否| C["返回401"]
-    B -->|是| D{"帖子存在?"}
-    D -->|否| E["返回404"]
-    D -->|是| F{"parentCommentId\n为空?"}
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 40, 'nodeSpacing': 25}}}%%
+graph LR
+    A["提交评论\n请求"] --> B{"身份\n有效?"}
+    B -->|否| C["401"]
+    B -->|是| D{"帖子\n存在?"}
+    D -->|否| E["404"]
+    D -->|是| F{"parent\nCommentId\n为空?"}
     F -->|是| G["一级评论"]
-    F -->|否| H{"父评论存在\n且属于该帖子?"}
-    H -->|否| I["返回404"]
+    F -->|否| H{"父评论\n存在?"}
+    H -->|否| I["404"]
     H -->|是| J["二级回复"]
-    G --> K["构建PostComment实体\n持久化到MySQL"]
+    G --> K["持久化\n淘汰缓存"]
     J --> K
-    K --> L["淘汰列表+详情缓存"]
-    L --> M["返回评论信息"]
+    K --> L["返回评论"]

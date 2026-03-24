@@ -1,10 +1,10 @@
-%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 38, 'nodeSpacing': 22}}}%%
-graph TD
-    A["用户提交发帖请求"] --> B{"用户身份信息\n非空?"}
-    B -->|否| C["返回401"]
-    B -->|是| D{"sectionId对应\n分区存在?"}
-    D -->|否| E["返回404"]
-    D -->|是| F["构建ForumPost实体\n填充标题/正文/作者/分区"]
-    F --> G["持久化到MySQL"]
-    G --> H["淘汰帖子列表缓存\n@CacheEvict CACHE_POST_LIST"]
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 40, 'nodeSpacing': 25}}}%%
+graph LR
+    A["提交发帖\n请求"] --> B{"身份信息\n非空?"}
+    B -->|否| C["401"]
+    B -->|是| D{"分区\n存在?"}
+    D -->|否| E["404"]
+    D -->|是| F["构建实体\n填充字段"]
+    F --> G["持久化MySQL"]
+    G --> H["淘汰列表缓存"]
     H --> I["返回帖子摘要"]

@@ -1,14 +1,12 @@
-%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 38, 'nodeSpacing': 22}}}%%
-graph TD
-    A["请求返回401"] --> B{"是认证接口?"}
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 40, 'nodeSpacing': 25}}}%%
+graph LR
+    A["请求\n返回401"] --> B{"认证\n接口?"}
     B -->|是| C["直接报错"]
-    B -->|否| D{"有refreshToken?"}
-    D -->|否| E["清除存储\n跳转登录页"]
-    D -->|是| F{"已有刷新\n请求进行中?"}
-    F -->|是| G["加入等待队列\n刷新完成后重试"]
-    F -->|否| H["发起POST\n/api/auth/refresh"]
-    H --> I{"刷新成功?"}
-    I -->|否| J["释放队列null\n清除存储\n跳转登录页"]
-    I -->|是| K["更新localStorage"]
-    K --> L["释放队列\n通知等待请求重试"]
-    L --> M["重试原始请求"]
+    B -->|否| D{"有refresh\nToken?"}
+    D -->|否| E["清除存储\n跳转登录"]
+    D -->|是| F{"刷新中?"}
+    F -->|是| G["加入队列\n等待重试"]
+    F -->|否| H["POST\n/api/auth/refresh"]
+    H --> I{"成功?"}
+    I -->|否| J["释放队列\n跳转登录"]
+    I -->|是| K["更新存储\n释放队列\n重试请求"]
