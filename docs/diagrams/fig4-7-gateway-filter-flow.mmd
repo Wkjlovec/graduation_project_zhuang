@@ -1,0 +1,18 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 35, 'nodeSpacing': 20}}}%%
+graph TD
+    A["接收HTTP请求"] --> B{"OPTIONS请求?"}
+    B -->|是| C["直接放行"]
+    B -->|否| D{"GET且路径在\n公开读白名单?"}
+    D -->|是| C
+    D -->|否| E{"路径匹配\npermitPathPrefixes?"}
+    E -->|是| C
+    E -->|否| F{"Authorization头\n存在且以Bearer开头?"}
+    F -->|否| G["返回401"]
+    F -->|是| H{"JWT签名校验通过?"}
+    H -->|否| G
+    H -->|是| I{"uid/username/sid/typ\n声明字段有效?"}
+    I -->|否| G
+    I -->|是| J{"Redis会话记录\n存在且userId匹配?"}
+    J -->|否| G
+    J -->|是| K["写入X-User-Id\nX-Username请求头"]
+    K --> L["转发至下游服务"]
