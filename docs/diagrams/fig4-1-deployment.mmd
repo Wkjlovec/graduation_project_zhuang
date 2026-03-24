@@ -11,30 +11,30 @@ graph TB
     subgraph 业务服务层 各服务均注册至Nacos
         direction LR
         AUTH["认证服务\n:8081"]
-        FORUM["论坛服务\n:8082"]
         NOTIFY["通知服务\n:8083"]
+        FORUM["论坛服务\n:8082"]
         MEDIA["媒体服务\n:8084"]
         SEARCH["搜索服务\n:8085"]
     end
 
     subgraph 基础设施层 Docker Compose
         direction LR
-        NACOS["Nacos\n:8848"]
         DB[("MySQL\n:3306")]
         RD[("Redis\n:6379")]
+        NACOS["Nacos\n:8848"]
     end
 
     PC --> GW
     MOB --> GW
     GW --> AUTH
-    GW --> FORUM
     GW --> NOTIFY
+    GW --> FORUM
     GW --> MEDIA
     GW --> SEARCH
     SEARCH -.->|OpenFeign| FORUM
     AUTH --> DB
-    FORUM --> DB
     NOTIFY --> DB
+    FORUM --> DB
     AUTH --> RD
     FORUM --> RD
     GW --> RD
