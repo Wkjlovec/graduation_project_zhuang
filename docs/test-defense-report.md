@@ -24,6 +24,12 @@ bash deploy/scripts/generate-test-reports.sh
 python3 deploy/scripts/run_system_regression.py --report-file docs/regression-report.md
 ```
 
+执行命令（输出安全测试报告）：
+
+```bash
+python3 deploy/scripts/run_system_regression.py --report-file docs/regression-report.md --security-report-file docs/security-test-report.md
+```
+
 执行命令（含 token 过期）：
 
 ```bash
@@ -42,9 +48,17 @@ python3 deploy/scripts/benchmark_forum_cache.py --report-file docs/cache-benchma
 python3 deploy/scripts/benchmark_forum_cache.py --report-file docs/evidence-cache-benchmark.md
 ```
 
+执行命令（并发负载测试）：
+
+```bash
+python3 deploy/scripts/load_test_concurrent.py --report-file docs/concurrent-load-report.md
+```
+
 产出物：
 - `docs/cache-benchmark-report.md`
 - `docs/evidence-cache-benchmark.md`（兼容旧命名）
+- `docs/concurrent-load-report.md`
+- `docs/security-test-report.md`
 
 > 说明：该脚本会对同一帖子列表接口先做 1 次“冷请求”，再做 N 次“热请求”（默认 20 次），自动输出均值、P95 与相对提升百分比，可直接用于论文与答辩表格。
 
@@ -73,6 +87,13 @@ python3 deploy/scripts/benchmark_forum_cache.py --report-file docs/evidence-cach
 3. 打开首页展示通知/推荐  
 4. 演示无权限删除与并发点赞重复拦截  
 5. 演示登出后 token 失效
+
+## 3.1 接口测试与兼容性文档
+
+新增文档：
+- `docs/api-test-cases.md`（22 个接口测试用例表）
+- `docs/security-test-cases.md`（安全测试用例与结果模板）
+- `docs/compatibility-test-matrix.md`（浏览器与移动端兼容性测试记录）
 
 ## 4. 性能与稳定性简表（可填）
 

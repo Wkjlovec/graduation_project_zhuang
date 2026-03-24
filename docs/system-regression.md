@@ -34,6 +34,14 @@ bash deploy/scripts/generate-test-reports.sh
 python3 deploy/scripts/run_system_regression.py --report-file docs/regression-report.md
 ```
 
+仅生成安全测试明细报告（由回归脚本提炼）：
+
+```bash
+python3 deploy/scripts/run_system_regression.py \
+  --report-file docs/regression-report.md \
+  --security-report-file docs/security-test-report.md
+```
+
 指定网关地址：
 
 ```bash
@@ -65,6 +73,13 @@ python3 deploy/scripts/run_system_regression.py --verify-expiry --expiry-wait-se
 11. refresh 获取新 access token 并可访问受保护接口  
 12. （可选）token 过期后访问受保护接口失败
 
+新增安全向量场景（同脚本内执行）：
+
+13. 非法 Token 拦截  
+14. 通知接口无 Token 拦截  
+15. 搜索关键词 SQL 注入基础向量（`' OR 1=1 --`）  
+16. 搜索关键词 XSS 基础向量（`<script>alert(1)</script>`）
+
 ## 4. 失败处理
 
 脚本失败会返回非 0 并输出失败场景与接口响应，可用于快速定位问题。
@@ -74,3 +89,19 @@ python3 deploy/scripts/run_system_regression.py --verify-expiry --expiry-wait-se
 当前云端环境未启动网关/微服务时，已保留一次真实失败报告用于排障：
 
 - `docs/regression-report-cloud.md`
+
+## 6. 并发负载测试
+
+为补齐并发性能验证，新增脚本：
+
+```bash
+python3 deploy/scripts/load_test_concurrent.py \
+  --base-url "http://127.0.0.1:8080" \
+  --path "/api/forum/posts?page=0&size=10" \
+  --concurrency-levels "10,50,100" \
+  --requests-per-user 20 \
+  --report-file docs/concurrent-load-report.md
+```
+
+输出：
+- `docs/concurrent-load-report.md`（并发量 vs 平均响应/P95/成功率/QPS 对照表 + Mermaid 曲线图）

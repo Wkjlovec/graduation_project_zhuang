@@ -28,14 +28,18 @@ check_forum_direct() {
 
 run_full() {
   echo "[INFO] 生成基础回归报告..."
-  python3 deploy/scripts/run_system_regression.py --base-url "${BASE_URL}" --report-file docs/regression-report.md
+  python3 deploy/scripts/run_system_regression.py \
+    --base-url "${BASE_URL}" \
+    --report-file docs/regression-report.md \
+    --security-report-file docs/security-test-report.md
 
   echo "[INFO] 生成过期场景回归报告..."
   python3 deploy/scripts/run_system_regression.py \
     --base-url "${BASE_URL}" \
     --verify-expiry \
     --expiry-wait-seconds "${EXPIRY_WAIT_SECONDS}" \
-    --report-file docs/regression-report-expiry.md
+    --report-file docs/regression-report-expiry.md \
+    --security-report-file docs/security-test-report-expiry.md
 
   echo "[INFO] 生成缓存对比报告..."
   python3 deploy/scripts/benchmark_forum_cache.py \
@@ -46,6 +50,14 @@ run_full() {
     --base-url "${BASE_URL}" \
     --warm-runs 30 \
     --report-file docs/evidence-cache-benchmark.md
+
+  echo "[INFO] 生成并发负载测试报告..."
+  python3 deploy/scripts/load_test_concurrent.py \
+    --base-url "${BASE_URL}" \
+    --path "/api/forum/posts?page=0&size=10" \
+    --concurrency-levels "10,50,100" \
+    --requests-per-user 20 \
+    --report-file docs/concurrent-load-report.md
 }
 
 run_direct() {
@@ -60,6 +72,14 @@ run_direct() {
     --path /posts/1 \
     --warm-runs 30 \
     --report-file docs/evidence-cache-benchmark.md
+
+  echo "[INFO] 生成并发负载测试报告（forum 直连）..."
+  python3 deploy/scripts/load_test_concurrent.py \
+    --base-url "${FORUM_BASE_URL}" \
+    --path "/posts?page=0&size=10" \
+    --concurrency-levels "10,50,100" \
+    --requests-per-user 20 \
+    --report-file docs/concurrent-load-report.md
 }
 
 main() {
@@ -103,11 +123,15 @@ main() {
   if [ "${selected_mode}" = "full" ]; then
     echo "  - docs/regression-report.md"
     echo "  - docs/regression-report-expiry.md"
+    echo "  - docs/security-test-report.md"
+    echo "  - docs/security-test-report-expiry.md"
     echo "  - docs/cache-benchmark-report.md"
     echo "  - docs/evidence-cache-benchmark.md"
+    echo "  - docs/concurrent-load-report.md"
   else
     echo "  - docs/cache-benchmark-report.md"
     echo "  - docs/evidence-cache-benchmark.md"
+    echo "  - docs/concurrent-load-report.md"
   fi
 }
 

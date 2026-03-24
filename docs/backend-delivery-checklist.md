@@ -234,11 +234,11 @@ CI（持续集成）指代码提交后自动执行构建、测试、质量检查
 执行：
 
 ```bash
-cd deploy
-bash scripts/generate-test-reports.sh
+cd /workspace
+bash deploy/scripts/generate-test-reports.sh
 ```
 
 模式：
-- `RUN_MODE=full`：网关可达时生成回归+过期+缓存报告
+- `RUN_MODE=full`：网关可达时生成回归+过期+安全+缓存+并发报告
 - `RUN_MODE=direct`：无网关/Nacos时生成缓存报告（forum 直连）
 - `RUN_MODE=auto`：自动判断（默认）
