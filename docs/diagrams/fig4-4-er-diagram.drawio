@@ -1,0 +1,11 @@
+<mxfile>
+  <diagram name="ER">
+    <mxGraphModel dx="1100" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="note" value="说明：实线为核心关联，虚线为 user_id 关联和自引用" style="text;html=1;align=left;verticalAlign=middle;fontSize=9;fontColor=#999;" vertex="1" parent="1"><mxGeometry x="20" y="810" width="400" height="20" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
