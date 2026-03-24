@@ -1,4 +1,4 @@
-%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 45, 'nodeSpacing': 30}}}%%
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 50, 'nodeSpacing': 35}}}%%
 graph TB
     subgraph 用户接入层
         direction LR
@@ -8,29 +8,29 @@ graph TB
 
     GW["Spring Cloud Gateway :8080"]
 
-    subgraph 业务服务层
+    subgraph 业务服务层 各服务均注册至Nacos
         direction LR
-        AUTH["认证服务 :8081"]
-        FORUM["论坛服务 :8082"]
-        NOTIFY["通知服务 :8083"]
-        MEDIA["媒体服务 :8084"]
-        SEARCH["搜索服务 :8085"]
+        AUTH["认证服务\n:8081"]
+        FORUM["论坛服务\n:8082"]
+        NOTIFY["通知服务\n:8083"]
+        MEDIA["媒体服务\n:8084"]
+        SEARCH["搜索服务\n:8085"]
     end
 
     subgraph 基础设施层 Docker Compose
         direction LR
-        NACOS["Nacos :8848"]
-        DB[("MySQL :3306")]
-        RD[("Redis :6379")]
+        NACOS["Nacos\n:8848"]
+        DB[("MySQL\n:3306")]
+        RD[("Redis\n:6379")]
     end
 
-    PC -->|HTTP| GW
-    MOB -->|HTTP| GW
-    GW -->|路由转发| AUTH
-    GW -->|路由转发| FORUM
-    GW -->|路由转发| NOTIFY
-    GW -->|路由转发| MEDIA
-    GW -->|路由转发| SEARCH
+    PC --> GW
+    MOB --> GW
+    GW --> AUTH
+    GW --> FORUM
+    GW --> NOTIFY
+    GW --> MEDIA
+    GW --> SEARCH
     SEARCH -.->|OpenFeign| FORUM
     AUTH --> DB
     FORUM --> DB
@@ -38,9 +38,3 @@ graph TB
     AUTH --> RD
     FORUM --> RD
     GW --> RD
-    GW -.-o NACOS
-    AUTH -.-o NACOS
-    FORUM -.-o NACOS
-    NOTIFY -.-o NACOS
-    MEDIA -.-o NACOS
-    SEARCH -.-o NACOS

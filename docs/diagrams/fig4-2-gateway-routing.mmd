@@ -1,12 +1,12 @@
 %%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 40, 'nodeSpacing': 25}}}%%
 graph TD
     A["前端发起 HTTP 请求"] --> B{"匹配路由规则"}
-    B -->|"/api/auth/** \n /api/users/**"| C["认证服务 :8081\nStripPrefix=1"]
-    B -->|"/api/forum/**"| D["论坛服务 :8082\nStripPrefix=2"]
-    B -->|"/api/notifications/**"| E["通知服务 :8083\nStripPrefix=1"]
-    B -->|"/api/media/**"| F["媒体服务 :8084\nStripPrefix=1"]
-    B -->|"/api/search/**"| G["搜索服务 :8085\nStripPrefix=1"]
-    C --> H["Nacos 解析\nlb://服务名 → IP:端口"]
+    B -->|"/api/auth/...\n/api/users/..."| C["认证服务 :8081\nStripPrefix=1"]
+    B -->|"/api/forum/..."| D["论坛服务 :8082\nStripPrefix=2"]
+    B -->|"/api/notifications/..."| E["通知服务 :8083\nStripPrefix=1"]
+    B -->|"/api/media/..."| F["媒体服务 :8084\nStripPrefix=1"]
+    B -->|"/api/search/..."| G["搜索服务 :8085\nStripPrefix=1"]
+    C --> H["Nacos 解析服务名\n定位目标实例"]
     D --> H
     E --> H
     F --> H
