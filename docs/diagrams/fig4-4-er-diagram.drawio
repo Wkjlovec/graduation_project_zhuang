@@ -5,7 +5,6 @@
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!--  user_account (左上, 蓝)-->
         <mxCell id="ua" value="user_account" style="shape=table;startSize=24;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=1;fontStyle=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;align=center;html=1;resizable=0;" vertex="1" parent="1">
           <mxGeometry x="30" y="30" width="230" height="164" as="geometry"/>
         </mxCell>
@@ -28,7 +27,6 @@
         <mxCell id="ua_r6a" value="" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;align=center;" vertex="1" parent="ua_r6"><mxGeometry width="40" height="20" as="geometry"/></mxCell>
         <mxCell id="ua_r6b" value="updated_at DATETIME" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;" vertex="1" parent="ua_r6"><mxGeometry x="40" width="190" height="20" as="geometry"/></mxCell>
 
-        <!--  forum_section (右上, 蓝)-->
         <mxCell id="fs" value="forum_section" style="shape=table;startSize=24;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=1;fontStyle=1;strokeColor=#6c8ebf;fillColor=#dae8fc;fontSize=12;align=center;html=1;resizable=0;" vertex="1" parent="1">
           <mxGeometry x="900" y="30" width="240" height="144" as="geometry"/>
         </mxCell>
@@ -48,7 +46,6 @@
         <mxCell id="fs_r5a" value="" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;align=center;" vertex="1" parent="fs_r5"><mxGeometry width="40" height="20" as="geometry"/></mxCell>
         <mxCell id="fs_r5b" value="enabled BOOLEAN" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;" vertex="1" parent="fs_r5"><mxGeometry x="40" width="200" height="20" as="geometry"/></mxCell>
 
-        <!--  forum_post (中间, 绿)-->
         <mxCell id="fp" value="forum_post" style="shape=table;startSize=24;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=1;fontStyle=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;align=center;html=1;resizable=0;" vertex="1" parent="1">
           <mxGeometry x="430" y="260" width="260" height="244" as="geometry"/>
         </mxCell>
@@ -80,7 +77,6 @@
         <mxCell id="fp_r9a" value="" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;align=center;" vertex="1" parent="fp_r9"><mxGeometry width="40" height="20" as="geometry"/></mxCell>
         <mxCell id="fp_r9b" value="updated_at DATETIME" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;" vertex="1" parent="fp_r9"><mxGeometry x="40" width="220" height="20" as="geometry"/></mxCell>
 
-        <!--  post_comment (左下, 绿)-->
         <mxCell id="pc2" value="post_comment" style="shape=table;startSize=24;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=1;fontStyle=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;align=center;html=1;resizable=0;" vertex="1" parent="1">
           <mxGeometry x="30" y="590" width="260" height="204" as="geometry"/>
         </mxCell>
@@ -106,7 +102,6 @@
         <mxCell id="pc_r7a" value="" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;align=center;" vertex="1" parent="pc_r7"><mxGeometry width="40" height="20" as="geometry"/></mxCell>
         <mxCell id="pc_r7b" value="created_at / updated_at DATETIME" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;" vertex="1" parent="pc_r7"><mxGeometry x="40" width="220" height="20" as="geometry"/></mxCell>
 
-        <!--  post_like (中下, 绿)-->
         <mxCell id="pl" value="post_like" style="shape=table;startSize=24;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=1;fontStyle=1;strokeColor=#82b366;fillColor=#d5e8d4;fontSize=12;align=center;html=1;resizable=0;" vertex="1" parent="1">
           <mxGeometry x="430" y="610" width="240" height="124" as="geometry"/>
         </mxCell>
@@ -123,7 +118,6 @@
         <mxCell id="pl_r4a" value="" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;align=center;" vertex="1" parent="pl_r4"><mxGeometry width="40" height="20" as="geometry"/></mxCell>
         <mxCell id="pl_r4b" value="created_at DATETIME" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;" vertex="1" parent="pl_r4"><mxGeometry x="40" width="200" height="20" as="geometry"/></mxCell>
 
-        <!--  notification_message (右下, 黄)-->
         <mxCell id="nm" value="notification_message" style="shape=table;startSize=24;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=1;fontStyle=1;strokeColor=#d6b656;fillColor=#fff2cc;fontSize=12;align=center;html=1;resizable=0;" vertex="1" parent="1">
           <mxGeometry x="820" y="590" width="260" height="184" as="geometry"/>
         </mxCell>
@@ -149,56 +143,46 @@
         <mxCell id="nm_r7a" value="" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;align=center;" vertex="1" parent="nm_r7"><mxGeometry width="40" height="20" as="geometry"/></mxCell>
         <mxCell id="nm_r7b" value="created_at DATETIME" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;overflow=hidden;fontSize=11;" vertex="1" parent="nm_r7"><mxGeometry x="40" width="220" height="20" as="geometry"/></mxCell>
 
-        <!--  关系线-->
-        <!-- R1  user_account 1..N forum_post (author_id) 实线 -->
         <mxCell id="rel1" edge="1" source="ua_r1" target="fp_r4" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#333333;endArrow=ERmany;endFill=0;startArrow=ERmandOne;startFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="330" y="64"/><mxPoint x="330" y="354"/></Array></mxGeometry>
         </mxCell>
         <mxCell id="rel1_l" value="1 : N" style="edgeLabel;html=1;align=center;verticalAlign=bottom;fontSize=10;" vertex="1" connectable="0" parent="rel1"><mxGeometry x="-0.2" relative="1" as="geometry"><mxPoint y="12" as="offset"/></mxGeometry></mxCell>
 
-        <!-- R2  forum_section 1..N forum_post (section_id) 实线 -->
         <mxCell id="rel2" edge="1" source="fs_r1" target="fp_r6" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#333333;endArrow=ERmany;endFill=0;startArrow=ERmandOne;startFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="780" y="64"/><mxPoint x="780" y="394"/></Array></mxGeometry>
         </mxCell>
         <mxCell id="rel2_l" value="1 : N" style="edgeLabel;html=1;align=center;verticalAlign=bottom;fontSize=10;" vertex="1" connectable="0" parent="rel2"><mxGeometry x="0.2" relative="1" as="geometry"><mxPoint y="12" as="offset"/></mxGeometry></mxCell>
 
-        <!-- R3  forum_post 1..N post_comment (post_id) 实线 -->
         <mxCell id="rel3" edge="1" source="fp_r1" target="pc_r2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#333333;endArrow=ERmany;endFill=0;startArrow=ERmandOne;startFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="370" y="294"/><mxPoint x="370" y="644"/></Array></mxGeometry>
         </mxCell>
         <mxCell id="rel3_l" value="1 : N" style="edgeLabel;html=1;align=center;verticalAlign=bottom;fontSize=10;" vertex="1" connectable="0" parent="rel3"><mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint y="12" as="offset"/></mxGeometry></mxCell>
 
-        <!-- R4  forum_post 1..N post_like (post_id) 实线 -->
         <mxCell id="rel4" edge="1" source="fp_r8" target="pl_r2" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#333333;endArrow=ERmany;endFill=0;startArrow=ERmandOne;startFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="rel4_l" value="1 : N" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;" vertex="1" connectable="0" parent="rel4"><mxGeometry x="-0.3" relative="1" as="geometry"><mxPoint x="20" as="offset"/></mxGeometry></mxCell>
 
-        <!-- R5  user_account 1..N post_comment (user_id) 虚线 -->
         <mxCell id="rel5" edge="1" source="ua_r1" target="pc_r3" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;dashed=1;endArrow=ERmany;endFill=0;startArrow=ERmandOne;startFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="10" y="64"/><mxPoint x="10" y="664"/></Array></mxGeometry>
         </mxCell>
         <mxCell id="rel5_l" value="1 : N" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#999999;" vertex="1" connectable="0" parent="rel5"><mxGeometry x="-0.3" relative="1" as="geometry"><mxPoint x="-16" as="offset"/></mxGeometry></mxCell>
 
-        <!-- R6  user_account 1..N post_like (user_id) 虚线 -->
         <mxCell id="rel6" edge="1" source="ua_r2" target="pl_r3" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;dashed=1;endArrow=ERmany;endFill=0;startArrow=ERmandOne;startFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="280" y="84"/><mxPoint x="710" y="84"/><mxPoint x="710" y="684"/></Array></mxGeometry>
         </mxCell>
         <mxCell id="rel6_l" value="1 : N" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#999999;" vertex="1" connectable="0" parent="rel6"><mxGeometry x="0.5" relative="1" as="geometry"><mxPoint x="16" as="offset"/></mxGeometry></mxCell>
 
-        <!-- R7  user_account 1..N notification_message (user_id) 虚线 -->
         <mxCell id="rel7" edge="1" source="ua_r3" target="nm_r3" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;dashed=1;endArrow=ERmany;endFill=0;startArrow=ERmandOne;startFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="280" y="104"/><mxPoint x="1120" y="104"/><mxPoint x="1120" y="664"/></Array></mxGeometry>
         </mxCell>
         <mxCell id="rel7_l" value="1 : N" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#999999;" vertex="1" connectable="0" parent="rel7"><mxGeometry x="0.6" relative="1" as="geometry"><mxPoint x="16" as="offset"/></mxGeometry></mxCell>
 
-        <!-- R8  post_comment self-ref (parent_comment_id) 虚线 -->
         <mxCell id="rel8" edge="1" source="pc_r6" target="pc_r1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#999999;dashed=1;endArrow=ERzeroToMany;endFill=0;startArrow=ERzeroToOne;startFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
           <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="310" y="724"/><mxPoint x="310" y="624"/></Array></mxGeometry>
         </mxCell>
         <mxCell id="rel8_l" value="0 : N&#xa;(self)" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#999999;" vertex="1" connectable="0" parent="rel8"><mxGeometry x="0.3" relative="1" as="geometry"><mxPoint x="20" as="offset"/></mxGeometry></mxCell>
 
-        <!-- 图例 -->
         <mxCell id="legend" value="—— 实线：核心业务关联 &#xa;- - - 虚线：user_id 关联及自引用" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#666666;" vertex="1" parent="1">
           <mxGeometry x="30" y="850" width="300" height="30" as="geometry"/>
         </mxCell>
