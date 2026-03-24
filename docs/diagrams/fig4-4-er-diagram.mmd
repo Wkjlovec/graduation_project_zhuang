@@ -1,0 +1,62 @@
+erDiagram
+    user_account {
+        bigint id PK
+        varchar64 username UK
+        varchar255 password
+        varchar64 nickname
+        datetime created_at
+        datetime updated_at
+    }
+    forum_section {
+        bigint id PK
+        varchar64 name UK
+        varchar256 description
+        int sort_order
+        boolean enabled
+    }
+    forum_post {
+        bigint id PK
+        varchar128 title
+        text content
+        bigint author_id FK
+        varchar64 author_name
+        bigint section_id FK
+        varchar64 section_name
+        int like_count
+        datetime created_at
+        datetime updated_at
+    }
+    post_comment {
+        bigint id PK
+        bigint post_id FK
+        bigint user_id FK
+        varchar64 username
+        text content
+        bigint parent_comment_id
+        datetime created_at
+        datetime updated_at
+    }
+    post_like {
+        bigint id PK
+        bigint post_id FK
+        bigint user_id FK
+        datetime created_at
+    }
+    notification_message {
+        bigint id PK
+        varchar32 type
+        bigint user_id
+        varchar128 title
+        varchar1000 content
+        boolean is_read
+        datetime created_at
+    }
+
+    user_account ||--o{ forum_post : "发布"
+    user_account ||--o{ post_comment : "发表"
+    user_account ||--o{ post_like : "点赞"
+    forum_section ||--o{ forum_post : "包含"
+    forum_post ||--o{ post_comment : "拥有"
+    forum_post ||--o{ post_like : "被点赞"
+    post_comment ||--o{ post_comment : "回复"
+    user_account ||--o{ notification_message : "接收"
