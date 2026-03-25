@@ -1,0 +1,28 @@
+flowchart TD
+    Start([用户打开论坛首页]) --> LoadHome["加载帖子列表 / 通知摘要\n/ 媒体推荐"]
+    LoadHome --> BrowsePublic["浏览公开内容\n帖子列表 · 详情 · 搜索\n通知摘要 · 媒体推荐"]
+    BrowsePublic --> IsWrite{尝试写操作?}
+    IsWrite -->|No| BrowsePublic
+
+    IsWrite -->|Yes| HasToken{携带有效令牌?}
+
+    HasToken -->|有令牌| Verify{JWT 签名 +\nRedis 会话校验}
+    Verify -->|通过| OwnerChk{需要作者权限?}
+    OwnerChk -->|不需要 或 是作者| Exec["执行写操作\n发帖 / 评论 / 点赞 / 标记已读"]
+    OwnerChk -->|非作者| Deny403[返回 403 权限异常]
+    Exec --> Done([操作完成])
+
+    Verify -->|失败 / 过期| CanRefresh{刷新令牌有效?}
+    CanRefresh -->|Yes| Silent["静默刷新\n用户无感知"]
+    Silent --> OwnerChk
+
+    HasToken -->|无令牌| Guide401["网关返回 401\n前端引导登录"]
+    Guide401 --> Login["跳转登录页面\n输入用户名和密码"]
+    CanRefresh -->|No| Login
+
+    Login --> AuthOK{凭据校验通过?}
+    AuthOK -->|Yes| Issue[签发令牌对]
+    Issue --> Exec
+    AuthOK -->|No| Fail5{连续失败 5 次?}
+    Fail5 -->|No| Login
+    Fail5 -->|Yes| Lock["锁定 10 分钟\n提示剩余时间"]

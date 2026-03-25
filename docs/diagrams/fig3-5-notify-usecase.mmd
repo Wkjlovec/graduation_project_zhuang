@@ -1,0 +1,7 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 50, 'nodeSpacing': 35}}}%%
+graph LR
+    Guest((游客)) --- UC1([通知首页摘要])
+    User((注册用户)) --- UC1
+    User --- UC2([查看个人通知列表])
+    UC2 -..->|"‹‹include››"| UC3([身份认证])
+    UC4([标记已读]) -..->|"‹‹extend››"| UC2

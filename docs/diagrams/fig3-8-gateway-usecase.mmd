@@ -1,0 +1,9 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 50, 'nodeSpacing': 35}}}%%
+graph LR
+    Guest((游客)) --- UC1([访问公开接口])
+    User((注册用户)) --- UC1
+    User --- UC2([访问受保护接口])
+    UC1 -..->|"‹‹include››"| UC3([路由转发])
+    UC2 -..->|"‹‹include››"| UC4([JWT签名验证])
+    UC2 -..->|"‹‹include››"| UC5([Redis会话检查])
+    UC2 -..->|"‹‹include››"| UC6([透传用户身份])

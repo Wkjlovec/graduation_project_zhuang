@@ -1,0 +1,10 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 50, 'nodeSpacing': 40}}}%%
+graph LR
+    Guest((游客)) --- UC1([浏览帖子列表])
+    Guest --- UC3([查看帖子详情])
+    UC1 -..->|"‹‹include››"| UC2([分页查询])
+    UC6([按分区筛选]) -..->|"‹‹extend››"| UC1
+    User((注册用户)) --- UC4([发布帖子])
+    UC4 -..->|"‹‹include››"| UC5([身份认证])
+    UC7([编辑帖子]) -..->|"‹‹extend››"| UC4
+    UC8([删除帖子]) -..->|"‹‹extend››"| UC4

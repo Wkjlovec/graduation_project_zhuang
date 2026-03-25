@@ -1,0 +1,7 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 50, 'nodeSpacing': 35}}}%%
+graph LR
+    Guest((游客)) --- UC1([媒体首页摘要])
+    Guest --- UC2([查看推荐列表])
+    User((注册用户)) --- UC1
+    User --- UC2
+    UC3([按类别筛选]) -..->|"‹‹extend››"| UC2

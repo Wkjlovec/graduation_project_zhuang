@@ -1,0 +1,10 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 40, 'nodeSpacing': 25}}}%%
+graph LR
+    A["请求帖子\n列表/详情"] --> B{"Redis\n缓存命中?"}
+    B -->|命中| C["返回缓存数据"]
+    B -->|未命中| D["查询MySQL"]
+    D --> E["写入Redis缓存"]
+    E --> F["返回结果"]
+    G["发布/编辑/\n删除帖子"] --> H["执行数据库\n写操作"]
+    H --> I["淘汰列表缓存"]
+    I --> J["淘汰详情缓存"]
