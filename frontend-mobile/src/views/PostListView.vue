@@ -2,7 +2,7 @@
   <div class="page">
     <van-nav-bar title="帖子列表">
       <template #right>
-        <van-button size="small" type="primary" @click="goCreate">发帖</van-button>
+        <van-button size="small" type="primary" style="margin-right: 3em;" @click="goCreate">发帖</van-button>
       </template>
     </van-nav-bar>
 
@@ -41,7 +41,7 @@
     </van-cell-group>
 
     <van-cell-group inset style="margin-bottom: 8px;">
-      <van-cell title="通知中心" :value="'未读 ' + (notificationHome?.unreadCount ?? 0)">
+      <van-cell title="通知中心" :value="'未读 ' + (notificationHome?.unreadCount ?? 0)" value-class="notify-value">
         <template #right-icon>
           <van-button size="mini" plain type="primary" @click="goNotifications">我的通知</van-button>
         </template>
@@ -226,6 +226,10 @@ function goDetail(id: number) {
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 6px;
+}
+
+.notify-value {
+  padding-right: 1em;
 }
 
 .profile-fixed-btn {
