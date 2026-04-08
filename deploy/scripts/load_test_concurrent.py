@@ -88,7 +88,7 @@ def main() -> int:
     args = parser.parse_args()
 
     url = f"{args.base_url.rstrip('/')}{args.path}"
-    concurrency_levels = [10, 50, 100]
+    concurrency_levels = [10, 50, 100, 500, 1000]
 
     # warmup
     print("预热请求...", end=" ")
