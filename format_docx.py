@@ -1,7 +1,6 @@
 import re
-from copy import deepcopy
 from docx import Document
-from docx.shared import Pt, Cm, Emu, Twips
+from docx.shared import Pt, Cm, Twips
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
@@ -19,15 +18,12 @@ PT_XIAOSAN = Pt(15)
 PT_SIHAO = Pt(14)
 PT_XIAOSI = Pt(12)
 PT_WUHAO = Pt(10.5)
-FIXED_25 = Pt(25)
 
 CHAPTER_TITLES = {
     "第一章 绪论", "第二章 相关技术及方法", "第三章 系统需求分析",
     "第四章 系统详细设计与实现", "第五章 系统测试", "第六章 总结与展望",
 }
-
 SECTION_RE = re.compile(r"^([1-6])\.([0-9]+)\s+\S")
-SUBSECTION_RE = re.compile(r"^([1-6])\.([0-9]+)\.([0-9]+)\s+\S")
 
 
 def is_section_heading(text):
@@ -39,19 +35,16 @@ def is_section_heading(text):
     rest = words[1]
     if rest[0].isdigit():
         return False
-    if "节" in rest[:4] and any(kw in rest for kw in ("梳理", "描述", "列出", "按功能", "指出")):
+    skip_kw = ("梳理", "描述", "列出", "按功能", "指出")
+    if "节" in rest[:4] and any(k in rest for k in skip_kw):
         return False
     return True
 
 
-def is_subsection_heading(text):
-    return bool(SUBSECTION_RE.match(text))
-
-
-def set_run_font(run, cn_font, en_font, size, bold=False):
+def set_run_font(run, cn, en, size, bold=False):
     run.font.size = size
     run.font.bold = bold
-    run.font.name = en_font
+    run.font.name = en
     rPr = run._element.find(qn("w:rPr"))
     if rPr is None:
         rPr = run._element.makeelement(qn("w:rPr"), {})
@@ -60,23 +53,19 @@ def set_run_font(run, cn_font, en_font, size, bold=False):
     if rFonts is None:
         rFonts = rPr.makeelement(qn("w:rFonts"), {})
         rPr.insert(0, rFonts)
-    rFonts.set(qn("w:ascii"), en_font)
-    rFonts.set(qn("w:hAnsi"), en_font)
-    rFonts.set(qn("w:eastAsia"), cn_font)
+    rFonts.set(qn("w:ascii"), en)
+    rFonts.set(qn("w:hAnsi"), en)
+    rFonts.set(qn("w:eastAsia"), cn)
 
 
 def set_pf(para, align, line_spacing=1.5, indent_cm=None,
-           space_before=None, space_after=None, fixed_line=None):
+           space_before_pt=0, space_after_pt=0):
     pf = para.paragraph_format
     pf.alignment = align
-    if fixed_line:
-        pf.line_spacing = fixed_line
-        pf.line_spacing_rule = 4  # EXACTLY
-    else:
-        pf.line_spacing = line_spacing
+    pf.line_spacing = line_spacing
     pf.first_line_indent = Cm(indent_cm) if indent_cm else None
-    pf.space_before = space_before if space_before else Pt(0)
-    pf.space_after = space_after if space_after else Pt(0)
+    pf.space_before = Pt(space_before_pt)
+    pf.space_after = Pt(space_after_pt)
 
 
 def fmt_runs(para, cn, en, size, bold=False):
@@ -90,106 +79,131 @@ def ensure_runs(para, cn, en, size, bold=False):
     fmt_runs(para, cn, en, size, bold)
 
 
-def is_figure_line(text):
-    return bool(re.match(r"^图\s*[0-9]+-[0-9]+", text))
+def set_outline_level(para, level):
+    """Set outline level (0=Heading1, 1=Heading2, etc.) so TOC field can find it."""
+    pPr = para._element.find(qn("w:pPr"))
+    if pPr is None:
+        pPr = OxmlElement("w:pPr")
+        para._element.insert(0, pPr)
+    outlineLvl = pPr.find(qn("w:outlineLvl"))
+    if outlineLvl is None:
+        outlineLvl = OxmlElement("w:outlineLvl")
+        pPr.append(outlineLvl)
+    outlineLvl.set(qn("w:val"), str(level))
 
 
-def is_table_caption(text):
-    return bool(re.match(r"^表\s*[0-9]+-[0-9]+", text))
+def is_figure_line(t):
+    return bool(re.match(r"^图\s*[0-9]+-[0-9]+", t))
 
 
-def is_ref_entry(text):
-    return bool(re.match(r"^\[[0-9]+\]", text))
+def is_table_caption(t):
+    return bool(re.match(r"^表\s*[0-9]+-[0-9]+", t))
 
 
-# ── Build TOC XML (field-based, updates on open in Word) ──
-def make_toc_paragraph():
+def is_ref_entry(t):
+    return bool(re.match(r"^\[[0-9]+\]", t))
+
+
+def make_toc_field_para():
+    """Create a paragraph containing a TOC field code."""
     p = OxmlElement("w:p")
     pPr = OxmlElement("w:pPr")
-    jc = OxmlElement("w:jc")
-    jc.set(qn("w:val"), "left")
-    pPr.append(jc)
+    spacing = OxmlElement("w:spacing")
+    spacing.set(qn("w:line"), "312")   # 1.25 * 240 = 300, use 312 for ~1.3x
+    spacing.set(qn("w:lineRule"), "auto")
+    pPr.append(spacing)
     p.append(pPr)
 
-    r1 = OxmlElement("w:r")
-    fldChar1 = OxmlElement("w:fldChar")
-    fldChar1.set(qn("w:fldCharType"), "begin")
-    r1.append(fldChar1)
+    def make_run():
+        return OxmlElement("w:r")
+
+    r1 = make_run()
+    fc1 = OxmlElement("w:fldChar")
+    fc1.set(qn("w:fldCharType"), "begin")
+    r1.append(fc1)
     p.append(r1)
 
-    r2 = OxmlElement("w:r")
-    instrText = OxmlElement("w:instrText")
-    instrText.set(qn("xml:space"), "preserve")
-    instrText.text = ' TOC \\o "1-3" \\h \\z \\u '
-    r2.append(instrText)
+    r2 = make_run()
+    instr = OxmlElement("w:instrText")
+    instr.set(qn("xml:space"), "preserve")
+    instr.text = ' TOC \\o "1-2" \\h \\z \\u '
+    r2.append(instr)
     p.append(r2)
 
-    r3 = OxmlElement("w:r")
-    fldChar2 = OxmlElement("w:fldChar")
-    fldChar2.set(qn("w:fldCharType"), "separate")
-    r3.append(fldChar2)
+    r3 = make_run()
+    fc2 = OxmlElement("w:fldChar")
+    fc2.set(qn("w:fldCharType"), "separate")
+    r3.append(fc2)
     p.append(r3)
 
-    r4 = OxmlElement("w:r")
-    t = OxmlElement("w:t")
-    t.text = '【请在 Word 中右键此处，选择"更新域"以生成目录】'
-    r4.append(t)
+    r4 = make_run()
+    rPr4 = OxmlElement("w:rPr")
+    sz4 = OxmlElement("w:sz")
+    sz4.set(qn("w:val"), "24")
+    rPr4.append(sz4)
+    szCs4 = OxmlElement("w:szCs")
+    szCs4.set(qn("w:val"), "24")
+    rPr4.append(szCs4)
+    rFonts4 = OxmlElement("w:rFonts")
+    rFonts4.set(qn("w:eastAsia"), FONT_SONG)
+    rFonts4.set(qn("w:ascii"), FONT_TNR)
+    rFonts4.set(qn("w:hAnsi"), FONT_TNR)
+    rPr4.append(rFonts4)
+    r4.append(rPr4)
+    t4 = OxmlElement("w:t")
+    t4.text = "[TOC placeholder - right-click and Update Field in Word]"
+    r4.append(t4)
     p.append(r4)
 
-    r5 = OxmlElement("w:r")
-    fldChar3 = OxmlElement("w:fldChar")
-    fldChar3.set(qn("w:fldCharType"), "end")
-    r5.append(fldChar3)
+    r5 = make_run()
+    fc3 = OxmlElement("w:fldChar")
+    fc3.set(qn("w:fldCharType"), "end")
+    r5.append(fc3)
     p.append(r5)
 
     return p
 
 
-def add_page_break_para(body, before_element):
+def make_page_break():
     p = OxmlElement("w:p")
-    pPr = OxmlElement("w:pPr")
-    p.append(pPr)
     r = OxmlElement("w:r")
     br = OxmlElement("w:br")
     br.set(qn("w:type"), "page")
     r.append(br)
     p.append(r)
-    body.insert(list(body).index(before_element), p)
     return p
 
 
-# ── Load document ──
+# ── Load & Format ──
 doc = Document(INPUT)
-body = doc.element.body
 
 for i, para in enumerate(doc.paragraphs):
     text = para.text.strip()
 
-    # F1: Chinese title
     if i == 0 and "基于微服务架构" in text:
-        set_pf(para, WD_ALIGN_PARAGRAPH.CENTER, space_before=Pt(22), space_after=Pt(44))
+        set_pf(para, WD_ALIGN_PARAGRAPH.CENTER,
+               space_before_pt=22, space_after_pt=44)
         ensure_runs(para, FONT_HEI, FONT_TNR, PT_ERHAO, bold=True)
         continue
 
-    # F3: "摘 要"
     if text == "摘 要":
-        set_pf(para, WD_ALIGN_PARAGRAPH.CENTER, space_after=Pt(22))
+        set_pf(para, WD_ALIGN_PARAGRAPH.CENTER, space_after_pt=22)
         ensure_runs(para, FONT_HEI, FONT_TNR, PT_XIAOER, bold=True)
+        set_outline_level(para, 0)
         continue
 
-    # F7: English title
     if text.startswith("Design and Implementation"):
-        set_pf(para, WD_ALIGN_PARAGRAPH.CENTER, space_before=Pt(22), space_after=Pt(44))
+        set_pf(para, WD_ALIGN_PARAGRAPH.CENTER,
+               space_before_pt=22, space_after_pt=44)
         ensure_runs(para, FONT_TNR, FONT_TNR, PT_ERHAO, bold=True)
         continue
 
-    # F8: "ABSTRACT"
     if text == "ABSTRACT":
-        set_pf(para, WD_ALIGN_PARAGRAPH.CENTER, space_after=Pt(22))
+        set_pf(para, WD_ALIGN_PARAGRAPH.CENTER, space_after_pt=22)
         ensure_runs(para, FONT_TNR, FONT_TNR, PT_XIAOER, bold=True)
+        set_outline_level(para, 0)
         continue
 
-    # F5/F6: keywords CN
     if text.startswith("关键词") or text.startswith("**关键词"):
         set_pf(para, WD_ALIGN_PARAGRAPH.JUSTIFY, indent_cm=0.85)
         for run in para.runs:
@@ -199,83 +213,72 @@ for i, para in enumerate(doc.paragraphs):
                 set_run_font(run, FONT_SONG, FONT_TNR, PT_XIAOSI)
         continue
 
-    # F10: Key Words EN
     if text.startswith("Key Words") or text.startswith("**Key Words"):
         set_pf(para, WD_ALIGN_PARAGRAPH.JUSTIFY, indent_cm=1.69)
         fmt_runs(para, FONT_TNR, FONT_TNR, PT_XIAOSI)
         continue
 
-    # F13: Chapter titles
     if text in CHAPTER_TITLES:
         set_pf(para, WD_ALIGN_PARAGRAPH.CENTER)
         ensure_runs(para, FONT_HEI, FONT_TNR, PT_XIAOER, bold=True)
+        set_outline_level(para, 0)
         continue
 
-    # F20: "参 考 文 献"
     if text == "参 考 文 献":
         set_pf(para, WD_ALIGN_PARAGRAPH.CENTER)
         ensure_runs(para, FONT_HEI, FONT_TNR, PT_XIAOER, bold=True)
+        set_outline_level(para, 0)
         continue
 
-    # F22: "致 谢"
-    if text == "致谢" or text == "致 谢":
+    if text in ("致谢", "致 谢"):
         para.clear()
         run = para.add_run("致 谢")
         set_pf(para, WD_ALIGN_PARAGRAPH.CENTER)
         set_run_font(run, FONT_HEI, FONT_TNR, PT_XIAOER, bold=True)
+        set_outline_level(para, 0)
         continue
 
-    # F14: Section headings (二级标题)
     if is_section_heading(text):
         set_pf(para, WD_ALIGN_PARAGRAPH.LEFT)
         ensure_runs(para, FONT_HEI, FONT_TNR, PT_XIAOSAN, bold=True)
+        set_outline_level(para, 1)
         continue
 
-    # F15: Subsection headings (三级标题) - check if any exist
-    if is_subsection_heading(text):
-        set_pf(para, WD_ALIGN_PARAGRAPH.LEFT)
-        ensure_runs(para, FONT_HEI, FONT_TNR, PT_SIHAO, bold=True)
-        continue
-
-    # F21: Reference entries
     if is_ref_entry(text):
         set_pf(para, WD_ALIGN_PARAGRAPH.JUSTIFY)
         fmt_runs(para, FONT_SONG, FONT_TNR, PT_WUHAO)
         continue
 
-    # F17: Figure captions
     if is_figure_line(text):
         set_pf(para, WD_ALIGN_PARAGRAPH.CENTER)
-        ensure_runs(para, FONT_SONG, FONT_TNR, PT_WUHAO, bold=False)
+        ensure_runs(para, FONT_SONG, FONT_TNR, PT_WUHAO)
         continue
 
-    # F18: Table captions (above table)
     if is_table_caption(text):
         set_pf(para, WD_ALIGN_PARAGRAPH.CENTER)
-        ensure_runs(para, FONT_SONG, FONT_TNR, PT_WUHAO, bold=False)
+        ensure_runs(para, FONT_SONG, FONT_TNR, PT_WUHAO)
         continue
 
-    # Empty paragraphs
-    if text == "":
+    if not text:
         continue
 
-    # F4: Chinese abstract (paragraph index 2)
+    # Chinese abstract
     if i == 2:
         set_pf(para, WD_ALIGN_PARAGRAPH.JUSTIFY, indent_cm=0.85)
         fmt_runs(para, FONT_SONG, FONT_TNR, PT_XIAOSI)
         continue
 
-    # F9: English abstract (paragraph index 6)
+    # English abstract
     if i == 6:
         set_pf(para, WD_ALIGN_PARAGRAPH.JUSTIFY, indent_cm=1.69)
         fmt_runs(para, FONT_TNR, FONT_TNR, PT_XIAOSI)
         continue
 
-    # F16: Normal body text
+    # Default: body text
     set_pf(para, WD_ALIGN_PARAGRAPH.JUSTIFY, indent_cm=0.85)
     fmt_runs(para, FONT_SONG, FONT_TNR, PT_XIAOSI)
 
-# F19: Table content formatting
+# Format tables
 for table in doc.tables:
     for row in table.rows:
         for cell in row.cells:
@@ -283,72 +286,57 @@ for table in doc.tables:
                 set_pf(para, WD_ALIGN_PARAGRAPH.CENTER, indent_cm=None)
                 fmt_runs(para, FONT_SONG, FONT_TNR, PT_WUHAO)
 
-# ── Insert TOC page after Key Words (English) ──
-# Find the Key Words paragraph, then insert: page break + "目 录" heading + TOC field + page break
-kw_idx = None
+# ── Insert TOC after Key Words ──
+kw_elem = None
 for i, para in enumerate(doc.paragraphs):
     if para.text.strip().startswith("Key Words"):
-        kw_idx = i
+        kw_elem = para._element
         break
 
-if kw_idx is not None:
-    kw_element = doc.paragraphs[kw_idx]._element
-    next_element = kw_element.getnext()
+if kw_elem is not None:
+    pb1 = make_page_break()
+    kw_elem.addnext(pb1)
 
-    # Page break before TOC
-    pb1 = OxmlElement("w:p")
-    pb1_r = OxmlElement("w:r")
-    pb1_br = OxmlElement("w:br")
-    pb1_br.set(qn("w:type"), "page")
-    pb1_r.append(pb1_br)
-    pb1.append(pb1_r)
-    kw_element.addnext(pb1)
-
-    # "目 录" heading
-    toc_title = OxmlElement("w:p")
+    toc_title_p = OxmlElement("w:p")
     toc_pPr = OxmlElement("w:pPr")
     toc_jc = OxmlElement("w:jc")
     toc_jc.set(qn("w:val"), "center")
     toc_pPr.append(toc_jc)
-    toc_spacing = OxmlElement("w:spacing")
-    toc_spacing.set(qn("w:after"), str(int(Pt(22))))
-    toc_pPr.append(toc_spacing)
-    toc_title.append(toc_pPr)
+    toc_sp = OxmlElement("w:spacing")
+    toc_sp.set(qn("w:after"), "440")  # ~22pt in twips (22*20=440)
+    toc_sp.set(qn("w:line"), "360")   # 1.5x line spacing
+    toc_sp.set(qn("w:lineRule"), "auto")
+    toc_pPr.append(toc_sp)
+    toc_title_p.append(toc_pPr)
+
     toc_r = OxmlElement("w:r")
     toc_rPr = OxmlElement("w:rPr")
     toc_b = OxmlElement("w:b")
     toc_rPr.append(toc_b)
     toc_sz = OxmlElement("w:sz")
-    toc_sz.set(qn("w:val"), "36")  # 18pt = 36 half-pt = 小二号
+    toc_sz.set(qn("w:val"), "36")  # 18pt = 小二号
     toc_rPr.append(toc_sz)
     toc_szCs = OxmlElement("w:szCs")
     toc_szCs.set(qn("w:val"), "36")
     toc_rPr.append(toc_szCs)
-    toc_rFonts = OxmlElement("w:rFonts")
-    toc_rFonts.set(qn("w:eastAsia"), FONT_HEI)
-    toc_rFonts.set(qn("w:ascii"), FONT_TNR)
-    toc_rFonts.set(qn("w:hAnsi"), FONT_TNR)
-    toc_rPr.append(toc_rFonts)
+    toc_rF = OxmlElement("w:rFonts")
+    toc_rF.set(qn("w:eastAsia"), FONT_HEI)
+    toc_rF.set(qn("w:ascii"), FONT_TNR)
+    toc_rF.set(qn("w:hAnsi"), FONT_TNR)
+    toc_rPr.append(toc_rF)
     toc_r.append(toc_rPr)
     toc_t = OxmlElement("w:t")
     toc_t.text = "目 录"
     toc_r.append(toc_t)
-    toc_title.append(toc_r)
-    pb1.addnext(toc_title)
+    toc_title_p.append(toc_r)
+    pb1.addnext(toc_title_p)
 
-    # TOC field
-    toc_field = make_toc_paragraph()
-    toc_title.addnext(toc_field)
+    toc_field = make_toc_field_para()
+    toc_title_p.addnext(toc_field)
 
-    # Page break after TOC (before chapter 1)
-    pb2 = OxmlElement("w:p")
-    pb2_r = OxmlElement("w:r")
-    pb2_br = OxmlElement("w:br")
-    pb2_br.set(qn("w:type"), "page")
-    pb2_r.append(pb2_br)
-    pb2.append(pb2_r)
+    pb2 = make_page_break()
     toc_field.addnext(pb2)
 
 doc.save(OUTPUT)
-print(f"Saved to {OUTPUT}")
-print(f"Total paragraphs: {len(doc.paragraphs)}")
+print(f"Done: {OUTPUT}")
+print(f"Paragraphs: {len(doc.paragraphs)}, Tables: {len(doc.tables)}")
