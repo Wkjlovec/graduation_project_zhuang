@@ -238,12 +238,14 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int,
         "令牌刷新流程",
         "令牌过期拦截",
     ]
+    passed = 0
     for i, name in enumerate(scene_names, 1):
         status = "通过" if i <= len(checkpoints) else "跳过"
+        if status == "通过":
+            passed += 1
         print(f"  {i:>4}  {name:<30}  {status:>6}")
-    print("-" * 70)
-    passed = len([c for c in checkpoints if "跳过" not in c])
     total = len(scene_names)
+    print("-" * 70)
     print(f"  通过: {passed}/{total}    通过率: {round(passed/total*100)}%")
     print("=" * 70)
     print()
