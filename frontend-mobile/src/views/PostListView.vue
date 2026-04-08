@@ -41,7 +41,10 @@
     </van-cell-group>
 
     <van-cell-group inset style="margin-bottom: 8px;">
-      <van-cell title="通知中心" :value="'未读 ' + (notificationHome?.unreadCount ?? 0)" value-class="notify-value">
+      <van-cell title="通知中心">
+        <template #value>
+          <span style="margin-right: 3em;">未读 {{ notificationHome?.unreadCount ?? 0 }}</span>
+        </template>
         <template #right-icon>
           <van-button size="mini" plain type="primary" @click="goNotifications">我的通知</van-button>
         </template>
