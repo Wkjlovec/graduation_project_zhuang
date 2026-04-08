@@ -229,7 +229,7 @@ function goDetail(id: number) {
 }
 
 .notify-value {
-  padding-right: 2em;
+  padding-right: 3em;
 }
 
 .profile-fixed-btn {
