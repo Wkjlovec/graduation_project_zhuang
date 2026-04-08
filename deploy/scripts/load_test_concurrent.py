@@ -96,20 +96,23 @@ def main() -> int:
     print(f"{'成功' if warmup.success else '失败'} ({warmup.elapsed_ms} ms)")
     print()
 
-    print("=" * 80)
+    header = f"  {'并发数':<8}{'总请求':<8}{'成功':<8}{'失败':<8}{'成功率':<10}{'平均(ms)':<12}{'P95(ms)':<12}{'QPS':<10}"
+    width = len(header) + 4
+    print("=" * width)
     print("  并发负载测试结果")
-    print("=" * 80)
-    print(f"  {'并发用户数':>10} {'总请求数':>10} {'成功数':>8} {'失败数':>8} {'成功率':>8} {'平均响应(ms)':>14} {'P95(ms)':>10} {'QPS':>10}")
-    print("-" * 80)
+    print("=" * width)
+    print(header)
+    print("-" * width)
 
     all_stats: list[RoundStats] = []
     for level in concurrency_levels:
         print(f"  正在测试 {level} 并发...", end="\r")
         stats = run_round(url, level, args.requests_per_user, args.timeout)
         all_stats.append(stats)
-        print(f"  {stats.concurrency:>10} {stats.total_requests:>10} {stats.success_count:>8} {stats.fail_count:>8} {stats.success_rate:>7}% {stats.avg_ms:>14} {stats.p95_ms:>10} {stats.qps:>10}")
+        rate_str = f"{stats.success_rate}%"
+        print(f"  {stats.concurrency:<8}{stats.total_requests:<8}{stats.success_count:<8}{stats.fail_count:<8}{rate_str:<10}{stats.avg_ms:<12}{stats.p95_ms:<12}{stats.qps:<10}")
 
-    print("=" * 80)
+    print("=" * width)
     print()
     return 0
 

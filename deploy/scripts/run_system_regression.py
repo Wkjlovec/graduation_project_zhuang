@@ -219,35 +219,33 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int,
         print("skip expiry verification (enable with --verify-expiry)")
         checkpoints.append("token过期拦截(跳过)")
 
-    print()
-    print("=" * 70)
-    print("  功能测试结果")
-    print("=" * 70)
-    print(f"  {'编号':>4}  {'测试场景':<30}  {'结果':>6}")
-    print("-" * 70)
     scene_names = [
         "获取分区列表",
         "注册并登录两个用户",
-        "发帖→评论→搜索全链路",
+        "发帖->评论->搜索全链路",
         "通知首页与媒体首页",
         "个人通知与标记已读",
-        "无 token 写操作拦截",
+        "无token写操作拦截",
         "无权限操作拦截",
         "并发重复点赞",
         "登出后会话失效",
         "令牌刷新流程",
         "令牌过期拦截",
     ]
-    passed = 0
+    total = len(scene_names)
+    passed = min(len(checkpoints), total)
+    print()
+    print("=" * 58)
+    print("  功能测试结果")
+    print("=" * 58)
+    print(f"  {'编号':<6}{'测试场景':<28}{'结果':<6}")
+    print("-" * 58)
     for i, name in enumerate(scene_names, 1):
         status = "通过" if i <= len(checkpoints) else "跳过"
-        if status == "通过":
-            passed += 1
-        print(f"  {i:>4}  {name:<30}  {status:>6}")
-    total = len(scene_names)
-    print("-" * 70)
+        print(f"  {i:<6}{name:<28}{status:<6}")
+    print("-" * 58)
     print(f"  通过: {passed}/{total}    通过率: {round(passed/total*100)}%")
-    print("=" * 70)
+    print("=" * 58)
     print()
     if report_file:
         write_report(report_file, True, checkpoints, "")
