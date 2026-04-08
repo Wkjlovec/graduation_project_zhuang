@@ -111,6 +111,7 @@ def main() -> int:
 
     all_stats: list[RoundStats] = []
     for level in concurrency_levels:
+        print(f"  [测试中] 并发={level}, 每用户请求={args.requests_per_user}次...")
         stats = run_round(url, level, args.requests_per_user, args.timeout)
         all_stats.append(stats)
         vals = [str(stats.concurrency), str(stats.total_requests), str(stats.success_count),
@@ -120,6 +121,13 @@ def main() -> int:
         print(row)
 
     print("=" * width)
+    print()
+    print("  测试总结:")
+    for s in all_stats:
+        print(f"    {s.concurrency} 并发: 共 {s.total_requests} 请求, "
+              f"成功率 {s.success_rate}%, 平均响应 {s.avg_ms}ms, "
+              f"P95 {s.p95_ms}ms, 吞吐量 {s.qps} QPS")
+    print()
     print()
     return 0
 

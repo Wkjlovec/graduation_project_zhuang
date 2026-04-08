@@ -150,7 +150,7 @@ def run(base_url: str, path: str, warm_runs: int, timeout_seconds: int, report_f
     print("=" * lw)
     print("  缓存基准测试结果")
     print("=" * lw)
-    print(f"  {pad_right('指标', 24)}{'数值':>12}")
+    print(f"  {pad_right('指标', 24)}{pad_right('数值', 16)}")
     print("-" * lw)
     rows = [
         ("冷启动响应时间", f"{stats.cold_ms} ms"),
@@ -162,7 +162,7 @@ def run(base_url: str, path: str, warm_runs: int, timeout_seconds: int, report_f
         ("热缓存请求次数", f"{stats.warm_runs}"),
     ]
     for label, val in rows:
-        print(f"  {pad_right(label, 24)}{val:>12}")
+        print(f"  {pad_right(label, 24)}{val}")
     print("=" * lw)
     print()
     if report_file:
