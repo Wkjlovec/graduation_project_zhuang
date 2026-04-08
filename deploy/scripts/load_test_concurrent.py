@@ -96,21 +96,28 @@ def main() -> int:
     print(f"{'成功' if warmup.success else '失败'} ({warmup.elapsed_ms} ms)")
     print()
 
-    header = f"  {'并发数':<8}{'总请求':<8}{'成功':<8}{'失败':<8}{'成功率':<10}{'平均(ms)':<12}{'P95(ms)':<12}{'QPS':<10}"
-    width = len(header) + 4
+    def pad_right(s: str, width: int) -> str:
+        w = sum(2 if ord(c) > 127 else 1 for c in s)
+        return s + " " * (width - w)
+
+    cols = [("并发数", 10), ("总请求", 10), ("成功", 10), ("失败", 10), ("成功率", 10), ("平均(ms)", 12), ("P95(ms)", 12), ("QPS", 10)]
+    width = sum(c[1] for c in cols) + 4
     print("=" * width)
     print("  并发负载测试结果")
     print("=" * width)
+    header = "  " + "".join(pad_right(name, w) for name, w in cols)
     print(header)
     print("-" * width)
 
     all_stats: list[RoundStats] = []
     for level in concurrency_levels:
-        print(f"  正在测试 {level} 并发...", end="\r")
         stats = run_round(url, level, args.requests_per_user, args.timeout)
         all_stats.append(stats)
-        rate_str = f"{stats.success_rate}%"
-        print(f"  {stats.concurrency:<8}{stats.total_requests:<8}{stats.success_count:<8}{stats.fail_count:<8}{rate_str:<10}{stats.avg_ms:<12}{stats.p95_ms:<12}{stats.qps:<10}")
+        vals = [str(stats.concurrency), str(stats.total_requests), str(stats.success_count),
+                str(stats.fail_count), f"{stats.success_rate}%", str(stats.avg_ms),
+                str(stats.p95_ms), str(stats.qps)]
+        row = "  " + "".join(pad_right(v, cols[i][1]) for i, v in enumerate(vals))
+        print(row)
 
     print("=" * width)
     print()

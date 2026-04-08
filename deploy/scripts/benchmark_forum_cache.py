@@ -141,20 +141,29 @@ def run(base_url: str, path: str, warm_runs: int, timeout_seconds: int, report_f
         warm_values.append(warm.elapsed_ms)
 
     stats = calc_stats(cold.elapsed_ms, warm_values)
+    def pad_right(s: str, width: int) -> str:
+        w = sum(2 if ord(c) > 127 else 1 for c in s)
+        return s + " " * (width - w)
+
+    lw = 50
     print()
-    print("=" * 46)
+    print("=" * lw)
     print("  缓存基准测试结果")
-    print("=" * 46)
-    print(f"  {'指标':<22}{'数值':>12}")
-    print("-" * 46)
-    print(f"  {'冷启动响应时间':<22}{stats.cold_ms:>10} ms")
-    print(f"  {'热缓存平均响应时间':<22}{stats.warm_avg_ms:>10} ms")
-    print(f"  {'热缓存最小响应时间':<22}{stats.warm_min_ms:>10} ms")
-    print(f"  {'热缓存最大响应时间':<22}{stats.warm_max_ms:>10} ms")
-    print(f"  {'热缓存P95响应时间':<22}{stats.warm_p95_ms:>10} ms")
-    print(f"  {'性能提升百分比':<22}{stats.improvement_percent:>10}%")
-    print(f"  {'热缓存请求次数':<22}{stats.warm_runs:>10}")
-    print("=" * 46)
+    print("=" * lw)
+    print(f"  {pad_right('指标', 24)}{'数值':>12}")
+    print("-" * lw)
+    rows = [
+        ("冷启动响应时间", f"{stats.cold_ms} ms"),
+        ("热缓存平均响应时间", f"{stats.warm_avg_ms} ms"),
+        ("热缓存最小响应时间", f"{stats.warm_min_ms} ms"),
+        ("热缓存最大响应时间", f"{stats.warm_max_ms} ms"),
+        ("热缓存P95响应时间", f"{stats.warm_p95_ms} ms"),
+        ("性能提升百分比", f"{stats.improvement_percent}%"),
+        ("热缓存请求次数", f"{stats.warm_runs}"),
+    ]
+    for label, val in rows:
+        print(f"  {pad_right(label, 24)}{val:>12}")
+    print("=" * lw)
     print()
     if report_file:
         write_report(report_file, build_report(True, base_url, path, stats, ""))

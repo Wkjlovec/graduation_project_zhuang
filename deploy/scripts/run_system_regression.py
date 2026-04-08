@@ -234,18 +234,30 @@ def run_regression(base_url: str, verify_expiry: bool, expiry_wait_seconds: int,
     ]
     total = len(scene_names)
     passed = min(len(checkpoints), total)
+
+    def display_width(s: str) -> int:
+        w = 0
+        for c in s:
+            w += 2 if ord(c) > 127 else 1
+        return w
+
+    def pad_right(s: str, width: int) -> str:
+        return s + " " * (width - display_width(s))
+
+    col1, col2, col3 = 8, 30, 6
+    line_width = col1 + col2 + col3 + 4
     print()
-    print("=" * 58)
+    print("=" * line_width)
     print("  功能测试结果")
-    print("=" * 58)
-    print(f"  {'编号':<6}{'测试场景':<28}{'结果':<6}")
-    print("-" * 58)
+    print("=" * line_width)
+    print(f"  {pad_right('编号', col1)}{pad_right('测试场景', col2)}{pad_right('结果', col3)}")
+    print("-" * line_width)
     for i, name in enumerate(scene_names, 1):
         status = "通过" if i <= len(checkpoints) else "跳过"
-        print(f"  {i:<6}{name:<28}{status:<6}")
-    print("-" * 58)
+        print(f"  {pad_right(str(i), col1)}{pad_right(name, col2)}{pad_right(status, col3)}")
+    print("-" * line_width)
     print(f"  通过: {passed}/{total}    通过率: {round(passed/total*100)}%")
-    print("=" * 58)
+    print("=" * line_width)
     print()
     if report_file:
         write_report(report_file, True, checkpoints, "")
