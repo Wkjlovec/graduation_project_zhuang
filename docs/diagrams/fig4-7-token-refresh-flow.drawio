@@ -1,0 +1,73 @@
+<mxfile host="draw.io" type="device">
+  <diagram id="fig4-7" name="令牌无感刷新流程">
+    <mxGraphModel dx="1400" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="600" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="s1" value="请求返回 401" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="200" width="130" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="d1" value="认证接口？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="190" y="195" width="110" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s1" target="d1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="err1" value="直接报错" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="200" y="100" width="90" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="Yes" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d1" target="err1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d2" value="有&lt;br&gt;refreshToken？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="340" y="190" width="130" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d1" target="d2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="logout1" value="清除存储&lt;br&gt;跳转登录" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="355" y="100" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d2" target="logout1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d3" value="刷新中？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="520" y="195" width="110" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="Yes" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d2" target="d3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="queue" value="加入队列&lt;br&gt;等待重试" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="530" y="100" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" value="Yes" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d3" target="queue" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2" value="POST&lt;br&gt;/api/auth/refresh" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="200" width="130" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d3" target="s2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d4" value="成功？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="850" y="195" width="100" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s2" target="d4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="logout2" value="释放队列&lt;br&gt;跳转登录" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="855" y="330" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d4" target="logout2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3" value="更新存储&lt;br&gt;释放队列&lt;br&gt;重试请求" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="195" width="130" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10" value="Yes" style="rounded=0;html=1;strokeWidth=1.5;fontSize=10;" edge="1" source="d4" target="s3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

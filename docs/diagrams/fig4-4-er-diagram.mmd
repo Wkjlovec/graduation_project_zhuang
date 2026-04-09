@@ -1,0 +1,67 @@
+erDiagram
+    user_account ||--o{ forum_post : "creates"
+    user_account ||--o{ post_comment : "writes"
+    user_account ||--o{ post_like : "likes"
+    user_account ||--o{ notification_message : "receives"
+    forum_section ||--o{ forum_post : "contains"
+    forum_post ||--o{ post_comment : "has"
+    forum_post ||--o{ post_like : "has"
+    post_comment ||--o{ post_comment : "replies_to"
+
+    user_account {
+        BIGINT id PK
+        VARCHAR username UK
+        VARCHAR password
+        VARCHAR nickname
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    forum_section {
+        BIGINT id PK
+        VARCHAR name UK
+        VARCHAR description
+        INT sort_order
+        BOOLEAN enabled
+    }
+
+    forum_post {
+        BIGINT id PK
+        VARCHAR title
+        TEXT content
+        BIGINT author_id FK
+        VARCHAR author_name
+        BIGINT section_id FK
+        VARCHAR section_name
+        INT like_count
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    post_comment {
+        BIGINT id PK
+        BIGINT post_id FK
+        BIGINT user_id FK
+        VARCHAR username
+        TEXT content
+        BIGINT parent_comment_id FK
+        DATETIME created_at
+        DATETIME updated_at
+    }
+
+    post_like {
+        BIGINT id PK
+        BIGINT post_id FK
+        BIGINT user_id FK
+        DATETIME created_at
+    }
+
+    notification_message {
+        BIGINT id PK
+        VARCHAR type
+        BIGINT user_id FK
+        VARCHAR title
+        VARCHAR content
+        BOOLEAN is_read
+        DATETIME created_at
+    }

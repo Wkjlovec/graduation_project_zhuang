@@ -1,0 +1,61 @@
+<mxfile host="draw.io" type="device">
+  <diagram id="fig4-8" name="发帖流程">
+    <mxGraphModel dx="1400" dy="500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="500" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="s1" value="提交发帖请求" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="180" width="130" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="d1" value="身份信息&lt;br&gt;非空？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="190" y="175" width="110" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s1" target="d1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="err1" value="401" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="90" width="60" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d1" target="err1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d2" value="分区&lt;br&gt;存在？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="340" y="175" width="110" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="Yes" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d1" target="d2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="err2" value="404" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="90" width="60" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d2" target="err2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2" value="构建实体&lt;br&gt;填充字段" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="490" y="185" width="110" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="Yes" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d2" target="s2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3" value="持久化&lt;br&gt;MySQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="640" y="185" width="110" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s2" target="s3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s4" value="淘汰&lt;br&gt;列表缓存" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="790" y="185" width="110" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s3" target="s4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s5" value="返回帖子摘要" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="940" y="185" width="130" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s4" target="s5" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

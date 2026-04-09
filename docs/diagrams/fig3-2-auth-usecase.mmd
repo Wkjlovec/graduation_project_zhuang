@@ -1,0 +1,10 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 50, 'nodeSpacing': 40}}}%%
+graph LR
+    Guest((游客)) --- UC1([注册])
+    Guest --- UC2([登录])
+    UC2 -..->|"‹‹include››"| UC5([凭据校验])
+    UC6([失败计数与账户锁定]) -..->|"‹‹extend››"| UC2
+    User((注册用户)) --- UC2
+    User --- UC3([令牌刷新])
+    User --- UC4([登出])
+    UC4 -..->|"‹‹include››"| UC7([删除Redis会话记录])

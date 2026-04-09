@@ -1,0 +1,50 @@
+<mxfile host="draw.io" type="device">
+  <diagram id="fig4-17" name="搜索数据流">
+    <mxGraphModel dx="1300" dy="500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="500" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="u" value="用户" style="shape=actor;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="160" width="60" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="sc" value="搜索服务&lt;br&gt;&lt;i&gt;SearchController&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="120" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" value="keyword, sectionId,&lt;br&gt;page / size" style="html=1;strokeWidth=1.5;fontSize=10;" edge="1" source="u" target="sc" parent="1">
+          <mxGeometry x="0.1" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="fc" value="论坛服务&lt;br&gt;&lt;i&gt;ForumController&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="260" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="ForumClient&lt;br&gt;GET /posts" style="html=1;strokeWidth=1.5;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="sc" target="fc" parent="1">
+          <mxGeometry x="-0.2" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="帖子列表 JSON" style="html=1;strokeWidth=1.5;fontSize=10;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="fc" target="sc" parent="1">
+          <mxGeometry x="0.1" relative="1" as="geometry">
+            <mxPoint as="offset"/>
+            <Array as="points">
+              <mxPoint x="480" y="290"/>
+              <mxPoint x="480" y="150"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mr" value="匹配结果集&lt;br&gt;&lt;i&gt;过滤匹配: 标题/摘要/作者/分区&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="170" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="过滤匹配" style="html=1;strokeWidth=1.5;fontSize=10;" edge="1" source="sc" target="mr" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="SearchPostResponse&lt;br&gt;JSON" style="html=1;strokeWidth=1.5;fontSize=10;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="mr" target="u" parent="1">
+          <mxGeometry x="-0.2" relative="1" as="geometry">
+            <mxPoint as="offset"/>
+            <Array as="points">
+              <mxPoint x="500" y="380"/>
+              <mxPoint x="60" y="380"/>
+              <mxPoint x="60" y="240"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

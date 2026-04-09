@@ -1,0 +1,20 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 45, 'nodeSpacing': 30}}}%%
+graph TB
+    CL["common-lib\nApiResponse / ServiceConstants"]
+    GW["gateway-service :8080\nJwtRelayFilter / 路由规则"]
+    AUTH["auth-user-service :8081\n注册/登录/刷新/登出/个人信息"]
+    FORUM["forum-service :8082\n帖子CRUD/评论/点赞/分区"]
+    NOTIFY["notification-service :8083\n首页摘要/通知列表/标记已读"]
+    SEARCH["search-service :8085\n关键词搜索"]
+    MEDIA["media-service :8084\n音乐/书籍推荐"]
+    FPC["frontend-pc :5173\nVue3 + Element Plus"]
+    FMOB["frontend-mobile :5174\nVue3 + Vant"]
+    GW -->|依赖| CL
+    AUTH -->|依赖| CL
+    FORUM -->|依赖| CL
+    NOTIFY -->|依赖| CL
+    SEARCH -->|依赖| CL
+    MEDIA -->|依赖| CL
+    SEARCH -.->|OpenFeign| FORUM
+    FPC -->|HTTP| GW
+    FMOB -->|HTTP| GW

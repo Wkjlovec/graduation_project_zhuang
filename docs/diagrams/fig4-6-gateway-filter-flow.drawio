@@ -1,0 +1,103 @@
+<mxfile host="draw.io" type="device">
+  <diagram id="fig4-6" name="网关鉴权过滤流程">
+    <mxGraphModel dx="1600" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="s1" value="接收请求" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="250" width="110" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="d1" value="OPTIONS?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="160" y="240" width="110" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s1" target="d1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="pass1" value="放行" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="170" y="130" width="80" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="Yes" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d1" target="pass1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d2" value="GET 且在&lt;br&gt;白名单？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="310" y="240" width="120" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d1" target="d2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="pass2" value="放行" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="330" y="130" width="80" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="Yes" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d2" target="pass2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d3" value="匹配 permit&lt;br&gt;Prefixes？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="470" y="237" width="130" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d2" target="d3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="pass3" value="放行" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="495" y="130" width="80" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" value="Yes" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d3" target="pass3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d4" value="Bearer&lt;br&gt;令牌存在？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="640" y="237" width="120" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d3" target="d4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="err1" value="401" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="665" y="370" width="60" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d4" target="err1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d5" value="JWT 签名&lt;br&gt;通过？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="800" y="237" width="120" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" value="Yes" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d4" target="d5" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="err2" value="401" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="830" y="370" width="60" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d5" target="err2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d6" value="声明字段&lt;br&gt;有效？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="960" y="237" width="120" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="e11" value="Yes" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d5" target="d6" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="err3" value="401" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="990" y="370" width="60" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="e12" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d6" target="err3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d7" value="Redis&lt;br&gt;会话有效？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="237" width="120" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="e13" value="Yes" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d6" target="d7" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="err4" value="401" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="370" width="60" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="e14" value="No" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="d7" target="err4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2" value="透传身份&lt;br&gt;转发请求" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="247" width="120" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="e15" value="Yes" style="rounded=0;html=1;strokeWidth=1.5;fontSize=10;" edge="1" source="d7" target="s2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,39 @@
+flowchart TD
+    FS["<b>forum_section</b>"]
+    UA["<b>user_account</b>"]
+    NM["<b>notification_message</b>"]
+
+    R2{"归属"}
+    R1{"发布"}
+    R6{"点赞"}
+    R7{"接收"}
+
+    FP["<b>forum_post</b>"]
+
+    R3{"撰写"}
+    R4{"评论"}
+
+    PC["<b>post_comment</b>"]
+    R5{"回复"}
+
+    FS ---|"1"| R2 ---|"N"| FP
+    UA ---|"1"| R1 ---|"N"| FP
+    UA ---|"M"| R6 ---|"N"| FP
+    UA ---|"1"| R7 ---|"N"| NM
+    UA ---|"1"| R3 ---|"N"| PC
+    FP ---|"1"| R4 ---|"N"| PC
+    PC ---|"1"| R5 ---|"N"| PC
+
+    style UA fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#000
+    style FS fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#000
+    style FP fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#000
+    style PC fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#000
+    style NM fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#000
+
+    style R1 fill:#FFF3E0,stroke:#F57C00,stroke-width:2px,color:#000
+    style R2 fill:#FFF3E0,stroke:#F57C00,stroke-width:2px,color:#000
+    style R3 fill:#FFF3E0,stroke:#F57C00,stroke-width:2px,color:#000
+    style R4 fill:#FFF3E0,stroke:#F57C00,stroke-width:2px,color:#000
+    style R5 fill:#FFF3E0,stroke:#F57C00,stroke-width:2px,color:#000
+    style R6 fill:#FFF3E0,stroke:#F57C00,stroke-width:2px,color:#000
+    style R7 fill:#FFF3E0,stroke:#F57C00,stroke-width:2px,color:#000

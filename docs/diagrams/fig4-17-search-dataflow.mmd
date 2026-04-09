@@ -1,0 +1,7 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 45, 'nodeSpacing': 30}}}%%
+graph LR
+    U["用户"] -->|keyword\nsectionId\npage/size| A["搜索服务\nSearchController"]
+    A -->|ForumClient\nGET /posts| B["论坛服务\nForumController"]
+    B -->|帖子列表\nJSON| A
+    A -->|过滤匹配\n标题/摘要/作者/分区| C["匹配结果集"]
+    C -->|SearchPostResponse\nJSON| U

@@ -1,0 +1,12 @@
+%%{init: {'theme': 'neutral', 'flowchart': {'curve': 'linear', 'rankSpacing': 40, 'nodeSpacing': 25}}}%%
+graph LR
+    A["请求\n返回401"] --> B{"认证\n接口?"}
+    B -->|Yes| C["直接报错"]
+    B -->|No| D{"有refresh\nToken?"}
+    D -->|No| E["清除存储\n跳转登录"]
+    D -->|Yes| F{"刷新中?"}
+    F -->|Yes| G["加入队列\n等待重试"]
+    F -->|No| H["POST\n/api/auth/refresh"]
+    H --> I{"成功?"}
+    I -->|No| J["释放队列\n跳转登录"]
+    I -->|Yes| K["更新存储\n释放队列\n重试请求"]

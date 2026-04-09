@@ -1,0 +1,81 @@
+<mxfile host="draw.io" type="device">
+  <diagram id="fig4-9" name="缓存策略">
+    <mxGraphModel dx="1400" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Read path label -->
+        <mxCell id="lbl1" value="读取路径" style="text;html=1;fontSize=14;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="20" y="70" width="90" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="r1" value="请求帖子&lt;br&gt;列表 / 详情" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="110" width="140" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="rd1" value="Redis&lt;br&gt;缓存命中？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="210" y="100" width="130" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="re1" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="r1" target="rd1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r2" value="返回缓存数据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="230" y="20" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="re2" value="命中" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="rd1" target="r2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r3" value="查询 MySQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="395" y="115" width="120" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="re3" value="未命中" style="rounded=0;html=1;strokeWidth=1;fontSize=10;" edge="1" source="rd1" target="r3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r4" value="写入 Redis 缓存" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="565" y="115" width="130" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="re4" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="r3" target="r4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r5" value="返回结果" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="745" y="115" width="120" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="re5" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="r4" target="r5" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Separator -->
+        <mxCell id="sep" value="" style="line;strokeWidth=1;strokeColor=#999999;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="230" width="850" height="10" as="geometry"/>
+        </mxCell>
+
+        <!-- Write path label -->
+        <mxCell id="lbl2" value="写入路径" style="text;html=1;fontSize=14;fontStyle=1;fillColor=none;strokeColor=none;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="20" y="260" width="90" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="w1" value="发布 / 编辑&lt;br&gt;/ 删除帖子" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="300" width="140" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="w2" value="执行数据库&lt;br&gt;写操作" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="220" y="305" width="120" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="we1" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="w1" target="w2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="w3" value="淘汰列表缓存" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="305" width="130" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="we2" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="w2" target="w3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="w4" value="淘汰详情缓存" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="590" y="305" width="130" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="we3" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="w3" target="w4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

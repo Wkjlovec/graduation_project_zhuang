@@ -1,0 +1,167 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="用户活动图" id="user-activity">
+    <mxGraphModel dx="1422" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="start" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="545" y="10" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="a1" value="用户打开论坛首页" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="470" y="70" width="180" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="a2" value="加载帖子列表 /&lt;br&gt;通知摘要 / 媒体推荐" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="450" y="140" width="220" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="a3" value="浏览公开内容&lt;br&gt;（帖子列表·详情·搜索·&lt;br&gt;通知摘要·媒体推荐）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="440" y="215" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="d1" value="尝试写操作？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="490" y="310" width="140" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="d2" value="携带有效令牌？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="490" y="420" width="140" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="a4" value="JWT签名 +&lt;br&gt;Redis会话校验" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="310" y="510" width="170" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="d3" value="校验通过？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="325" y="590" width="130" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="d4" value="需要作者权限？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="140" y="590" width="140" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="a5" value="执行写操作" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="60" y="700" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="end1" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#000000;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="110" y="780" width="30" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="a6" value="返回403" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="240" y="700" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="d5" value="刷新令牌有效？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="485" y="590" width="150" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="a7" value="静默刷新令牌" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="497" y="700" width="125" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="a8" value="网关返回401&lt;br&gt;前端引导登录" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="700" y="430" width="150" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="a9" value="跳转登录页面" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="710" y="540" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="d6" value="登录成功？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="710" y="620" width="130" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="d7" value="账户锁定？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="880" y="620" width="120" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="a10" value="等待解锁" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="960" y="540" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="a11" value="提示错误重试" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="880" y="730" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <!-- Edges -->
+        <mxCell id="e1" value="" style="endArrow=classic;html=1;" edge="1" source="start" target="a1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="" style="endArrow=classic;html=1;" edge="1" source="a1" target="a2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="" style="endArrow=classic;html=1;" edge="1" source="a2" target="a3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="" style="endArrow=classic;html=1;" edge="1" source="a3" target="d1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="否" style="endArrow=classic;html=1;" edge="1" source="d1" target="a3" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="345"/>
+              <mxPoint x="350" y="245"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" value="是" style="endArrow=classic;html=1;" edge="1" source="d1" target="d2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" value="有令牌" style="endArrow=classic;html=1;" edge="1" source="d2" target="a4" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="395" y="455"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" value="无令牌" style="endArrow=classic;html=1;" edge="1" source="d2" target="a8" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" value="" style="endArrow=classic;html=1;" edge="1" source="a4" target="d3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10" value="通过" style="endArrow=classic;html=1;" edge="1" source="d3" target="d4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e11" value="失败/过期" style="endArrow=classic;html=1;" edge="1" source="d3" target="d5" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e12" value="不需要或是作者" style="endArrow=classic;html=1;" edge="1" source="d4" target="a5" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e13" value="非作者" style="endArrow=classic;html=1;" edge="1" source="d4" target="a6" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e14" value="" style="endArrow=classic;html=1;" edge="1" source="a5" target="end1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e15" value="是" style="endArrow=classic;html=1;" edge="1" source="d5" target="a7" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e16" value="否" style="endArrow=classic;html=1;" edge="1" source="d5" target="a9" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e17" value="" style="endArrow=classic;html=1;" edge="1" source="a7" target="d4" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="210" y="720"/>
+              <mxPoint x="210" y="660"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" value="" style="endArrow=classic;html=1;" edge="1" source="a8" target="a9" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e19" value="" style="endArrow=classic;html=1;" edge="1" source="a9" target="d6" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e20" value="是" style="endArrow=classic;html=1;" edge="1" source="d6" target="a3" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="775" y="245"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e21" value="否" style="endArrow=classic;html=1;" edge="1" source="d6" target="d7" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e22" value="是" style="endArrow=classic;html=1;" edge="1" source="d7" target="a10" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e23" value="否" style="endArrow=classic;html=1;" edge="1" source="d7" target="a11" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e24" value="" style="endArrow=classic;html=1;" edge="1" source="a11" target="a9" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="750"/>
+              <mxPoint x="1040" y="560"/>
+              <mxPoint x="840" y="560"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

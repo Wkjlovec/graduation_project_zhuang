@@ -1,0 +1,85 @@
+<mxfile host="draw.io" type="device">
+  <diagram id="fig4-5" name="认证登录流程">
+    <mxGraphModel dx="1400" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="600" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="s1" value="用户提交&lt;br&gt;用户名+密码" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="200" width="130" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="d1" value="账户&lt;br&gt;已锁定？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="190" y="190" width="110" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s1" target="d1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="err1" value="返回错误" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="200" y="70" width="90" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="Yes" style="rounded=0;html=1;strokeWidth=1.2;fontSize=10;" edge="1" source="d1" target="err1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d2" value="校验用户名&lt;br&gt;和密码" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="345" y="185" width="120" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="No" style="rounded=0;html=1;strokeWidth=1.2;fontSize=10;" edge="1" source="d1" target="d2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2" value="Redis&lt;br&gt;失败计数+1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="355" y="340" width="100" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="失败" style="rounded=0;html=1;strokeWidth=1.2;fontSize=10;" edge="1" source="d2" target="s2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d3" value="达到阈值&lt;br&gt;5次？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="345" y="440" width="120" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" style="rounded=0;html=1;strokeWidth=1.2;" edge="1" source="s2" target="d3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3" value="锁定 600 秒" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="450" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" value="Yes" style="rounded=0;html=1;strokeWidth=1.2;fontSize=10;" edge="1" source="d3" target="s3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="err2" value="返回错误" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="200" y="460" width="90" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" value="No" style="rounded=0;html=1;strokeWidth=1.2;fontSize=10;" edge="1" source="d3" target="err2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s4" value="清除&lt;br&gt;失败计数" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="510" y="205" width="100" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" value="成功" style="rounded=0;html=1;strokeWidth=1.2;fontSize=10;" edge="1" source="d2" target="s4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s5" value="生成&lt;br&gt;sessionId" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="650" y="205" width="100" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s4" target="s5" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s6" value="签发&lt;br&gt;双令牌" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="790" y="205" width="100" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s5" target="s6" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s7" value="会话写入&lt;br&gt;Redis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="930" y="205" width="100" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e11" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s6" target="s7" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="s8" value="返回令牌" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="205" width="110" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e12" style="rounded=0;html=1;strokeWidth=1.5;" edge="1" source="s7" target="s8" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
