@@ -1,13 +1,12 @@
----
-config:
-  er:
-    layoutDirection: TB
----
 erDiagram
-    user_account ||--o{ forum_post : "author_id"
-    forum_section ||--o{ forum_post : "section_id"
-    forum_post ||--o{ post_comment : "post_id"
-    forum_post ||--o{ post_like : "post_id"
+    user_account ||--o{ forum_post : "creates"
+    user_account ||--o{ post_comment : "writes"
+    user_account ||--o{ post_like : "likes"
+    user_account ||--o{ notification_message : "receives"
+    forum_section ||--o{ forum_post : "contains"
+    forum_post ||--o{ post_comment : "has"
+    forum_post ||--o{ post_like : "has"
+    post_comment ||--o{ post_comment : "replies_to"
 
     user_account {
         BIGINT id PK
@@ -45,7 +44,7 @@ erDiagram
         BIGINT user_id FK
         VARCHAR username
         TEXT content
-        BIGINT parent_comment_id
+        BIGINT parent_comment_id FK
         DATETIME created_at
         DATETIME updated_at
     }
@@ -60,7 +59,7 @@ erDiagram
     notification_message {
         BIGINT id PK
         VARCHAR type
-        BIGINT user_id
+        BIGINT user_id FK
         VARCHAR title
         VARCHAR content
         BOOLEAN is_read
