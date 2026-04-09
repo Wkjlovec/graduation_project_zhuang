@@ -95,9 +95,7 @@
       <van-button size="small" :disabled="loadingPosts || !hasNextPage" @click="nextPage">下一页</van-button>
     </div>
 
-    <van-floating-bubble axis="xy" magnetic="x" :offset="{ x: 320, y: 600 }" @click="goProfile">
-      我
-    </van-floating-bubble>
+    <div class="profile-btn" @click="goProfile">我</div>
   </div>
 </template>
 
@@ -228,5 +226,24 @@ function goDetail(id: number) {
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 6px;
+}
+
+.profile-btn {
+  position: fixed;
+  top: 8px;
+  right: 80px;
+  z-index: 100;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #1989fa;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 </style>
