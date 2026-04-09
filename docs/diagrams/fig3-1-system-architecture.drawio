@@ -49,58 +49,81 @@
         <mxCell id="16" value="Nacos 2.3.2&lt;br&gt;:8848" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
           <mxGeometry x="725" y="465" width="200" height="55" as="geometry"/>
         </mxCell>
-        <mxCell id="17" value="" style="endArrow=classic;html=1;" edge="1" source="6" target="8" parent="1">
+        <!-- 前端->网关: 折线 -->
+        <mxCell id="17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=1.5;strokeColor=#333333;entryX=0.35;entryY=0;" edge="1" source="6" target="8" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="18" value="" style="endArrow=classic;html=1;" edge="1" source="7" target="8" parent="1">
+        <mxCell id="18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=1.5;strokeColor=#333333;entryX=0.65;entryY=0;" edge="1" source="7" target="8" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="19" value="" style="endArrow=classic;html=1;" edge="1" source="8" target="9" parent="1">
+        <!-- 网关->各服务: 折线 -->
+        <mxCell id="19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="8" target="9" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="20" value="" style="endArrow=classic;html=1;" edge="1" source="8" target="10" parent="1">
+        <mxCell id="20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="8" target="10" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="21" value="" style="endArrow=classic;html=1;" edge="1" source="8" target="11" parent="1">
+        <mxCell id="21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="8" target="11" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="22" value="" style="endArrow=classic;html=1;" edge="1" source="8" target="12" parent="1">
+        <mxCell id="22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="8" target="12" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="23" value="" style="endArrow=classic;html=1;" edge="1" source="8" target="13" parent="1">
+        <mxCell id="23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="8" target="13" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="24" value="" style="endArrow=classic;html=1;" edge="1" source="9" target="14" parent="1">
+        <!-- MySQL汇合点: 认证+论坛+通知 -->
+        <mxCell id="jm" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#333333;strokeColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="282" y="408" width="6" height="6" as="geometry"/>
+        </mxCell>
+        <mxCell id="24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="9" target="jm" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="25" value="" style="endArrow=classic;html=1;" edge="1" source="10" target="14" parent="1">
+        <mxCell id="25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="10" target="jm" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="26" value="" style="endArrow=classic;html=1;" edge="1" source="11" target="14" parent="1">
+        <mxCell id="26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="11" target="jm" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="27" value="" style="endArrow=classic;html=1;" edge="1" source="9" target="15" parent="1">
+        <mxCell id="26b" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="jm" target="14" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="28" value="" style="endArrow=classic;html=1;" edge="1" source="10" target="15" parent="1">
+        <!-- Redis汇合点: 认证+论坛+网关 -->
+        <mxCell id="jr" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#333333;strokeColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="552" y="408" width="6" height="6" as="geometry"/>
+        </mxCell>
+        <mxCell id="27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="9" target="jr" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="29" value="" style="endArrow=classic;html=1;" edge="1" source="8" target="15" parent="1">
+        <mxCell id="28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="10" target="jr" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="30" value="" style="endArrow=classic;html=1;" edge="1" source="9" target="16" parent="1">
+        <mxCell id="29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="8" target="jr" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="31" value="" style="endArrow=classic;html=1;" edge="1" source="10" target="16" parent="1">
+        <mxCell id="29b" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="jr" target="15" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="32" value="" style="endArrow=classic;html=1;" edge="1" source="11" target="16" parent="1">
+        <!-- Nacos汇合点: 全部服务+网关 -->
+        <mxCell id="jn" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#333333;strokeColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="822" y="408" width="6" height="6" as="geometry"/>
+        </mxCell>
+        <mxCell id="30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="9" target="jn" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="33" value="" style="endArrow=classic;html=1;" edge="1" source="12" target="16" parent="1">
+        <mxCell id="31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="10" target="jn" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="34" value="" style="endArrow=classic;html=1;" edge="1" source="13" target="16" parent="1">
+        <mxCell id="32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="11" target="jn" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="12" target="jn" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="13" target="jn" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="34b" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;strokeWidth=1.5;strokeColor=#333333;" edge="1" source="jn" target="16" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
       </root>
