@@ -1,6 +1,6 @@
 """
-毕业答辩PPT自动生成脚本
-课题：微服务架构的论坛系统实现（PC + 移动端）
+毕业答辩PPT自动生成脚本（2分钟视频版 · 10页精简）
+课题：基于微服务架构的高校论坛系统设计与实现
 """
 
 from pptx import Presentation
@@ -22,6 +22,8 @@ LIGHT_BG = RGBColor(0xF8, 0xF9, 0xFA)
 BORDER = RGBColor(0xDE, 0xE2, 0xE6)
 ORANGE = RGBColor(0xFB, 0x8C, 0x00)
 RED_ACCENT = RGBColor(0xE5, 0x39, 0x35)
+
+TOTAL_SLIDES = 10
 
 
 def set_slide_bg(slide, color):
@@ -72,16 +74,26 @@ def add_paragraph(text_frame, text, font_size=16, bold=False, color=DARK,
     return p
 
 
-def add_title_bar(slide, title_text, subtitle_text=None):
+def add_title_bar(slide, title_text, subtitle_text=None, page_num=None):
     bar = add_shape_fill(slide, Inches(0), Inches(0), SLIDE_WIDTH, Inches(1.1), PRIMARY, 0)
     add_textbox(slide, Inches(0.8), Inches(0.15), Inches(10), Inches(0.7),
                 title_text, font_size=28, bold=True, color=WHITE)
     if subtitle_text:
         add_textbox(slide, Inches(0.8), Inches(0.7), Inches(10), Inches(0.35),
                     subtitle_text, font_size=14, color=RGBColor(0xBB, 0xD5, 0xFD))
-    page_indicator = add_textbox(slide, Inches(11.5), Inches(0.3), Inches(1.5), Inches(0.5),
-                                 "", font_size=12, color=WHITE, alignment=PP_ALIGN.RIGHT)
+    if page_num is not None:
+        add_textbox(slide, Inches(11.5), Inches(0.3), Inches(1.5), Inches(0.5),
+                    f"{page_num}/{TOTAL_SLIDES}", font_size=14, bold=True,
+                    color=WHITE, alignment=PP_ALIGN.RIGHT)
     return bar
+
+
+def add_transition(slide, text):
+    add_shape_fill(slide, Inches(0), Inches(7.0), SLIDE_WIDTH, Inches(0.5),
+                   RGBColor(0x13, 0x45, 0xB5), 0)
+    add_textbox(slide, Inches(0.8), Inches(7.05), Inches(11), Inches(0.4),
+                f"▸ {text}", font_size=12, bold=True,
+                color=RGBColor(0xBB, 0xD5, 0xFD))
 
 
 def add_card(slide, left, top, width, height, title, items, icon_color=PRIMARY):
@@ -159,24 +171,29 @@ def slide_cover(prs):
     add_shape_fill(slide, Inches(0), Inches(3.6), SLIDE_WIDTH, Inches(0.4),
                    RGBColor(0x13, 0x45, 0xB5), 0)
 
-    add_textbox(slide, Inches(1.5), Inches(0.8), Inches(10), Inches(0.5),
+    add_textbox(slide, Inches(1.5), Inches(0.6), Inches(10), Inches(0.5),
                 "毕业设计答辩", font_size=18, color=RGBColor(0xBB, 0xD5, 0xFD),
                 alignment=PP_ALIGN.CENTER)
 
-    add_textbox(slide, Inches(1), Inches(1.4), Inches(11), Inches(1.2),
+    add_textbox(slide, Inches(1), Inches(1.2), Inches(11), Inches(1.2),
                 "基于微服务架构的高校论坛系统\n设计与实现", font_size=36, bold=True, color=WHITE,
                 alignment=PP_ALIGN.CENTER)
 
-    add_textbox(slide, Inches(1.5), Inches(2.7), Inches(10), Inches(0.5),
+    add_textbox(slide, Inches(1.5), Inches(2.6), Inches(10), Inches(0.5),
                 "—— PC 端 + 移动端双端协同", font_size=18, color=RGBColor(0xBB, 0xD5, 0xFD),
                 alignment=PP_ALIGN.CENTER)
+
+    add_textbox(slide, Inches(1.5), Inches(3.2), Inches(10), Inches(0.4),
+                "本课题旨在采用 Spring Cloud 微服务 + Vue 3 双端技术，构建面向高校的论坛系统，"
+                "解决传统单体论坛架构耦合、缺乏移动适配和测试不可复现的问题",
+                font_size=13, color=RGBColor(0x99, 0xBB, 0xEE), alignment=PP_ALIGN.CENTER)
 
     info_items = [
         "答辩人：XXX　　学号：XXXXXXXXXX",
         "指导教师：XXX 副教授",
         "专业：软件工程　　学院：计算机与信息学院",
     ]
-    y = Inches(4.4)
+    y = Inches(4.3)
     for item in info_items:
         add_textbox(slide, Inches(3), y, Inches(7), Inches(0.4),
                     item, font_size=16, color=GRAY, alignment=PP_ALIGN.CENTER)
@@ -876,32 +893,443 @@ def slide_thanks(prs):
                 color=RGBColor(0xBB, 0xD5, 0xFD), alignment=PP_ALIGN.CENTER)
 
 
+def slide_bg_combined(prs):
+    """P2: 研究背景+现状+创新点 合并为1页 (30s)"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "01 研究背景与意义", "30秒 · 痛点 → 不足 → 创新点", page_num=2)
+
+    add_card(slide, Inches(0.4), Inches(1.3), Inches(4.0), Inches(2.5),
+             "📋 高校论坛痛点", [
+                 "即时通讯→信息沉没",
+                 "单体架构→并发瓶颈",
+                 "仅PC端→99.6%移动用户缺失",
+                 "手工测试→质量不可控",
+             ], PRIMARY)
+
+    add_card(slide, Inches(4.6), Inches(1.3), Inches(4.0), Inches(2.5),
+             "⚠️ 现有方案不足", [
+                 "前后端耦合→全局重部署",
+                 "水木BBS/未名BBS→技术老化",
+                 "缺少自动化测试体系",
+                 "微服务+论坛的完整实践较少",
+             ], ORANGE)
+
+    add_card(slide, Inches(8.8), Inches(1.3), Inches(4.2), Inches(2.5),
+             "📚 研究定位", [
+                 "Spring Cloud体系已成熟[6]",
+                 "JWT短生命周期缩小攻击面[7]",
+                 "高校微服务实践案例[8][9]",
+                 "本文：完整工程闭环+双端",
+             ], ACCENT)
+
+    add_card(slide, Inches(0.4), Inches(4.1), Inches(12.6), Inches(2.6),
+             "💡 课题五大创新点", [
+                 "① 微服务拆分（5业务服务+网关）→ 松耦合、独立部署　　② PC+移动双端（Vue3 + Element Plus/Vant）→ 统一API",
+                 "③ JWT+Redis会话+网关鉴权 → 登录/刷新/登出/锁定闭环　　④ Redis缓存 → 帖子列表响应提升80%+",
+                 "⑤ Python自动化测试 → 11场景22接口100%通过 + 缓存基准 + 并发负载",
+             ], PRIMARY)
+
+    add_transition(slide, "基于以上背景与痛点，下面介绍系统的需求分析与设计目标")
+
+
+def slide_req_combined(prs):
+    """P3: 需求分析 (30s) — 功能+非功能+研究内容"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "02 需求分析与目标", "30秒 · 8个模块 · 5维非功能 · 6项研究内容", page_num=3)
+
+    add_card(slide, Inches(0.4), Inches(1.3), Inches(6.2), Inches(2.8),
+             "🔧 功能性需求（8个模块）", [
+                 "用户认证：注册/登录/令牌刷新/登出/失败锁定",
+                 "帖子管理：分区浏览/发帖/编辑/删除/详情",
+                 "评论互动：一级评论/二级回复/编辑/删除",
+                 "点赞：去重(联合唯一约束)  ·  通知：公告/个人/已读",
+                 "搜索：关键词+分区  ·  媒体：音乐/书籍推荐",
+                 "网关：统一路由+JWT鉴权+CORS",
+             ], PRIMARY)
+
+    add_card(slide, Inches(6.8), Inches(1.3), Inches(6.2), Inches(2.8),
+             "📊 非功能性需求（5维度）+ 角色", [
+                 "性能：缓存命中→毫秒级, 未命中≤500ms",
+                 "安全：JWT双令牌(24h/7d) + 失败5次锁定600s",
+                 "可扩展：Nacos注册, 新模块即插即用",
+                 "可维护：Docker Compose + 一键启停 + 自动回归",
+                 "兼容：PC+移动双端, 同一网关",
+                 "角色：游客(只读) / 注册用户(全功能, 非RBAC)",
+             ], ACCENT)
+
+    add_card(slide, Inches(0.4), Inches(4.4), Inches(12.6), Inches(2.3),
+             "🎯 论文六项研究内容", [
+                 "①后端微服务拆分(6服务+Nacos+Gateway)　②JWT+Redis认证闭环　③论坛核心数据建模+Redis缓存",
+                 "④Vue3双端前端(Element Plus/Vant)　⑤通知/搜索/媒体辅助服务协同　⑥Docker+脚本+Python自动化测试体系",
+             ], PRIMARY)
+
+    add_transition(slide, "基于以上需求，我们设计了如下系统架构...")
+
+
+def slide_arch_combined(prs):
+    """P4: 系统架构 (30s) — 四层图 + 模块概览"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "03 系统设计 — 四层架构与7子模块", "30秒 · 架构图 + 模块职责", page_num=4)
+
+    layers = [
+        ("用户接入层", Inches(1.3), PRIMARY_LIGHT, PRIMARY,
+         ["PC端 :5173 (Vue3+Element Plus)", "移动端 :5174 (Vue3+Vant)"], Inches(3.5)),
+        ("网关层", Inches(2.3), RGBColor(0xFE, 0xF3, 0xE2), ORANGE,
+         ["Gateway :8080 — 路由 · JWT验证 · CORS · 会话校验"], Inches(8.0)),
+        ("业务服务层", Inches(3.3), RGBColor(0xE8, 0xF5, 0xE9), ACCENT,
+         ["auth:8081(6)", "forum:8082(10)", "notify:8083(3)", "media:8084(2)", "search:8085(1)"], Inches(8.0)),
+        ("基础设施层", Inches(4.3), RGBColor(0xE3, 0xF2, 0xFD), PRIMARY,
+         ["MySQL 8.4 :3306", "Redis 7.4 :6379", "Nacos 2.3.2 :8848", "Docker Compose"], Inches(8.0)),
+    ]
+
+    for name, y, bg_color, border_color, items, width in layers:
+        x = Inches(0.4)
+        h = Inches(0.8)
+        card = add_shape_fill(slide, x + Inches(1.8), y, width, h, bg_color, 0.03)
+        card.line.color.rgb = border_color
+        card.line.width = Pt(1.5)
+        add_textbox(slide, x, y + Inches(0.15), Inches(1.7), Inches(0.5),
+                    name, font_size=11, bold=True, color=border_color, alignment=PP_ALIGN.RIGHT)
+        add_textbox(slide, x + Inches(2.0), y + Inches(0.15), width - Inches(0.4), Inches(0.5),
+                    "　|　".join(items), font_size=11, color=DARK, alignment=PP_ALIGN.CENTER)
+
+    add_card(slide, Inches(0.4), Inches(5.3), Inches(12.6), Inches(1.5),
+             "🧩 7个Maven子模块", [
+                 "common-lib(公共常量+ApiResponse) → gateway(路由鉴权) → auth(JWT双令牌+Redis会话+锁定)",
+                 "→ forum(帖子/评论/点赞+@Cacheable) → notification(公告/通知) → search(Feign→forum) → media(静态推荐)",
+             ], PRIMARY)
+
+    add_transition(slide, "下面展示数据库设计和核心安全机制...")
+
+
+def slide_db_security(prs):
+    """P5: 数据库+安全 (30s)"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "03 系统设计 — 数据库与安全", "30秒 · 6张表 · 3NF · JWT+Redis鉴权", page_num=5)
+
+    headers = ["表名", "所属服务", "核心字段", "特殊约束"]
+    rows = [
+        ["user_account", "auth", "id, username, password(BCrypt), nickname", "username唯一索引"],
+        ["forum_section", "forum", "id, name, description, sort_order", "name唯一, 种子初始化"],
+        ["forum_post", "forum", "id, title, content, author_id/name, section_id/name", "冗余字段免JOIN"],
+        ["post_comment", "forum", "id, post_id, content, parent_comment_id", "parent为空=一级评论"],
+        ["post_like", "forum", "id, post_id, user_id", "联合唯一(post+user)去重"],
+        ["notification_message", "notification", "id, type, user_id, title, is_read", "ANNOUNCEMENT/USER"],
+    ]
+    make_table(slide, Inches(0.3), Inches(1.3), Inches(12.7), Emu(int(Inches(0.35))),
+               headers, rows)
+
+    add_card(slide, Inches(0.3), Inches(4.4), Inches(6.2), Inches(2.8),
+             "🔐 JWT + Redis 双重鉴权", [
+                 "1. 登录→签发Access(24h)+Refresh(7d)",
+                 "2. Redis写入 auth:session:{sid}",
+                 "3. Gateway JwtRelayFilter:",
+                 "   签名验证→类型检查→Redis会话校验",
+                 "   →透传 X-User-Id / X-Username",
+                 "4. 登出→删除Redis session→立即失效",
+             ], PRIMARY)
+
+    add_card(slide, Inches(6.7), Inches(4.4), Inches(6.3), Inches(2.8),
+             "🔗 Redis 缓存+会话", [
+                 "auth:session:{sid} → 用户会话(登出即删)",
+                 "auth:login:fail:{user}:{ip} → 失败计数(5次锁定)",
+                 "forum:post:list → 帖子列表(TTL=2min)",
+                 "forum:post:detail → 帖子详情(TTL=5min)",
+                 "写操作→@CacheEvict自动淘汰",
+                 "6张表满足3NF, forum_post冗余author/section免JOIN",
+             ], RED_ACCENT)
+
+    add_transition(slide, "架构和数据模型确定后，进入核心功能的实现...")
+
+
+def slide_impl_core(prs):
+    """P6: 核心实现——认证+论坛+缓存 (30s)"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "04 实现 — 认证闭环与论坛核心", "30秒 · 伪代码 · 缓存策略 · 难点攻克", page_num=6)
+
+    add_card(slide, Inches(0.4), Inches(1.3), Inches(4.0), Inches(5.4),
+             "🔐 认证伪代码", [
+                 "function login(username, password):",
+                 "  if locked(user,ip): throw 锁定",
+                 "  user = db.findByUsername(username)",
+                 "  if !bcrypt.match(password):",
+                 "    redis.incr(fail_count)",
+                 "    if count>=5: lock 600s",
+                 "    throw 密码错误",
+                 "  clearFailCount()",
+                 "  sid = UUID.random()",
+                 "  access = jwt.sign({uid,sid,typ:'access'})",
+                 "  refresh = jwt.sign({uid,sid,typ:'refresh'})",
+                 "  redis.set('auth:session:'+sid, uid)",
+                 "  return {access, refresh}",
+             ], PRIMARY)
+
+    add_card(slide, Inches(4.6), Inches(1.3), Inches(4.0), Inches(5.4),
+             "📝 论坛核心伪代码", [
+                 "// 发帖(含缓存淘汰)",
+                 "@CacheEvict('forum:post:list')",
+                 "function createPost(req, user):",
+                 "  section = loadSection(req.sectionId)",
+                 "  post = save(title,content,section,user)",
+                 "  return post",
+                 "",
+                 "// 点赞(双重去重)",
+                 "function likePost(postId, userId):",
+                 "  if exists(postId, userId):",
+                 "    throw '已点赞(4091)'",
+                 "  try: insert(postId, userId)",
+                 "  catch UniqueViolation:",
+                 "    throw '已点赞' // DB层兜底",
+             ], ACCENT)
+
+    add_card(slide, Inches(8.8), Inches(1.3), Inches(4.2), Inches(5.4),
+             "💡 难点与解决", [
+                 "① 并发点赞去重",
+                 "  → DB联合唯一约束+业务层捕获",
+                 "",
+                 "② 401并发刷新",
+                 "  → isRefreshing + pendingQueue",
+                 "  → 单次refresh+排队重试",
+                 "",
+                 "③ 缓存一致性",
+                 "  → @CacheEvict主动淘汰",
+                 "  → 短TTL(2/5min)兜底",
+                 "",
+                 "④ 服务间调用",
+                 "  → OpenFeign(search→forum)",
+             ], ORANGE)
+
+    add_transition(slide, "核心逻辑完成，来看双端前端的实现...")
+
+
+def slide_frontend_compact(prs):
+    """P7: 双端前端 (15s)"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "04 实现 — 双端前端与技术栈", "15秒 · PC+移动 · 统一API · 开发环境", page_num=7)
+
+    add_card(slide, Inches(0.4), Inches(1.3), Inches(4.0), Inches(4.0),
+             "🖥️ PC端 (Element Plus)", [
+                 "6个页面: 登录/列表/详情/发帖/通知/个人",
+                 "帖子列表: 分区筛选+搜索+分页(5/10/20)",
+                 "侧边栏: 通知摘要+音乐/书籍推荐",
+                 "详情页: 正文+点赞+二级评论",
+                 "顶部导航栏: 用户名/登录按钮",
+                 "",
+                 "图 4-11 PC端帖子列表页截图",
+                 "(实际演示时替换为真实截图)",
+             ], PRIMARY)
+
+    add_card(slide, Inches(4.6), Inches(1.3), Inches(4.0), Inches(4.0),
+             "📱 移动端 (Vant 4)", [
+                 "相同6个页面, 纵向堆叠布局",
+                 "NavBar导航 + Cell列表组件",
+                 "通知/推荐内嵌列表上方",
+                 "固定圆形\"我\"按钮→个人中心",
+                 "",
+                 "统一设计:",
+                 "· 加载态/空状态/错误重试",
+                 "· 不同localStorage前缀(pc/mobile)",
+             ], ACCENT)
+
+    add_card(slide, Inches(8.8), Inches(1.3), Inches(4.2), Inches(4.0),
+             "🔧 开发环境", [
+                 "后端: Java 17 + Spring Boot 3.2.5",
+                 "微服务: Spring Cloud Alibaba",
+                 "前端: Vue 3.5 + Vite 5.4 + TS 5.9",
+                 "UI: Element Plus 2.13 / Vant 4.9",
+                 "容器: Docker Compose",
+                 "测试: Python 3 标准库",
+                 "",
+                 "共享: Axios+Pinia+Vue Router",
+                 "鉴权: 401拦截器+静默刷新",
+             ], RGBColor(0x9C, 0x27, 0xB0))
+
+    add_card(slide, Inches(0.4), Inches(5.6), Inches(12.6), Inches(1.2),
+             "🔑 双端一致性设计", [
+                 "共享: api/模块定义 · Pinia auth store · Vue Router路由守卫 · Axios 401拦截器+pendingQueue静默刷新",
+                 "隔离: localStorage前缀(forum_pc_* / forum_mobile_*) · UI组件库(Element Plus / Vant) · 布局方式(左右分栏 / 纵向堆叠)",
+             ], PRIMARY)
+
+    add_transition(slide, "系统实现完毕，下面展示测试结果...")
+
+
+def slide_test_compact(prs):
+    """P8: 系统测试 (15s)"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "05 系统测试", "15秒 · 11场景 · 22接口 · 缓存基准 · 并发负载", page_num=8)
+
+    headers = ["#", "测试场景", "预期", "结果"]
+    rows = [
+        ["1-5", "分区查询/注册登录/发帖评论搜索/通知媒体/已读标记", "code=0", "✅通过"],
+        ["6", "无Token写操作", "code=4010", "✅通过"],
+        ["7", "越权删帖", "code=4031", "✅通过"],
+        ["8", "并发重复点赞", "[0,4091]", "✅通过"],
+        ["9", "登出后旧Token", "code=4010", "✅通过"],
+        ["10-11", "令牌刷新/令牌过期", "code=0/4010", "✅通过"],
+    ]
+    make_table(slide, Inches(0.3), Inches(1.3), Inches(7.5), Emu(int(Inches(0.35))),
+               headers, rows)
+
+    headers2 = ["性能指标", "数值"]
+    rows2 = [
+        ["冷请求", "22~31 ms"],
+        ["热请求均值", "4~5 ms"],
+        ["P95", "5~6 ms"],
+        ["提升", "81~85%"],
+        ["并发", "10/50/100用户"],
+        ["接口覆盖", "22/22 (100%)"],
+    ]
+    make_table(slide, Inches(8.0), Inches(1.3), Inches(5.0), Emu(int(Inches(0.35))),
+               headers2, rows2)
+
+    add_card(slide, Inches(0.3), Inches(4.4), Inches(6.0), Inches(2.3),
+             "🖥️ 测试环境", [
+                 "CPU: AMD Ryzen 7 5800H · RAM: 16GB",
+                 "OS: Windows 11 · JDK 17.0.8 · Python 3",
+                 "基础设施: Docker (MySQL+Redis+Nacos)",
+                 "测试方法: 全链路黑盒 · 标准库HTTP · 无第三方依赖",
+             ], RGBColor(0x9C, 0x27, 0xB0))
+
+    add_card(slide, Inches(6.5), Inches(4.4), Inches(6.5), Inches(2.3),
+             "📋 三个测试脚本", [
+                 "run_system_regression.py → 11场景功能回归, Markdown报告",
+                 "benchmark_forum_cache.py → 冷/热响应对比, P95+提升幅度",
+                 "load_test_concurrent.py → 10/50/100并发, QPS+成功率",
+                 "一键执行: bash generate-test-reports.sh",
+             ], PRIMARY)
+
+    add_transition(slide, "测试全部通过，最后做个总结...")
+
+
+def slide_summary_compact(prs):
+    """P9: 总结与展望 (30s)"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "06 总结与展望", "30秒 · 成果 · 不足 · 方向", page_num=9)
+
+    add_card(slide, Inches(0.4), Inches(1.3), Inches(4.0), Inches(3.2),
+             "🏆 三项核心成果", [
+                 "① 微服务架构设计与拆分",
+                 "  5个业务服务+网关+common-lib",
+                 "  JWT+Redis双重鉴权, 四层架构",
+                 "",
+                 "② 论坛核心+双端前端",
+                 "  6张表, @Cacheable缓存, 点赞去重",
+                 "  Vue3双端共享API, 401静默刷新",
+                 "",
+                 "③ 可复现的工程验证体系",
+                 "  11场景22接口100%, 缓存提升80%+",
+             ], ACCENT)
+
+    add_card(slide, Inches(4.6), Inches(1.3), Inches(4.0), Inches(3.2),
+             "⚠️ 四个不足", [
+                 "① 搜索基于内存遍历+contains",
+                 "  不支持分词和相关度排序",
+                 "",
+                 "② 日志采集与监控机制未建立",
+                 "  仅控制台日志, 无统一平台",
+                 "",
+                 "③ 未在云环境生产级验证",
+                 "  全部测试在本地单机完成",
+                 "",
+                 "④ 安全测试和单元测试可加强",
+             ], ORANGE)
+
+    add_card(slide, Inches(8.8), Inches(1.3), Inches(4.2), Inches(3.2),
+             "🚀 未来方向", [
+                 "① Elasticsearch全文搜索",
+                 "  倒排索引+分词, 提升检索精度",
+                 "",
+                 "② ELK日志栈+链路追踪",
+                 "  分布式系统可观测性",
+                 "",
+                 "③ Kubernetes+CDN部署",
+                 "  弹性伸缩, 静态资源加速",
+                 "",
+                 "④ OWASP ZAP+JUnit",
+                 "  完善安全与单元测试",
+             ], PRIMARY)
+
+    add_card(slide, Inches(0.4), Inches(4.8), Inches(12.6), Inches(2.0),
+             "📌 一句话总结", [
+                 "本文围绕架构解耦、跨平台适配、安全认证和质量保障四个层面，完成了一个基于微服务架构的高校论坛系统，"
+                 "验证了微服务拆分在高校论坛场景下的工程可行性，并建立了可复现的自动化测试体系。",
+             ], PRIMARY)
+
+
+def slide_thanks_compact(prs):
+    """P10: 致谢"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+
+    add_shape_fill(slide, Inches(0), Inches(0), SLIDE_WIDTH, SLIDE_HEIGHT, PRIMARY, 0)
+
+    add_textbox(slide, Inches(2), Inches(2.0), Inches(9), Inches(1.5),
+                "感谢各位老师的指导与聆听", font_size=40, bold=True,
+                color=WHITE, alignment=PP_ALIGN.CENTER)
+
+    add_textbox(slide, Inches(2), Inches(3.8), Inches(9), Inches(1.0),
+                "恳请各位老师批评指正", font_size=24,
+                color=RGBColor(0xBB, 0xD5, 0xFD), alignment=PP_ALIGN.CENTER)
+
+    line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(5), Inches(5.0),
+                                  Inches(3.3), Inches(0.03))
+    line.fill.solid()
+    line.fill.fore_color.rgb = RGBColor(0xBB, 0xD5, 0xFD)
+    line.line.fill.background()
+
+    add_textbox(slide, Inches(3), Inches(5.3), Inches(7), Inches(0.5),
+                "答辩人：XXX　　指导教师：XXX", font_size=16,
+                color=RGBColor(0xBB, 0xD5, 0xFD), alignment=PP_ALIGN.CENTER)
+
+    add_textbox(slide, Inches(3), Inches(5.8), Inches(7), Inches(0.5),
+                "二〇二六年五月", font_size=14,
+                color=RGBColor(0xBB, 0xD5, 0xFD), alignment=PP_ALIGN.CENTER)
+
+
 def main():
     prs = Presentation()
     prs.slide_width = SLIDE_WIDTH
     prs.slide_height = SLIDE_HEIGHT
 
-    slide_cover(prs)
-    slide_outline(prs)
-    slide_background(prs)
-    slide_research_status(prs)
-    slide_requirements(prs)
-    slide_role_permission(prs)
-    slide_architecture(prs)
-    slide_architecture_modules(prs)
-    slide_database(prs)
-    slide_tech_selection(prs)
-    slide_implementation_1(prs)
-    slide_implementation_2(prs)
-    slide_frontend(prs)
-    slide_testing(prs)
-    slide_summary(prs)
-    slide_thanks(prs)
+    slide_cover(prs)           # P1  开场与题目 (15s)
+    slide_bg_combined(prs)     # P2  研究背景+现状+创新点 (15s)
+    slide_req_combined(prs)    # P3  需求分析与目标 (15s)
+    slide_arch_combined(prs)   # P4  系统架构+模块 (15s)
+    slide_db_security(prs)     # P5  数据库+安全 (15s)
+    slide_impl_core(prs)       # P6  核心实现 (15s)
+    slide_frontend_compact(prs)  # P7  双端前端+技术栈 (10s)
+    slide_test_compact(prs)    # P8  系统测试 (10s)
+    slide_summary_compact(prs)   # P9  总结与展望 (15s)
+    slide_thanks_compact(prs)  # P10 致谢 (5s)
 
     output_path = "/workspace/docs/毕业答辩PPT.pptx"
     prs.save(output_path)
     print(f"PPT已生成: {output_path}")
     print(f"共 {len(prs.slides)} 页幻灯片")
+    print()
+    print("时间分配:")
+    print("  P1  封面+一句话目标          15s")
+    print("  P2  背景+现状+创新点         15s")
+    print("  P3  需求分析与目标            15s")
+    print("  P4  系统架构+模块             15s")
+    print("  P5  数据库+安全               15s")
+    print("  P6  核心实现(伪代码+难点)     15s")
+    print("  P7  双端前端+技术栈           10s")
+    print("  P8  系统测试                  10s")
+    print("  P9  总结与展望                15s")
+    print("  P10 致谢                       5s")
+    print("  合计                         130s ≈ 2min10s")
+    print()
+    print("应急缩略版(可跳过): P4(架构) 或 P7(前端)")
+    print("  跳过1页 → 115s ≈ 1min55s")
 
 
 if __name__ == "__main__":
