@@ -23,7 +23,7 @@ BORDER = RGBColor(0xDE, 0xE2, 0xE6)
 ORANGE = RGBColor(0xFB, 0x8C, 0x00)
 RED_ACCENT = RGBColor(0xE5, 0x39, 0x35)
 
-TOTAL_SLIDES = 10
+TOTAL_SLIDES = 14
 
 
 def set_slide_bg(slide, color):
@@ -893,164 +893,217 @@ def slide_thanks(prs):
                 color=RGBColor(0xBB, 0xD5, 0xFD), alignment=PP_ALIGN.CENTER)
 
 
-def slide_bg_combined(prs):
-    """P2: 研究背景+现状+创新点 合并为1页 (30s)"""
+def slide_bg_why(prs):
+    """P3: 为什么做 — 研究背景与意义"""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_title_bar(slide, "01 研究背景与意义", "30秒 · 痛点 → 不足 → 创新点", page_num=2)
+    add_title_bar(slide, "一、研究背景与意义", "为什么做？— 痛点、不足与研究定位", page_num=3)
 
-    add_card(slide, Inches(0.4), Inches(1.3), Inches(4.0), Inches(2.5),
-             "📋 高校论坛痛点", [
-                 "即时通讯→信息沉没",
-                 "单体架构→并发瓶颈",
-                 "仅PC端→99.6%移动用户缺失",
-                 "手工测试→质量不可控",
+    add_card(slide, Inches(0.4), Inches(1.4), Inches(6.0), Inches(2.8),
+             "📋 高校论坛现状与痛点", [
+                 "• 即时通讯→信息几小时后即被覆盖，难以回溯",
+                 "• 早期校园BBS（水木清华/北大未名）→ 单体架构老化",
+                 "• 多数仅PC端，移动端用户比例已达 99.6%（CNNIC）",
+                 "• 功能验证依赖手工操作，交付质量缺少量化判据",
+                 "• 前后端耦合→局部修改需全局重新部署",
              ], PRIMARY)
 
-    add_card(slide, Inches(4.6), Inches(1.3), Inches(4.0), Inches(2.5),
-             "⚠️ 现有方案不足", [
-                 "前后端耦合→全局重部署",
-                 "水木BBS/未名BBS→技术老化",
-                 "缺少自动化测试体系",
-                 "微服务+论坛的完整实践较少",
+    add_card(slide, Inches(6.7), Inches(1.4), Inches(6.3), Inches(2.8),
+             "📚 研究现状与本文定位", [
+                 "• 技术演进：JSP单体 → 前后端分离[5] → 微服务[6]",
+                 "• Aldea等：JWT短生命周期+最小权限缩小攻击面[7]",
+                 "• Agaev：单体→微服务需分阶段重构[20]",
+                 "• 高校实践：协同人员管理[8]、科研管理[9]",
+                 "• 不足：论坛+微服务+完整测试的工程闭环仍较少",
+             ], ACCENT)
+
+    add_card(slide, Inches(0.4), Inches(4.5), Inches(12.6), Inches(2.5),
+             "💡 课题创新点（为什么值得做）", [
+                 "① 微服务拆分（5业务服务+网关）→ 松耦合、可独立部署与扩展",
+                 "② PC+移动双端协同（Vue 3 + Element Plus / Vant）→ 统一API、一致体验",
+                 "③ JWT+Redis会话+网关统一鉴权 → 登录/刷新/登出/锁定完整闭环",
+                 "④ Redis缓存 → 帖子列表响应时间提升80%+",
+                 "⑤ Python自动化测试 → 11场景22接口100%通过 + 缓存基准 + 并发负载",
              ], ORANGE)
 
-    add_card(slide, Inches(8.8), Inches(1.3), Inches(4.2), Inches(2.5),
-             "📚 研究定位", [
-                 "Spring Cloud体系已成熟[6]",
-                 "JWT短生命周期缩小攻击面[7]",
-                 "高校微服务实践案例[8][9]",
-                 "本文：完整工程闭环+双端",
-             ], ACCENT)
-
-    add_card(slide, Inches(0.4), Inches(4.1), Inches(12.6), Inches(2.6),
-             "💡 课题五大创新点", [
-                 "① 微服务拆分（5业务服务+网关）→ 松耦合、独立部署　　② PC+移动双端（Vue3 + Element Plus/Vant）→ 统一API",
-                 "③ JWT+Redis会话+网关鉴权 → 登录/刷新/登出/锁定闭环　　④ Redis缓存 → 帖子列表响应提升80%+",
-                 "⑤ Python自动化测试 → 11场景22接口100%通过 + 缓存基准 + 并发负载",
-             ], PRIMARY)
-
-    add_transition(slide, "基于以上背景与痛点，下面介绍系统的需求分析与设计目标")
+    add_transition(slide, "明确了研究意义，接下来介绍系统的需求分析...")
 
 
-def slide_req_combined(prs):
-    """P3: 需求分析 (30s) — 功能+非功能+研究内容"""
+def slide_req_what(prs):
+    """P4: 做什么 — 需求分析"""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_title_bar(slide, "02 需求分析与目标", "30秒 · 8个模块 · 5维非功能 · 6项研究内容", page_num=3)
+    add_title_bar(slide, "二、系统需求分析", "做什么？— 8个功能模块 · 5维非功能需求", page_num=4)
 
-    add_card(slide, Inches(0.4), Inches(1.3), Inches(6.2), Inches(2.8),
+    add_card(slide, Inches(0.4), Inches(1.4), Inches(6.2), Inches(2.6),
              "🔧 功能性需求（8个模块）", [
-                 "用户认证：注册/登录/令牌刷新/登出/失败锁定",
-                 "帖子管理：分区浏览/发帖/编辑/删除/详情",
-                 "评论互动：一级评论/二级回复/编辑/删除",
-                 "点赞：去重(联合唯一约束)  ·  通知：公告/个人/已读",
-                 "搜索：关键词+分区  ·  媒体：音乐/书籍推荐",
-                 "网关：统一路由+JWT鉴权+CORS",
+                 "用户认证：注册 / 登录 / 令牌刷新 / 登出 / 失败锁定",
+                 "帖子管理：分区浏览 / 发帖 / 编辑 / 删除 / 详情",
+                 "评论互动：一级评论 / 二级回复 / 编辑 / 删除",
+                 "点赞去重 · 通知（公告/个人/已读）",
+                 "搜索（关键词+分区）· 媒体推荐 · 网关访问控制",
              ], PRIMARY)
 
-    add_card(slide, Inches(6.8), Inches(1.3), Inches(6.2), Inches(2.8),
-             "📊 非功能性需求（5维度）+ 角色", [
-                 "性能：缓存命中→毫秒级, 未命中≤500ms",
+    add_card(slide, Inches(6.8), Inches(1.4), Inches(6.2), Inches(2.6),
+             "📊 非功能性需求（5维度）", [
+                 "性能：缓存命中→毫秒级，未命中≤500ms",
                  "安全：JWT双令牌(24h/7d) + 失败5次锁定600s",
-                 "可扩展：Nacos注册, 新模块即插即用",
+                 "可扩展：Nacos注册发现，新模块即插即用",
                  "可维护：Docker Compose + 一键启停 + 自动回归",
-                 "兼容：PC+移动双端, 同一网关",
-                 "角色：游客(只读) / 注册用户(全功能, 非RBAC)",
+                 "兼容：PC端(Element Plus) + 移动端(Vant)",
              ], ACCENT)
 
-    add_card(slide, Inches(0.4), Inches(4.4), Inches(12.6), Inches(2.3),
-             "🎯 论文六项研究内容", [
-                 "①后端微服务拆分(6服务+Nacos+Gateway)　②JWT+Redis认证闭环　③论坛核心数据建模+Redis缓存",
-                 "④Vue3双端前端(Element Plus/Vant)　⑤通知/搜索/媒体辅助服务协同　⑥Docker+脚本+Python自动化测试体系",
-             ], PRIMARY)
+    headers = ["功能模块", "操作", "游客", "注册用户"]
+    rows = [
+        ["帖子管理", "浏览列表/详情", "✅", "✅"],
+        ["帖子管理", "发布/编辑/删除", "❌→登录", "仅作者"],
+        ["评论互动", "发表/回复/删除", "❌→登录", "仅作者"],
+        ["点赞", "对帖子点赞", "❌→登录", "✅(去重)"],
+        ["通知/搜索/媒体", "查看/搜索/推荐", "✅(部分)", "✅"],
+    ]
+    make_table(slide, Inches(0.4), Inches(4.3), Inches(12.6), Emu(int(Inches(0.37))),
+               headers, rows)
 
-    add_transition(slide, "基于以上需求，我们设计了如下系统架构...")
+    add_transition(slide, "需求明确后，进入系统的架构设计...")
 
 
-def slide_arch_combined(prs):
-    """P4: 系统架构 (30s) — 四层图 + 模块概览"""
+def slide_design_arch(prs):
+    """P5: 系统设计 — 整体架构图"""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_title_bar(slide, "03 系统设计 — 四层架构与7子模块", "30秒 · 架构图 + 模块职责", page_num=4)
+    add_title_bar(slide, "三、系统设计 — 整体架构", "怎么做？— 四层架构 · 端口规划", page_num=5)
 
     layers = [
-        ("用户接入层", Inches(1.3), PRIMARY_LIGHT, PRIMARY,
-         ["PC端 :5173 (Vue3+Element Plus)", "移动端 :5174 (Vue3+Vant)"], Inches(3.5)),
-        ("网关层", Inches(2.3), RGBColor(0xFE, 0xF3, 0xE2), ORANGE,
-         ["Gateway :8080 — 路由 · JWT验证 · CORS · 会话校验"], Inches(8.0)),
-        ("业务服务层", Inches(3.3), RGBColor(0xE8, 0xF5, 0xE9), ACCENT,
-         ["auth:8081(6)", "forum:8082(10)", "notify:8083(3)", "media:8084(2)", "search:8085(1)"], Inches(8.0)),
-        ("基础设施层", Inches(4.3), RGBColor(0xE3, 0xF2, 0xFD), PRIMARY,
-         ["MySQL 8.4 :3306", "Redis 7.4 :6379", "Nacos 2.3.2 :8848", "Docker Compose"], Inches(8.0)),
+        ("用户接入层", Inches(1.4), PRIMARY_LIGHT, PRIMARY,
+         ["PC端 :5173 (Vue3 + Element Plus)", "移动端 :5174 (Vue3 + Vant)"], Inches(4.0)),
+        ("网关层", Inches(2.6), RGBColor(0xFE, 0xF3, 0xE2), ORANGE,
+         ["Spring Cloud Gateway :8080 — 统一路由 · JWT验证 · CORS · Redis会话校验"], Inches(9.5)),
+        ("业务服务层", Inches(3.8), RGBColor(0xE8, 0xF5, 0xE9), ACCENT,
+         ["auth :8081", "forum :8082", "notification :8083", "media :8084", "search :8085"], Inches(9.5)),
+        ("基础设施层", Inches(5.0), RGBColor(0xE3, 0xF2, 0xFD), PRIMARY,
+         ["MySQL 8.4 :3306", "Redis 7.4 :6379", "Nacos 2.3.2 :8848", "Docker Compose"], Inches(9.5)),
     ]
 
     for name, y, bg_color, border_color, items, width in layers:
-        x = Inches(0.4)
-        h = Inches(0.8)
-        card = add_shape_fill(slide, x + Inches(1.8), y, width, h, bg_color, 0.03)
+        x = Inches(2.0)
+        h = Inches(1.0)
+        card = add_shape_fill(slide, x, y, width, h, bg_color, 0.03)
         card.line.color.rgb = border_color
         card.line.width = Pt(1.5)
-        add_textbox(slide, x, y + Inches(0.15), Inches(1.7), Inches(0.5),
-                    name, font_size=11, bold=True, color=border_color, alignment=PP_ALIGN.RIGHT)
-        add_textbox(slide, x + Inches(2.0), y + Inches(0.15), width - Inches(0.4), Inches(0.5),
-                    "　|　".join(items), font_size=11, color=DARK, alignment=PP_ALIGN.CENTER)
+        add_textbox(slide, Inches(0.3), y + Inches(0.2), Inches(1.6), Inches(0.5),
+                    name, font_size=13, bold=True, color=border_color, alignment=PP_ALIGN.RIGHT)
+        add_textbox(slide, x + Inches(0.3), y + Inches(0.2), width - Inches(0.6), Inches(0.6),
+                    "　|　".join(items), font_size=13, color=DARK, alignment=PP_ALIGN.CENTER)
 
-    add_card(slide, Inches(0.4), Inches(5.3), Inches(12.6), Inches(1.5),
-             "🧩 7个Maven子模块", [
-                 "common-lib(公共常量+ApiResponse) → gateway(路由鉴权) → auth(JWT双令牌+Redis会话+锁定)",
-                 "→ forum(帖子/评论/点赞+@Cacheable) → notification(公告/通知) → search(Feign→forum) → media(静态推荐)",
-             ], PRIMARY)
+    for y_top in [Inches(2.4), Inches(3.6), Inches(4.8)]:
+        arrow = slide.shapes.add_shape(MSO_SHAPE.DOWN_ARROW, Inches(6.5), y_top, Inches(0.4), Inches(0.25))
+        arrow.fill.solid()
+        arrow.fill.fore_color.rgb = GRAY
+        arrow.line.fill.background()
 
-    add_transition(slide, "下面展示数据库设计和核心安全机制...")
+    add_card(slide, Inches(0.3), Inches(6.2), Inches(12.7), Inches(0.9),
+             "设计依据", [
+                 "各服务通过Nacos按服务名寻址 · 实例增减对上游透明 · 网关CORS+双端共用同一组API · Docker Compose一键编排",
+             ], GRAY)
+
+    add_transition(slide, "架构确定后，来看7个服务模块的具体职责...")
 
 
-def slide_db_security(prs):
-    """P5: 数据库+安全 (30s)"""
+def slide_design_modules(prs):
+    """P6: 系统设计 — 7个模块"""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_title_bar(slide, "03 系统设计 — 数据库与安全", "30秒 · 6张表 · 3NF · JWT+Redis鉴权", page_num=5)
+    add_title_bar(slide, "三、系统设计 — 模块划分", "7个Maven子模块 · 22个API接口", page_num=6)
+
+    modules = [
+        ("common-lib", "公共库", "不独立运行 · ApiResponse统一封装\nServiceConstants全局常量", GRAY),
+        ("gateway", "网关 :8080", "路由转发(lb://服务名) · JwtRelayFilter\nJWT验证+Redis会话+身份透传", PRIMARY),
+        ("auth-user", "认证 :8081", "6个接口 · 注册/登录/刷新/登出/me\n双令牌 · BCrypt · 失败锁定(5次/600s)", ACCENT),
+        ("forum", "论坛 :8082", "10个接口 · 帖子/评论/点赞CRUD\n分区管理 · @Cacheable缓存 · 种子数据", ORANGE),
+        ("notification", "通知 :8083", "3个接口 · ANNOUNCEMENT/USER类型\n首页摘要 · 个人通知 · 标记已读", RGBColor(0x9C, 0x27, 0xB0)),
+        ("search", "搜索 :8085", "1个接口 · OpenFeign→forum\n内存过滤(title/content/author/section)", RED_ACCENT),
+        ("media", "媒体 :8084", "2个接口 · 音乐/书籍推荐\n静态内存数据 · 不访问DB/Redis", RGBColor(0x00, 0x97, 0xA7)),
+    ]
+
+    col_w = Inches(3.6)
+    gap = Inches(0.2)
+
+    for i, (name, title, desc, color) in enumerate(modules):
+        if i < 4:
+            x = Inches(0.3) + (i % 4) * (col_w + gap)
+            y = Inches(1.4)
+        else:
+            x = Inches(0.3) + ((i - 4) % 3) * (col_w + gap) + Inches(1.9)
+            y = Inches(4.2)
+        h = Inches(2.5)
+
+        card = add_shape_fill(slide, x, y, col_w, h, WHITE, 0.04)
+        card.line.color.rgb = BORDER
+        card.line.width = Pt(1)
+        header = add_shape_fill(slide, x, y, col_w, Inches(0.5), color, 0.04)
+        add_textbox(slide, x + Inches(0.1), y + Inches(0.06), col_w - Inches(0.2), Inches(0.4),
+                    f"{title} ({name})", font_size=11, bold=True, color=WHITE)
+
+        txBox = slide.shapes.add_textbox(x + Inches(0.15), y + Inches(0.6),
+                                         col_w - Inches(0.3), h - Inches(0.7))
+        tf = txBox.text_frame
+        tf.word_wrap = True
+        for line in desc.split("\n"):
+            p = tf.paragraphs[0] if tf.paragraphs[0].text == "" else tf.add_paragraph()
+            p.text = line
+            p.font.size = Pt(11)
+            p.font.color.rgb = DARK
+            p.font.name = "微软雅黑"
+
+    add_transition(slide, "模块划分清楚了，下面看数据库设计...")
+
+
+def slide_design_db(prs):
+    """P7: 系统设计 — 数据库"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "三、系统设计 — 数据库", "6张表 · 满足3NF · Redis缓存结构", page_num=7)
 
     headers = ["表名", "所属服务", "核心字段", "特殊约束"]
     rows = [
-        ["user_account", "auth", "id, username, password(BCrypt), nickname", "username唯一索引"],
-        ["forum_section", "forum", "id, name, description, sort_order", "name唯一, 种子初始化"],
-        ["forum_post", "forum", "id, title, content, author_id/name, section_id/name", "冗余字段免JOIN"],
-        ["post_comment", "forum", "id, post_id, content, parent_comment_id", "parent为空=一级评论"],
-        ["post_like", "forum", "id, post_id, user_id", "联合唯一(post+user)去重"],
-        ["notification_message", "notification", "id, type, user_id, title, is_read", "ANNOUNCEMENT/USER"],
+        ["user_account", "auth", "id, username(VARCHAR 64), password(BCrypt), nickname", "username唯一索引"],
+        ["forum_section", "forum", "id, name, description, sort_order, enabled", "name唯一 · 种子初始化"],
+        ["forum_post", "forum", "id, title(128), content, author_id/name, section_id/name", "冗余字段免JOIN"],
+        ["post_comment", "forum", "id, post_id, content, user_id, parent_comment_id", "parent为空=一级评论"],
+        ["post_like", "forum", "id, post_id, user_id, created_at", "联合唯一(post+user)"],
+        ["notification_message", "notification", "id, type, user_id, title, content, is_read", "ANNOUNCEMENT/USER"],
     ]
-    make_table(slide, Inches(0.3), Inches(1.3), Inches(12.7), Emu(int(Inches(0.35))),
+    make_table(slide, Inches(0.3), Inches(1.3), Inches(12.7), Emu(int(Inches(0.37))),
                headers, rows)
 
-    add_card(slide, Inches(0.3), Inches(4.4), Inches(6.2), Inches(2.8),
-             "🔐 JWT + Redis 双重鉴权", [
-                 "1. 登录→签发Access(24h)+Refresh(7d)",
-                 "2. Redis写入 auth:session:{sid}",
-                 "3. Gateway JwtRelayFilter:",
-                 "   签名验证→类型检查→Redis会话校验",
-                 "   →透传 X-User-Id / X-Username",
-                 "4. 登出→删除Redis session→立即失效",
+    add_card(slide, Inches(0.3), Inches(4.5), Inches(6.2), Inches(2.7),
+             "⚙ 设计要点", [
+                 "• 6张表非主键字段均完全依赖主键，满足3NF",
+                 "• forum_post 冗余 author_name / section_name",
+                 "  → 列表查询免JOIN + Redis缓存降压",
+                 "  → 代价：昵称/分区名变更时需额外同步",
+                 "• post_like 联合唯一约束 uk_post_like_post_user",
+                 "  → 数据库层+应用层双重去重保障",
              ], PRIMARY)
 
-    add_card(slide, Inches(6.7), Inches(4.4), Inches(6.3), Inches(2.8),
-             "🔗 Redis 缓存+会话", [
-                 "auth:session:{sid} → 用户会话(登出即删)",
-                 "auth:login:fail:{user}:{ip} → 失败计数(5次锁定)",
-                 "forum:post:list → 帖子列表(TTL=2min)",
-                 "forum:post:detail → 帖子详情(TTL=5min)",
-                 "写操作→@CacheEvict自动淘汰",
-                 "6张表满足3NF, forum_post冗余author/section免JOIN",
+    add_card(slide, Inches(6.7), Inches(4.5), Inches(6.3), Inches(2.7),
+             "🔗 Redis 数据结构", [
+                 "auth:session:{sid} → 用户会话（登出即删除）",
+                 "auth:login:fail:{user}:{ip} → 失败计数（原子递增）",
+                 "forum:post:list → 帖子列表缓存（TTL = 2min）",
+                 "forum:post:detail → 帖子详情缓存（TTL = 5min）",
+                 "默认缓存 TTL = 10min",
+                 "写操作 → @CacheEvict 自动淘汰相关缓存",
              ], RED_ACCENT)
 
-    add_transition(slide, "架构和数据模型确定后，进入核心功能的实现...")
+    add_transition(slide, "数据模型确定后，进入核心功能的实现...")
 
 
 def slide_impl_core(prs):
-    """P6: 核心实现——认证+论坛+缓存 (30s)"""
+    """P8: 系统实现 — 认证+论坛"""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_title_bar(slide, "04 实现 — 认证闭环与论坛核心", "30秒 · 伪代码 · 缓存策略 · 难点攻克", page_num=6)
+    add_title_bar(slide, "四、系统实现 — 认证与论坛核心", "伪代码 · 缓存策略 · 难点攻克", page_num=8)
 
     add_card(slide, Inches(0.4), Inches(1.3), Inches(4.0), Inches(5.4),
              "🔐 认证伪代码", [
@@ -1108,10 +1161,10 @@ def slide_impl_core(prs):
 
 
 def slide_frontend_compact(prs):
-    """P7: 双端前端 (15s)"""
+    """P9: 系统实现 — 双端前端"""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_title_bar(slide, "04 实现 — 双端前端与技术栈", "15秒 · PC+移动 · 统一API · 开发环境", page_num=7)
+    add_title_bar(slide, "四、系统实现 — 双端前端", "PC + 移动 · 统一API · 界面展示", page_num=9)
 
     add_card(slide, Inches(0.4), Inches(1.3), Inches(4.0), Inches(4.0),
              "🖥️ PC端 (Element Plus)", [
@@ -1159,11 +1212,55 @@ def slide_frontend_compact(prs):
     add_transition(slide, "系统实现完毕，下面展示测试结果...")
 
 
-def slide_test_compact(prs):
-    """P8: 系统测试 (15s)"""
+def slide_impl_devops(prs):
+    """P10: 系统实现 — 辅助服务+运维"""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_title_bar(slide, "05 系统测试", "15秒 · 11场景 · 22接口 · 缓存基准 · 并发负载", page_num=8)
+    add_title_bar(slide, "四、系统实现 — 辅助服务与运维", "通知/搜索/媒体 · Docker · 一键启停", page_num=10)
+
+    add_card(slide, Inches(0.4), Inches(1.4), Inches(4.0), Inches(2.8),
+             "🔔 通知服务", [
+                 "NotificationDataInitializer 种子公告",
+                 "GET /notifications/home → 最新公告+未读数",
+                 "GET /notifications/my → 个人通知列表",
+                 "POST /notifications/{id}/read → 标记已读",
+                 "未携带用户ID时未读数返回0",
+             ], RGBColor(0x9C, 0x27, 0xB0))
+
+    add_card(slide, Inches(4.6), Inches(1.4), Inches(4.0), Inches(2.8),
+             "🔍 搜索服务", [
+                 "不持有数据库 → OpenFeign调用forum",
+                 "keyword为空 → 直接透传帖子列表",
+                 "keyword不为空 → 内存过滤:",
+                 "  title/contentPreview(前120字)/",
+                 "  authorName/sectionName → contains匹配",
+             ], RED_ACCENT)
+
+    add_card(slide, Inches(8.8), Inches(1.4), Inches(4.2), Inches(2.8),
+             "🎵 媒体推荐", [
+                 "最轻量模块 · 不访问MySQL/Redis",
+                 "推荐数据硬编码在内存中",
+                 "GET /media/home → 首页摘要",
+                 "GET /media/recommendations",
+                 "  → 按type(music/book/all)筛选",
+             ], RGBColor(0x00, 0x97, 0xA7))
+
+    add_card(slide, Inches(0.4), Inches(4.5), Inches(12.6), Inches(2.7),
+             "🐳 Docker Compose + 运维脚本", [
+                 "docker-compose.yml → MySQL 8.4 + Redis 7.4 + Nacos 2.3.2（forum-net bridge网络 · 数据卷持久化 · 健康检查）",
+                 "start-backend-all.sh → 启动顺序: common-lib构建 → auth → forum → notification → media → search → gateway（最后）",
+                 "stop-backend-all.sh → 反向顺序关闭（网关最先停止阻止新请求）  ·  verify-backend-all.sh → /actuator/health验活",
+                 "支持三种模式: full(需Nacos) / direct(无Nacos静态路由) / auto(自动判断)",
+             ], PRIMARY)
+
+    add_transition(slide, "系统实现完毕，下面展示测试结果...")
+
+
+def slide_test_compact(prs):
+    """P11: 系统测试"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "五、系统测试", "功能测试 · 性能测试 · 测试环境", page_num=11)
 
     headers = ["#", "测试场景", "预期", "结果"]
     rows = [
@@ -1205,14 +1302,42 @@ def slide_test_compact(prs):
                  "一键执行: bash generate-test-reports.sh",
              ], PRIMARY)
 
-    add_transition(slide, "测试全部通过，最后做个总结...")
+    add_transition(slide, "测试全部通过，下面做系统特点总结...")
+
+
+def slide_features(prs):
+    """P12: 系统特点"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "五、系统特点总结", "与同类毕设项目的差异化", page_num=12)
+
+    headers = ["维度", "传统校园论坛", "本系统"]
+    rows = [
+        ["架构", "单体 / 前后端未分离", "微服务(5服务+网关) · Nacos注册"],
+        ["终端", "仅PC端", "PC + 移动双端 · 统一API网关"],
+        ["认证", "Cookie-Session", "JWT双令牌 + Redis会话 + 失败锁定"],
+        ["缓存", "无 / 本地缓存", "Redis · @Cacheable · 2/5/10min TTL"],
+        ["测试", "手工测试", "Python自动化 · 11场景22接口 · 缓存基准"],
+        ["部署", "手工安装", "Docker Compose · 一键启停 · 三种模式"],
+        ["可扩展", "修改需全局重部署", "新模块注册Nacos + 网关加路由即可"],
+    ]
+    make_table(slide, Inches(0.3), Inches(1.4), Inches(12.7), Emu(int(Inches(0.42))),
+               headers, rows)
+
+    add_card(slide, Inches(0.3), Inches(5.2), Inches(12.7), Inches(1.8),
+             "📌 效果数据", [
+                 "功能测试: 11个端到端场景 · 22个API接口 · 通过率100%　|　缓存提升: 冷请求22~31ms → 热请求4~5ms · 提升81~85%",
+                 "并发负载: 10/50/100用户 · 稳定响应 · 成功率高　|　运维闭环: 启动→验活→回归→报告 · 全流程可重复",
+             ], ACCENT)
+
+    add_transition(slide, "最后做一个全文总结...")
 
 
 def slide_summary_compact(prs):
-    """P9: 总结与展望 (30s)"""
+    """P13: 总结与展望"""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
-    add_title_bar(slide, "06 总结与展望", "30秒 · 成果 · 不足 · 方向", page_num=9)
+    add_title_bar(slide, "六、总结与展望", "核心成果 · 存在问题 · 未来方向", page_num=13)
 
     add_card(slide, Inches(0.4), Inches(1.3), Inches(4.0), Inches(3.2),
              "🏆 三项核心成果", [
@@ -1265,7 +1390,7 @@ def slide_summary_compact(prs):
 
 
 def slide_thanks_compact(prs):
-    """P10: 致谢"""
+    """P14: 致谢"""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, WHITE)
 
@@ -1294,42 +1419,106 @@ def slide_thanks_compact(prs):
                 color=RGBColor(0xBB, 0xD5, 0xFD), alignment=PP_ALIGN.CENTER)
 
 
+def slide_outline_15(prs):
+    """P2: 目录"""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    set_slide_bg(slide, WHITE)
+    add_title_bar(slide, "目 录", "CONTENTS", page_num=2)
+
+    sections = [
+        ("01", "研究背景与意义", "为什么做？痛点 · 现状 · 创新点"),
+        ("02", "系统需求分析", "做什么？功能 · 非功能 · 角色"),
+        ("03", "系统设计", "怎么做？架构 · 模块 · 数据库"),
+        ("04", "系统实现", "核心实现 · 双端前端 · 运维脚本"),
+        ("05", "系统测试", "功能测试 · 性能测试 · 系统特点"),
+        ("06", "总结与展望", "成果 · 不足 · 未来方向"),
+    ]
+
+    start_x = Inches(0.8)
+    start_y = Inches(1.6)
+    card_w = Inches(3.8)
+    card_h = Inches(1.6)
+    gap_x = Inches(0.25)
+    gap_y = Inches(0.3)
+
+    for i, (num, title, desc) in enumerate(sections):
+        col = i % 3
+        row = i // 3
+        x = start_x + col * (card_w + gap_x)
+        y = start_y + row * (card_h + gap_y)
+
+        add_shape_fill(slide, x, y, card_w, card_h, PRIMARY_LIGHT, 0.05)
+
+        num_circle = slide.shapes.add_shape(MSO_SHAPE.OVAL, x + Inches(0.2), y + Inches(0.25),
+                                            Inches(0.6), Inches(0.6))
+        num_circle.fill.solid()
+        num_circle.fill.fore_color.rgb = PRIMARY
+        num_circle.line.fill.background()
+        tf = num_circle.text_frame
+        tf.paragraphs[0].text = num
+        tf.paragraphs[0].font.size = Pt(20)
+        tf.paragraphs[0].font.bold = True
+        tf.paragraphs[0].font.color.rgb = WHITE
+        tf.paragraphs[0].font.name = "微软雅黑"
+        tf.paragraphs[0].alignment = PP_ALIGN.CENTER
+
+        add_textbox(slide, x + Inches(1.0), y + Inches(0.3), Inches(2.5), Inches(0.4),
+                    title, font_size=18, bold=True, color=PRIMARY)
+
+        add_textbox(slide, x + Inches(0.2), y + Inches(1.0), card_w - Inches(0.4), Inches(0.5),
+                    desc, font_size=12, color=GRAY)
+
+
 def main():
     prs = Presentation()
     prs.slide_width = SLIDE_WIDTH
     prs.slide_height = SLIDE_HEIGHT
 
-    slide_cover(prs)           # P1  开场与题目 (15s)
-    slide_bg_combined(prs)     # P2  研究背景+现状+创新点 (15s)
-    slide_req_combined(prs)    # P3  需求分析与目标 (15s)
-    slide_arch_combined(prs)   # P4  系统架构+模块 (15s)
-    slide_db_security(prs)     # P5  数据库+安全 (15s)
-    slide_impl_core(prs)       # P6  核心实现 (15s)
-    slide_frontend_compact(prs)  # P7  双端前端+技术栈 (10s)
-    slide_test_compact(prs)    # P8  系统测试 (10s)
-    slide_summary_compact(prs)   # P9  总结与展望 (15s)
-    slide_thanks_compact(prs)  # P10 致谢 (5s)
+    slide_cover(prs)             # P1   封面
+    slide_outline_15(prs)        # P2   目录
+    slide_bg_why(prs)            # P3   研究背景与意义（为什么做）
+    slide_req_what(prs)          # P4   系统需求分析（做什么）
+    slide_design_arch(prs)       # P5   系统设计 — 整体架构
+    slide_design_modules(prs)    # P6   系统设计 — 模块划分
+    slide_design_db(prs)         # P7   系统设计 — 数据库
+    slide_impl_core(prs)         # P8   系统实现 — 认证与论坛核心
+    slide_frontend_compact(prs)  # P9   系统实现 — 双端前端
+    slide_impl_devops(prs)       # P10  系统实现 — 辅助服务与运维
+    slide_test_compact(prs)      # P11  系统测试
+    slide_features(prs)          # P12  系统特点总结
+    slide_summary_compact(prs)   # P13  总结与展望
+    slide_thanks_compact(prs)    # P14  致谢
 
     output_path = "/workspace/docs/毕业答辩PPT.pptx"
     prs.save(output_path)
     print(f"PPT已生成: {output_path}")
     print(f"共 {len(prs.slides)} 页幻灯片")
     print()
-    print("时间分配:")
-    print("  P1  封面+一句话目标          15s")
-    print("  P2  背景+现状+创新点         15s")
-    print("  P3  需求分析与目标            15s")
-    print("  P4  系统架构+模块             15s")
-    print("  P5  数据库+安全               15s")
-    print("  P6  核心实现(伪代码+难点)     15s")
-    print("  P7  双端前端+技术栈           10s")
-    print("  P8  系统测试                  10s")
-    print("  P9  总结与展望                15s")
-    print("  P10 致谢                       5s")
-    print("  合计                         130s ≈ 2min10s")
+    print("页面结构 (14页):")
+    print("  P1   封面")
+    print("  P2   目录")
+    print("  P3   研究背景与意义（为什么做）")
+    print("  P4   系统需求分析（做什么）")
+    print("  P5   系统设计 — 整体架构")
+    print("  P6   系统设计 — 模块划分")
+    print("  P7   系统设计 — 数据库")
+    print("  P8   系统实现 — 认证与论坛核心")
+    print("  P9   系统实现 — 双端前端")
+    print("  P10  系统实现 — 辅助服务与运维")
+    print("  P11  系统测试")
+    print("  P12  系统特点总结")
+    print("  P13  总结与展望")
+    print("  P14  致谢")
     print()
-    print("应急缩略版(可跳过): P4(架构) 或 P7(前端)")
-    print("  跳过1页 → 115s ≈ 1min55s")
+    print("结构对照:")
+    print("  封面+目录          2页")
+    print("  背景意义           1页  (为什么做)")
+    print("  需求分析           1页  (做什么)")
+    print("  系统设计           3页  (怎么做:架构/模块/数据库)")
+    print("  系统实现           3页  (核心/前端/辅助运维)")
+    print("  测试+特点          2页")
+    print("  总结+致谢          2页")
+    print("  合计              14页")
 
 
 if __name__ == "__main__":
