@@ -178,3 +178,43 @@ JWT + Redis 混合方案。登录时在 Redis 写入 sessionId → userId 映射
 - "Spring Security 在你系统里做了什么？" → 认证服务内部用 Spring Security 的 SecurityFilterChain 配置了接口的访问规则，比如哪些路径需要认证、哪些放行。但实际的 JWT 校验逻辑主要在网关的 JwtRelayFilter 中完成。
 - "你的系统有做日志记录吗？" → 各服务使用 Spring Boot 默认的 Logback 控制台日志输出，没有搭建统一的日志收集平台。这是论文中提到的后续改进方向之一。
 - "为什么前端用两套代码而不是一套响应式？" → 两套代码各自适配终端特性（PC 用 Element Plus 的分栏布局，移动端用 Vant 的触屏组件），交互体验优于单纯的 CSS 响应式。底层 API 层和状态管理是共享的，改一处接口两端同步生效。
+
+
+---
+
+## 附录：术语速查表
+
+> 答辩时如被问到某个术语的含义，可参照以下解释快速回答。
+
+| 术语 | 全称 / 含义 |
+|------|------------|
+| JWT | JSON Web Token，一种将用户身份信息编码为经数字签名的令牌字符串的标准，服务端无须保存会话即可校验身份 |
+| Redis | 开源内存数据库，本系统用于缓存帖子数据和存储认证会话，读写延迟在亚毫秒级别 |
+| MySQL | 关系型数据库，本系统用于持久化用户账户、帖子、评论、点赞和通知等结构化数据 |
+| 微服务架构 | 将单体应用拆分为多个可独立部署的服务单元，服务之间通过网络接口通信，各服务拥有独立的部署周期 |
+| Spring Boot | 基于 Spring 框架的 Java 快速开发工具，内嵌 Tomcat 容器，自动装配依赖，无须外部 Web 服务器 |
+| Spring Cloud Alibaba | 微服务治理组件集，本系统使用其中的 Nacos（注册与配置）、Gateway（网关）、OpenFeign（服务间调用） |
+| Nacos | 阿里巴巴开源的服务注册中心和配置中心，各服务启动时向 Nacos 注册地址，调用方按服务名寻址 |
+| Spring Cloud Gateway | 基于 Netty 的 API 网关，本系统用它做请求路由分发和 JWT 鉴权，是系统面向外部的唯一入口 |
+| OpenFeign | 声明式 HTTP 客户端，将跨服务的远程调用封装为 Java 接口方法，本系统中搜索服务通过它调用论坛服务 |
+| Vue 3 | 渐进式前端框架，采用依赖追踪的响应式机制，数据变化时自动更新视图，本系统 PC 端和移动端均基于 Vue 3 |
+| Element Plus | 基于 Vue 3 的桌面端 UI 组件库，提供表格、表单、对话框等常用控件 |
+| Vant | 基于 Vue 3 的移动端 UI 组件库，针对触屏操作和小屏幕布局优化 |
+| Pinia | Vue 3 官方推荐的状态管理库，本系统用它集中管理用户认证等全局状态 |
+| Axios | 基于 Promise 的 HTTP 请求库，本系统用它封装前端与后端的数据通信层 |
+| Vite | 现代前端构建工具，利用浏览器原生 ES 模块按需编译，开发环境热替换速度远快于 Webpack |
+| Docker | 容器化平台，将应用及其依赖打包为标准化的镜像，消除环境差异 |
+| Docker Compose | Docker 的多容器编排工具，本系统用一份 YAML 文件定义 MySQL、Redis、Nacos 三个容器 |
+| RESTful | 一种 API 设计风格，用 HTTP 方法（GET/POST/PUT/DELETE）对应资源的读取/创建/更新/删除 |
+| CORS | Cross-Origin Resource Sharing，跨域资源共享，网关配置允许 PC 端和移动端从各自端口访问后端 |
+| RBAC | Role-Based Access Control，基于角色的访问控制，本系统未采用，所有注册用户权限相同 |
+| JPA | Java Persistence API，Java 的 ORM 规范，底层由 Hibernate 引擎实现对象与数据表的映射 |
+| BCrypt | 密码哈希算法，本系统用它加密存储用户密码，原始密码不以明文形式保留 |
+| HMAC-SHA | 基于哈希的消息认证码算法，本系统用它对 JWT 令牌进行数字签名，防止令牌被篡改 |
+| QPS | Queries Per Second，每秒查询数，衡量系统吞吐量的指标 |
+| P95 | 第 95 百分位响应时间，表示 95% 的请求在该时间内完成 |
+| Elasticsearch | 开源全文搜索引擎，基于倒排索引，本系统展望中提到可用于替代当前的内存过滤搜索 |
+| Kubernetes (K8s) | 容器编排平台，支持自动扩缩容和滚动更新，本系统展望中提到可用于云端生产部署 |
+| CI/CD | Continuous Integration / Continuous Delivery，持续集成/持续交付，自动化的代码构建、测试和部署流程 |
+| ER 图 | Entity-Relationship Diagram，实体关系图，用矩形（实体）、菱形（联系）和椭圆（属性）描述数据库结构 |
+| UML | Unified Modeling Language，统一建模语言，本系统用其中的用例图和活动图描述需求 |
